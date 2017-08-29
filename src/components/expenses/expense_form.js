@@ -19,9 +19,7 @@ class ExpenseForm extends Component {
     }
 
     addItem(event) {
-        // console.log(items);
         const items = _.concat(this.state.items, {name:this.state.currentItem});
-        // console.log(items);
         this.setState({
             items,
             currentItem: ''
