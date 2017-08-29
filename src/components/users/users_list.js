@@ -6,8 +6,12 @@ class UsersList extends Component {
     renderUsers() {
         return _.map(this.props.Users, user => {
             return (
-                <div key={user.name}
-                    className="list-group-item">{user.name}</div>
+                <div key={user.name} className="list-group-item">
+                    <div className="d-flex w-100 justify-content-between">
+                        <h5 className="mb-1">{user.name}</h5>
+                        <small className="text-muted">{user.email}</small>
+                    </div>
+                </div>
             );
         });
     }
