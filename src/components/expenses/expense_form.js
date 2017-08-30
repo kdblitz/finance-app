@@ -31,7 +31,7 @@ class ExpenseForm extends Component {
                 'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0},
                 'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0}
             }
-        }
+        };
     }
 
     render() {
@@ -56,7 +56,8 @@ class ExpenseForm extends Component {
     }
 
     renderItemHeader() {
-        return _.map(['Name', 'Quantity', 'Price'], name => <th key={name} className={name.toLowerCase()}>{name}</th>)
+        return _.map(['Name', 'Quantity', 'Price'], 
+            name => <th key={name} className={name.toLowerCase()}>{name}</th>);
     }
 
     renderNameHeader() {
@@ -80,7 +81,7 @@ class ExpenseForm extends Component {
                     {this.renderExpense(item)} 
                 </tr>
             );
-        })
+        });
     }
 
     renderItem(item) {
@@ -110,15 +111,19 @@ class ExpenseForm extends Component {
             <tr>
                 <td className="price" colSpan={3}>{this.computeTotal()}</td>
             </tr>
-        )
+        );
     }
 
     renderItemAdderRow() {
         return (
             <tr>
-                <td><AddItemForm onItemAdd={data => console.log(data)} /></td>
+                <td><AddItemForm onItemAdd={data => this.addItem(data)} /></td>
             </tr>
         );
+    }
+
+    addItem(data) {
+        console.log(data);
     }
 
     getClaimedQuantity(itemName, users = this.state.users) {
@@ -141,7 +146,7 @@ class ExpenseForm extends Component {
 
     computeTotal() {
         return _(this.state.items).map(item => item.quantity * item.price)
-            .reduce((result,item) => result + item, 0)
+            .reduce((result,item) => result + item, 0);
     }
 }
 
