@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 
+import './expense_form.css';
+
 class ExpenseForm extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +30,7 @@ class ExpenseForm extends Component {
     
     render() {
         return (
-            <div>
+            <div className="Expense-form">
                 <h2>Expense form</h2>
                 <table className="table">
                     <thead>
@@ -72,8 +74,8 @@ class ExpenseForm extends Component {
     renderItem(item) {
         return [
           (<td key='name'>{item.name}</td>),
-          (<td key='quantity'>{item.quantity}</td>),
-          (<td key='price'>{item.price}</td>)
+          (<td className="quantity" key='quantity'>{item.quantity}</td>),
+          (<td className="price" key='price'>{item.price}</td>)
         ];
     }
 
@@ -107,8 +109,7 @@ class ExpenseForm extends Component {
                         </span>
                     </div>
                 </td>
-                <td></td>
-                <td>{this.computeTotal()}</td>
+                <td className="price" colSpan={2}>{this.computeTotal()}</td>
             </tr>
         );
     }
