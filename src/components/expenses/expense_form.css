@@ -1,3 +1,24 @@
-.Expense-form table .price, .Expense-form table .quantity {
+.Expense-form table {
+    table-layout: fixed;
+    width: fit-content;
+    max-width: none;
+}
+
+.Expense-form table td {
+    overflow: hidden;
+}
+
+.Expense-form table .price, 
+.Expense-form table .quantity {
     text-align: right;
+}
+
+.Expense-form table .name {
+    width: 300px;
+}
+
+.Expense-form table .quantity,
+.Expense-form table .price,
+.Expense-form table .users {
+    width: 100px;
 }

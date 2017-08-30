@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 
 import './expense_form.css';
+import AddItemForm from './add_item_form';
 
 class ExpenseForm extends Component {
     constructor(props) {
@@ -13,21 +14,10 @@ class ExpenseForm extends Component {
                 {name: 'item a', price: 100, quantity: 10},
                 {name: 'item b', price: 200, quantity: 5},
                 {name: 'item c', price: 300, quantity: 3}
-            ],
-            currentItem: ''
+            ]
         }
-
-        this.addItem = this.addItem.bind(this);
     }
 
-    addItem() {
-        const items = _.concat(this.state.items, {name:this.state.currentItem});
-        this.setState({
-            items,
-            currentItem: ''
-        });
-    }
-    
     render() {
         return (
             <div className="Expense-form">
@@ -41,7 +31,8 @@ class ExpenseForm extends Component {
                     </thead>
                     <tbody>
                         {this.renderBody()}
-                        {this.renderAddItemInput()}
+                        {this.renderSubtotalRow()}
+                        {this.renderItemAdderRow()}
                     </tbody>
                 </table>
             </div>
@@ -49,13 +40,13 @@ class ExpenseForm extends Component {
     }
 
     renderItemHeader() {
-        return _.map(['Name', 'Quantity', 'Price'], name => <th key={name}>{name}</th>)
+        return _.map(['Name', 'Quantity', 'Price'], name => <th key={name} className={name.toLowerCase()}>{name}</th>)
     }
 
     renderNameHeader() {
         return _.map(this.state.users, user => {
             return (
-                <th key={user}>{user}</th>
+                <th key={user} className="users">{user}</th>
             );
         });
     }
@@ -84,32 +75,25 @@ class ExpenseForm extends Component {
             return (
                 <td key={user}>
                     <div className="input-group">
-                        <input type="text" className="form-control"/>
+                        <input type="number" pattern="[0-9]*" min="0" className="form-control"/>
                     </div>
                 </td>
             );
         });
     }
 
-    renderAddItemInput() {
+    renderSubtotalRow() {
         return (
             <tr>
-                <td>
-                    <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Add new item"
-                            onChange={(event) => this.setState({currentItem: event.target.value})}
-                            value={this.state.currentItem} />
-                        <span className="input-group-btn">
-                            <button className="btn btn-secondary" type="button" 
-                                disabled={!this.state.currentItem.length}
-                                onClick={this.addItem}>Add</button>
-                        </span>
-                    </div>
-                </td>
-                <td className="price" colSpan={2}>{this.computeTotal()}</td>
+                <td className="price" colSpan={3}>{this.computeTotal()}</td>
+            </tr>
+        )
+    }
+
+    renderItemAdderRow() {
+        return (
+            <tr>
+                <td><AddItemForm onItemAdd={data => console.log(data)} /></td>
             </tr>
         );
     }
