@@ -52,7 +52,7 @@ class AddUserForm extends Component {
                                 value={this.state.email}/>
                         </div>
                     </div>
-                    <button type="submit" className="btn btn-primary">Add</button>
+                    <button type="submit" className="btn btn-primary float-right">Add</button>
                 </form>
             </div>
         );

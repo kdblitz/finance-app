@@ -8,9 +8,9 @@ class ExpenseForm extends Component {
         this.state = {
             users: ['user a','user b','user c'],
             items: [
-                {name: 'item a'},
-                {name: 'item b'},
-                {name: 'item c'}
+                {name: 'item a', price: 100, quantity: 10},
+                {name: 'item b', price: 200, quantity: 5},
+                {name: 'item c', price: 300, quantity: 3}
             ],
             currentItem: ''
         }
@@ -18,7 +18,7 @@ class ExpenseForm extends Component {
         this.addItem = this.addItem.bind(this);
     }
 
-    addItem(event) {
+    addItem() {
         const items = _.concat(this.state.items, {name:this.state.currentItem});
         this.setState({
             items,
@@ -33,8 +33,8 @@ class ExpenseForm extends Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th></th>
-                            {this.renderHeader()}  
+                            {this.renderItemHeader()}
+                            {this.renderNameHeader()}
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +46,11 @@ class ExpenseForm extends Component {
         );
     }
 
-    renderHeader() {
+    renderItemHeader() {
+        return _.map(['Name', 'Quantity', 'Price'], name => <th key={name}>{name}</th>)
+    }
+
+    renderNameHeader() {
         return _.map(this.state.users, user => {
             return (
                 <th key={user}>{user}</th>
@@ -58,21 +62,29 @@ class ExpenseForm extends Component {
         return _.map(this.state.items, item => {
             return (
                 <tr key={item.name}>
-                    <td>{item.name}</td>
+                    {this.renderItem(item)}
                     {this.renderExpense()}
                 </tr>
             );
         })
     }
 
+    renderItem(item) {
+        return [
+          (<td key='name'>{item.name}</td>),
+          (<td key='quantity'>{item.quantity}</td>),
+          (<td key='price'>{item.price}</td>)
+        ];
+    }
+
     renderExpense() {
         return _.map(this.state.users, user => {
             return (
-                <th key={user}>
+                <td key={user}>
                     <div className="input-group">
                         <input type="text" className="form-control"/>
                     </div>
-                </th>
+                </td>
             );
         });
     }
@@ -95,8 +107,15 @@ class ExpenseForm extends Component {
                         </span>
                     </div>
                 </td>
+                <td></td>
+                <td>{this.computeTotal()}</td>
             </tr>
         );
+    }
+
+    computeTotal() {
+        return _(this.state.items).map(item => item.quantity * item.price)
+            .reduce((result,item) => result + item, 0)
     }
 }
 
