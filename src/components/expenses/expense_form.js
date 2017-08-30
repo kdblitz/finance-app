@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import React, { Component } from 'react';
 
 import './expense_form.css';
@@ -12,9 +13,16 @@ class ExpenseForm extends Component {
             users: {
                 'user a': {
                     claims: {
-                        'item a': 1,
-                        'item b': 1,
-                        'item c': 1
+                        'item a': 6,
+                        'item b': 2,
+                        'item c': 0
+                    }
+                },
+                'user b': {
+                    claims: {
+                        'item a': 4,
+                        'item b': 5,
+                        'item c': 0
                     }
                 }
             },
@@ -61,8 +69,15 @@ class ExpenseForm extends Component {
 
     renderBody() {
         return _.map(this.state.items, item => {
+            const claimedQuantity = _(this.state.users).map(`claims[${item.name}]`)
+                .reduce((result,item) => result + item, 0)
+            const remainingQuantity = item.quantity - claimedQuantity;
+            const className = classNames({
+                'table-danger': remainingQuantity > 0,
+                'table-warning': remainingQuantity < 0
+            });
             return (
-                <tr key={item.name}>
+                <tr key={item.name} className={className}>
                     {this.renderItem(item)}
                     {this.renderExpense(item)} 
                 </tr>
@@ -94,7 +109,7 @@ class ExpenseForm extends Component {
 
     updateClaim(event, user, itemName) {
         const users = _.clone(this.state.users);
-        users[user].claims[itemName] = event.target.value;
+        users[user].claims[itemName] = Number(event.target.value);
         this.setState({users});
     }
 
