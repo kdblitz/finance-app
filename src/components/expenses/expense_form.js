@@ -117,7 +117,7 @@ class ExpenseForm extends Component {
     renderItemAdderRow() {
         return (
             <tr>
-                <td><AddItemForm onItemAdd={data => this.addItem(data)} /></td>
+                <td colSpan="3"><AddItemForm onItemAdd={data => this.addItem(data)} /></td>
             </tr>
         );
     }
