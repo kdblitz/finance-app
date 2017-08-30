@@ -13,24 +13,24 @@ class ExpenseForm extends Component {
             users: {
                 'user a': {
                     claims: {
-                        'item a': 6,
-                        'item b': 2,
+                        'item a': 0,
+                        'item b': 0,
                         'item c': 0
                     }
                 },
                 'user b': {
                     claims: {
-                        'item a': 4,
-                        'item b': 5,
+                        'item a': 0,
+                        'item b': 0,
                         'item c': 0
                     }
                 }
             },
-            items: [
-                {name: 'item a', price: 100, quantity: 10},
-                {name: 'item b', price: 200, quantity: 5},
-                {name: 'item c', price: 300, quantity: 3}
-            ]
+            items: {
+                'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0},
+                'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0},
+                'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0}
+            }
         }
     }
 
@@ -69,9 +69,7 @@ class ExpenseForm extends Component {
 
     renderBody() {
         return _.map(this.state.items, item => {
-            const claimedQuantity = _(this.state.users).map(`claims[${item.name}]`)
-                .reduce((result,item) => result + item, 0)
-            const remainingQuantity = item.quantity - claimedQuantity;
+            const remainingQuantity = item.quantity - item.claimedQuantity;
             const className = classNames({
                 'table-danger': remainingQuantity > 0,
                 'table-warning': remainingQuantity < 0
@@ -107,12 +105,6 @@ class ExpenseForm extends Component {
         });
     }
 
-    updateClaim(event, user, itemName) {
-        const users = _.clone(this.state.users);
-        users[user].claims[itemName] = Number(event.target.value);
-        this.setState({users});
-    }
-
     renderSubtotalRow() {
         return (
             <tr>
@@ -127,6 +119,24 @@ class ExpenseForm extends Component {
                 <td><AddItemForm onItemAdd={data => console.log(data)} /></td>
             </tr>
         );
+    }
+
+    getClaimedQuantity(itemName, users = this.state.users) {
+        return _(users).map(`claims[${itemName}]`)
+            .reduce((result,claim) => result + claim, 0);
+    }
+
+    updateClaim(event, user, itemName) {
+        const users = _.cloneDeep(this.state.users);
+        users[user].claims[itemName] = Number(event.target.value);
+
+        const items = _.cloneDeep(this.state.items);
+        items[itemName].claimedQuantity = this.getClaimedQuantity(itemName, users);
+
+        this.setState({
+            users,
+            items
+        });
     }
 
     computeTotal() {
