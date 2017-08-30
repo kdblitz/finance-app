@@ -5,10 +5,9 @@ import UserList from './users_list';
 class UserView extends Component {
   render() {
     return (
-      <div>
-        <AddUserForm />
-        <hr />
+      <div className="row">
         <UserList />
+        <AddUserForm />
       </div>
     )
   }

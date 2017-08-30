@@ -29,7 +29,7 @@ class AddUserForm extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="col-md">
                 <h2>Add User</h2>
                 <form onSubmit={this.submitForm}>
                     <div className="row">

@@ -18,7 +18,7 @@ class UsersList extends Component {
 
     render() {
         return (
-            <div>
+            <div className="col-md">
                 <h2>Users</h2>
                 <div className="list-group">
                     {this.renderUsers()}
