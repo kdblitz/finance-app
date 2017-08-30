@@ -9,7 +9,15 @@ class ExpenseForm extends Component {
         super(props);
 
         this.state = {
-            users: ['user a','user b','user c'],
+            users: {
+                'user a': {
+                    claims: {
+                        'item a': 1,
+                        'item b': 1,
+                        'item c': 1
+                    }
+                }
+            },
             items: [
                 {name: 'item a', price: 100, quantity: 10},
                 {name: 'item b', price: 200, quantity: 5},
@@ -44,7 +52,7 @@ class ExpenseForm extends Component {
     }
 
     renderNameHeader() {
-        return _.map(this.state.users, user => {
+        return _.keys(this.state.users).map(user => {
             return (
                 <th key={user} className="users">{user}</th>
             );
@@ -56,7 +64,7 @@ class ExpenseForm extends Component {
             return (
                 <tr key={item.name}>
                     {this.renderItem(item)}
-                    {this.renderExpense()}
+                    {this.renderExpense(item)} 
                 </tr>
             );
         })
@@ -70,16 +78,24 @@ class ExpenseForm extends Component {
         ];
     }
 
-    renderExpense() {
-        return _.map(this.state.users, user => {
+    renderExpense(item) {
+        return _.keys(this.state.users).map(user => {
             return (
                 <td key={user}>
                     <div className="input-group">
-                        <input type="number" pattern="[0-9]*" min="0" className="form-control"/>
+                        <input type="number" pattern="[0-9]*" min="0" className="form-control" 
+                            value={this.state.users[user].claims[item.name]}
+                            onChange={(event) => this.updateClaim(event, user, item.name)} />
                     </div>
                 </td>
             );
         });
+    }
+
+    updateClaim(event, user, itemName) {
+        const users = _.clone(this.state.users);
+        users[user].claims[itemName] = event.target.value;
+        this.setState({users});
     }
 
     renderSubtotalRow() {
