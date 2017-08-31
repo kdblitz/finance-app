@@ -4,6 +4,11 @@
     max-width: none;
 }
 
+.Expense-form table thead th,
+.Expense-form table td.shared {
+    text-align: center;
+}
+
 .Expense-form table td {
     overflow: hidden;
 }
@@ -17,8 +22,9 @@
     width: 300px;
 }
 
-.Expense-form table .quantity,
-.Expense-form table .price,
-.Expense-form table .users {
+.Expense-form table th.quantity,
+.Expense-form table th.price,
+.Expense-form table th.users,
+.Expense-form table th.shared {
     width: 100px;
 }

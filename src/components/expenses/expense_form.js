@@ -28,9 +28,9 @@ class ExpenseForm extends Component {
                 }
             },
             items: {
-                'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0},
-                'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0},
-                'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0}
+                'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0, shared: false},
+                'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0, shared: false},
+                'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
             }
         };
     }
@@ -44,6 +44,7 @@ class ExpenseForm extends Component {
                         <tr>
                             {this.renderItemHeader()}
                             {this.renderNameHeader()}
+                            <th className="shared">Shared?</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,20 +70,47 @@ class ExpenseForm extends Component {
         });
     }
 
-    renderBody() {
-        return _.map(this.state.items, item => {
+    determineRowStyle(item) {
+        if (item.shared) {
+            return classNames({
+                'table-success': item.claimedQuantity > 0,
+                'table-danger': item.claimedQuantity === 0
+            });
+        } else {
             const remainingQuantity = item.quantity - item.claimedQuantity;
-            const className = classNames({
+            return classNames({
                 'table-success': remainingQuantity === 0,
                 'table-danger': remainingQuantity > 0,
                 'table-warning': remainingQuantity < 0
             });
+        }
+    }
+
+    renderBody() {
+        return _.map(this.state.items, item => {
             return (
-                <tr key={item.name} className={className}>
+                <tr key={item.name} className={this.determineRowStyle(item)}>
                     {this.renderItem(item)}
-                    {this.renderExpense(item)} 
+                    {this.renderExpense(item)}
+                    <td className="shared">
+                        <div className="form-check">
+                            <label className="form-check-label">
+                                <input className="form-check-input" type="checkbox"
+                                    checked={item.shared}
+                                    onChange={event => this.toggleShared(event,item.name)}/>
+                            </label>
+                        </div>
+                    </td>
                 </tr>
             );
+        });
+    }
+
+    toggleShared(event, itemName) {
+        const items = _.cloneDeep(this.state.items);
+        items[itemName].shared = event.target.checked;
+        this.setState({
+            items
         });
     }
 
@@ -134,13 +162,15 @@ class ExpenseForm extends Component {
 
     addItem(item) {
         item.claimedQuantity = 0;
+        item.shared = false;
+
         const items = _.cloneDeep(this.state.items);
         items[item.name] = item;
+
         const users = _.mapValues(_.cloneDeep(this.state.users), user => {
             user.claims[item.name] = 0;
             return user;
         });
-        console.log(items, _.cloneDeep(this.state.users), users);
 
         this.setState({
             items,
@@ -169,8 +199,9 @@ class ExpenseForm extends Component {
     computeUserTotal(userName) {
         const userTotal = _(this.state.users[userName].claims)
             .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity} = this.state.items[itemName];
-                return (claimedQuantity) ? claim * quantity / claimedQuantity * price : 0;
+                const {price, quantity, claimedQuantity, shared} = this.state.items[itemName];
+                return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
+                    : claim * price;
             })
             .reduce(sum);
 
