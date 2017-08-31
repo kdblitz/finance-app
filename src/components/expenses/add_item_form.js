@@ -14,7 +14,8 @@ class AddItemForm extends Component {
         this.addItem = this.addItem.bind(this);
     }
 
-    addItem() {
+    addItem(event) {
+        event.preventDefault();
         this.props.onItemAdd(this.state);
         this.setState({
             name: '',
@@ -42,16 +43,17 @@ class AddItemForm extends Component {
 
     render() {
         return (
-            <div className="Add-item-form input-group">
-                {this.renderInput({className:'name',placeholder:'Add new item', data: 'name', type: 'text'})}
-                {this.renderInput({placeholder:'Quantity', data: 'quantity', type: 'number'})}
-                {this.renderInput({placeholder:'Price', data: 'price', type: 'number'})}
-                <span className="input-group-btn">
-                    <button className="btn btn-secondary" type="button" 
-                        disabled={this.isFormComplete()}
-                        onClick={this.addItem}>Add</button>
-                </span>
-            </div>
+            <form onSubmit={this.addItem} className="Add-item-form" >
+                <div className="input-group">
+                    {this.renderInput({className:'name',placeholder:'Add new item', data: 'name', type: 'text'})}
+                    {this.renderInput({placeholder:'Quantity', data: 'quantity', type: 'number'})}
+                    {this.renderInput({placeholder:'Price', data: 'price', type: 'number'})}
+                    <span className="input-group-btn">
+                        <button className="btn btn-secondary" type="submit"
+                            disabled={this.isFormComplete()}>Add</button>
+                    </span>
+                </div>
+            </form>
         )
     }
 }
