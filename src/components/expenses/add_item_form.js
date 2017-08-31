@@ -24,8 +24,8 @@ class AddItemForm extends Component {
         });
     }
 
-    renderInput({placeholder, data, type, className}) {
-        const inputClass = `form-control ${className}`;
+    renderInput({placeholder, data, type}) {
+        const inputClass = `form-control add-item-${data}`;
         return (
             <input
                 type={type}
@@ -45,8 +45,8 @@ class AddItemForm extends Component {
         return (
             <form onSubmit={this.addItem} className="Add-item-form" >
                 <div className="input-group">
-                    {this.renderInput({className:'name',placeholder:'Add new item', data: 'name', type: 'text'})}
-                    {this.renderInput({placeholder:'Quantity', data: 'quantity', type: 'number'})}
+                    {this.renderInput({placeholder:'Add new item', data: 'name', type: 'text'})}
+                    {this.renderInput({placeholder:'Qty', data: 'quantity', type: 'number'})}
                     {this.renderInput({placeholder:'Price', data: 'price', type: 'number'})}
                     <span className="input-group-btn">
                         <button className="btn btn-secondary" type="submit"

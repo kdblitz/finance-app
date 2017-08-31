@@ -1,3 +1,11 @@
-.Add-item-form .name {
+form.Add-item-form .add-item-name {
+    flex: 8;
+}
+
+form.Add-item-form .add-item-quantity {
     flex: 2;
+}
+
+.Add-item-form .add-item-price {
+    flex: 3;
 }
