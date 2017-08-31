@@ -88,9 +88,12 @@ class ExpenseForm extends Component {
 
     renderItem(item) {
         return [
-          (<td key='name'>{item.name}</td>),
-          (<td className="quantity" key='quantity'>{item.quantity}</td>),
-          (<td className="price" key='price'>{item.price}</td>)
+            (<th key='name'>{item.name}</th>),
+            (<td className="quantity" key='quantity'>{item.quantity}</td>),
+            (<td className="price" key='price'>
+                {item.price * item.quantity}<br/>
+                <small className="text-muted">({item.price})</small>
+                </td>)
         ];
     }
 
@@ -111,7 +114,8 @@ class ExpenseForm extends Component {
     renderSubtotalRow() {
         return (
             <tr>
-                <td className="price" colSpan={3}>{this.computeTotal()}</td>
+                <th>Total</th>
+                <td className="price" colSpan={2}>{this.computeTotal()}</td>
                 {this.renderUserSubtotal()}
             </tr>
         );
@@ -124,21 +128,20 @@ class ExpenseForm extends Component {
     }
 
     renderItemAdderRow() {
-        return (
-            <tr>
-                <td colSpan="3"><AddItemForm onItemAdd={data => this.addItem(data)} /></td>
-            </tr>
-        );
+        return <tr><td colSpan="3"><AddItemForm onItemAdd={data => this.addItem(data)} /></td></tr>;
     }
 
 
     addItem(item) {
+        item.claimedQuantity = 0;
         const items = _.cloneDeep(this.state.items);
         items[item.name] = item;
-        const users = _.map(_.cloneDeep(this.state.users), user => {
-            user.items[items.name] = 0;
+        const users = _.mapValues(_.cloneDeep(this.state.users), user => {
+            user.claims[item.name] = 0;
             return user;
         });
+        console.log(items, _.cloneDeep(this.state.users), users);
+
         this.setState({
             items,
             users
