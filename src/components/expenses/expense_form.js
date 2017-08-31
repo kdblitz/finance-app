@@ -72,6 +72,7 @@ class ExpenseForm extends Component {
         return _.map(this.state.items, item => {
             const remainingQuantity = item.quantity - item.claimedQuantity;
             const className = classNames({
+                'table-success': remainingQuantity === 0,
                 'table-danger': remainingQuantity > 0,
                 'table-warning': remainingQuantity < 0
             });
@@ -110,8 +111,15 @@ class ExpenseForm extends Component {
         return (
             <tr>
                 <td className="price" colSpan={3}>{this.computeTotal()}</td>
+                {this.renderUserSubtotal()}
             </tr>
         );
+    }
+
+    renderUserSubtotal() {
+        return _(this.state.users)
+          .keys().map(user => <td key={user}>{this.computeUserTotal(user)}</td>)
+          .value();
     }
 
     renderItemAdderRow() {
@@ -122,13 +130,14 @@ class ExpenseForm extends Component {
         );
     }
 
+
     addItem(data) {
-        console.log(data);
+        // console.log(data);
     }
 
     getClaimedQuantity(itemName, users = this.state.users) {
         return _(users).map(`claims[${itemName}]`)
-            .reduce((result,claim) => result + claim, 0);
+            .reduce(this.sum);
     }
 
     updateClaim(event, user, itemName) {
@@ -144,9 +153,22 @@ class ExpenseForm extends Component {
         });
     }
 
+    computeUserTotal(user) {
+        const userTotal = _(this.state.users[user].claims).map((claim, itemName) => {
+            const {price, quantity, claimedQuantity} = this.state.items[itemName];
+            return (claimedQuantity) ? claim * quantity / claimedQuantity * price : 0;
+        }).reduce(this.sum);
+
+        return userTotal;
+    }
+
     computeTotal() {
         return _(this.state.items).map(item => item.quantity * item.price)
-            .reduce((result,item) => result + item, 0);
+            .reduce(this.sum);
+    }
+
+    sum(result = 0,item) {
+        return result + item;
     }
 }
 

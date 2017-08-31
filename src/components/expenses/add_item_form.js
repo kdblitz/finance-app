@@ -37,7 +37,6 @@ class AddItemForm extends Component {
     }
 
     isFormComplete() {
-        console.log(!this.state.name.length, !this.state.quantity, !this.state.price)
         return !this.state.name.length || !this.state.quantity || !this.state.price;
     }
 
