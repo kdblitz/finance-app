@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 
 import './expense_form.css';
 import AddItemForm from './add_item_form';
+import { sum } from '../../utils';
 
 class ExpenseForm extends Component {
     constructor(props) {
@@ -131,13 +132,22 @@ class ExpenseForm extends Component {
     }
 
 
-    addItem(data) {
-        // console.log(data);
+    addItem(item) {
+        const items = _.cloneDeep(this.state.items);
+        items[item.name] = item;
+        const users = _.map(_.cloneDeep(this.state.users), user => {
+            user.items[items.name] = 0;
+            return user;
+        });
+        this.setState({
+            items,
+            users
+        });
     }
 
     getClaimedQuantity(itemName, users = this.state.users) {
         return _(users).map(`claims[${itemName}]`)
-            .reduce(this.sum);
+            .reduce(sum);
     }
 
     updateClaim(event, user, itemName) {
@@ -153,22 +163,21 @@ class ExpenseForm extends Component {
         });
     }
 
-    computeUserTotal(user) {
-        const userTotal = _(this.state.users[user].claims).map((claim, itemName) => {
-            const {price, quantity, claimedQuantity} = this.state.items[itemName];
-            return (claimedQuantity) ? claim * quantity / claimedQuantity * price : 0;
-        }).reduce(this.sum);
+    computeUserTotal(userName) {
+        const userTotal = _(this.state.users[userName].claims)
+            .map((claim, itemName) => {
+                const {price, quantity, claimedQuantity} = this.state.items[itemName];
+                return (claimedQuantity) ? claim * quantity / claimedQuantity * price : 0;
+            })
+            .reduce(sum);
 
         return userTotal;
     }
 
     computeTotal() {
-        return _(this.state.items).map(item => item.quantity * item.price)
-            .reduce(this.sum);
-    }
-
-    sum(result = 0,item) {
-        return result + item;
+        return _(this.state.items)
+            .map(item => item.quantity * item.price)
+            .reduce(sum);
     }
 }
 
