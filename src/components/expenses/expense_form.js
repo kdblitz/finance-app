@@ -92,15 +92,7 @@ class ExpenseForm extends Component {
                 <tr key={item.name} className={this.determineRowStyle(item)}>
                     {this.renderItem(item)}
                     {this.renderExpense(item)}
-                    <td className="shared">
-                        <div className="form-check">
-                            <label className="form-check-label">
-                                <input className="form-check-input" type="checkbox"
-                                    checked={item.shared}
-                                    onChange={event => this.toggleShared(event,item.name)}/>
-                            </label>
-                        </div>
-                    </td>
+                    {this.renderSharingCell(item)}
                 </tr>
             );
         });
@@ -139,12 +131,27 @@ class ExpenseForm extends Component {
         });
     }
 
+    renderSharingCell(item) {
+        return (
+            <td className="shared">
+                <div className="form-check">
+                    <label className="form-check-label">
+                        <input className="form-check-input" type="checkbox"
+                            checked={item.shared}
+                            onChange={event => this.toggleShared(event,item.name)}/>
+                    </label>
+                </div>
+            </td>
+        );
+    }
+
     renderSubtotalRow() {
         return (
             <tr>
                 <th>Total</th>
                 <td className="price" colSpan={2}>{this.computeTotal()}</td>
                 {this.renderUserSubtotal()}
+                <td></td>
             </tr>
         );
     }
