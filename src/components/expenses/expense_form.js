@@ -6,6 +6,7 @@ import './expense_form.css';
 import AddItemForm from './add_item_form';
 import { sum } from '../../utils';
 import SubtotalRow from './rows/subtotal_row';
+import ServiceChargeRow from './rows/service_charge_row';
 
 class ExpenseForm extends Component {
     constructor(props) {
@@ -34,7 +35,8 @@ class ExpenseForm extends Component {
                 'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
             },
             rows: [
-                new SubtotalRow(this)
+                new SubtotalRow(this),
+                new ServiceChargeRow(this)
             ]
         };
     }
@@ -150,19 +152,22 @@ class ExpenseForm extends Component {
     }
 
     renderSubtotalRow() {
-        return (
-            <tr>
-                <th>Total</th>
-                <td className="price" colSpan={2}>{this.state.rows[0].computeTotal()}</td>
-                {this.renderUserSubtotal()}
-                <td></td>
-            </tr>
-        );
+        return _.map(this.state.rows, row => {
+            return (
+                <tr key={row.getLabel()}>
+                    <th>{row.getLabel()}</th>
+                    <td className="price" colSpan={2}>{row.computeTotal()}</td>
+                    {this.renderUserSubtotal(row)}
+                    <td></td>
+                </tr>
+            );
+        });
+
     }
 
-    renderUserSubtotal() {
+    renderUserSubtotal(row) {
         return _(this.state.users)
-          .keys().map(user => <td key={user}>{this.state.rows[0].computeUser(user)}</td>)
+          .keys().map(user => <td key={user}>{row.computeUser(user)}</td>)
           .value();
     }
 

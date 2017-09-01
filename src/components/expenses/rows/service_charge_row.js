@@ -3,9 +3,10 @@ import { sum } from '../../../utils';
 
 import BaseRow from './base_row';
 
-export default class SubtotalRow extends BaseRow {
-    constructor(state, title = 'Subtotal') {
+export default class ServiceChargeRow extends BaseRow {
+    constructor(state, title = 'Service charge') {
         super(state, title);
+        this.percent = 0.12;
     }
 
     computeUser(userName) {
@@ -15,7 +16,7 @@ export default class SubtotalRow extends BaseRow {
                 return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
                     : claim * price;
             })
-            .reduce(sum);
+            .reduce(sum) * this.percent;
 
         return userTotal;
     }
@@ -23,6 +24,6 @@ export default class SubtotalRow extends BaseRow {
     computeTotal() {
         return _(this.getState().items)
             .map(item => item.quantity * item.price)
-            .reduce(sum);
+            .reduce(sum) * this.percent;
     }
 }
