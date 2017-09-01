@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import './expense_form.css';
 import AddItemForm from './add_item_form';
 import { sum } from '../../utils';
+import SubtotalRow from './rows/subtotal_row';
 
 class ExpenseForm extends Component {
     constructor(props) {
@@ -31,7 +32,10 @@ class ExpenseForm extends Component {
                 'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0, shared: false},
                 'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0, shared: false},
                 'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
-            }
+            },
+            rows: [
+                new SubtotalRow(this)
+            ]
         };
     }
 
@@ -149,7 +153,7 @@ class ExpenseForm extends Component {
         return (
             <tr>
                 <th>Total</th>
-                <td className="price" colSpan={2}>{this.computeTotal()}</td>
+                <td className="price" colSpan={2}>{this.state.rows[0].computeTotal()}</td>
                 {this.renderUserSubtotal()}
                 <td></td>
             </tr>
@@ -158,7 +162,7 @@ class ExpenseForm extends Component {
 
     renderUserSubtotal() {
         return _(this.state.users)
-          .keys().map(user => <td key={user}>{this.computeUserTotal(user)}</td>)
+          .keys().map(user => <td key={user}>{this.state.rows[0].computeUser(user)}</td>)
           .value();
     }
 
@@ -201,24 +205,6 @@ class ExpenseForm extends Component {
             users,
             items
         });
-    }
-
-    computeUserTotal(userName) {
-        const userTotal = _(this.state.users[userName].claims)
-            .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.state.items[itemName];
-                return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
-                    : claim * price;
-            })
-            .reduce(sum);
-
-        return userTotal;
-    }
-
-    computeTotal() {
-        return _(this.state.items)
-            .map(item => item.quantity * item.price)
-            .reduce(sum);
     }
 }
 
