@@ -73,7 +73,6 @@ class ExpenseForm extends Component {
     }
 
     renderNameHeader() {
-        console.log(this.state.users);
         return _.keys(this.state.users).map(user => {
             return (
                 <th key={user} className="users">{user}</th>
@@ -89,7 +88,6 @@ class ExpenseForm extends Component {
         users[user.name] = {
             claims: _.zipObject(itemNames, initValues)
         };
-        console.log(users);
         this.setState({
             users
         });
