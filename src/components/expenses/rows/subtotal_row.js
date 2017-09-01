@@ -1,15 +1,13 @@
 import _ from 'lodash';
 import { sum } from '../../../utils';
 
-export default class SubtotalRow {
-    constructor(state) {
-        this.expenseState = state;
-    }
+import BaseRow from './base_row';
 
+export default class SubtotalRow extends BaseRow {
     computeUser(userName) {
-        const userTotal = _(this.expenseState.state.users[userName].claims)
+        const userTotal = _(this.getState().users[userName].claims)
             .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.expenseState.state.items[itemName];
+                const {price, quantity, claimedQuantity, shared} = this.getState().items[itemName];
                 return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
                     : claim * price;
             })
@@ -19,7 +17,7 @@ export default class SubtotalRow {
     }
 
     computeTotal() {
-        return _(this.expenseState.state.items)
+        return _(this.getState().items)
             .map(item => item.quantity * item.price)
             .reduce(sum);
     }
