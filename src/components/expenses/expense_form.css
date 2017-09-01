@@ -28,3 +28,7 @@
 .Expense-form table th.shared {
     width: 100px;
 }
+
+.Expense-form th.addUser {
+    width: 200px;
+}
