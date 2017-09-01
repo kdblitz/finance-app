@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { addUser } from '../../actions/expense_actions';
 
 class AddUserForm extends Component {
     constructor(props) {
@@ -12,7 +15,7 @@ class AddUserForm extends Component {
 
     addUser(event) {
         event.preventDefault();
-        this.props.onUserAdd(this.state);
+        this.props.addUser(this.state);
         this.setState({
             name:''
         });
@@ -35,4 +38,4 @@ class AddUserForm extends Component {
     }
 }
 
-export default AddUserForm;
+export default connect(null, { addUser })(AddUserForm);

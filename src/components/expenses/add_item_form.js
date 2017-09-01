@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addItem } from '../../actions/expense_actions';
 
 import './add_item_form.css';
 
@@ -16,7 +18,7 @@ class AddItemForm extends Component {
 
     addItem(event) {
         event.preventDefault();
-        this.props.onItemAdd(this.state);
+        this.props.addItem(this.state);
         this.setState({
             name: '',
             quantity: '',
@@ -58,4 +60,4 @@ class AddItemForm extends Component {
     }
 }
 
-export default AddItemForm;
+export default connect(null,{addItem})(AddItemForm);

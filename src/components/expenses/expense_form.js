@@ -1,45 +1,19 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { updateClaim, toggleSharing } from '../../actions/expense_actions';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
 import AddItemForm from './add_item_form';
-import { sum } from '../../utils';
+
 import SubtotalRow from './rows/subtotal_row';
 import ServiceChargeRow from './rows/service_charge_row';
 
 class ExpenseForm extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            users: {
-                'user a': {
-                    claims: {
-                        'item a': 0,
-                        'item b': 0,
-                        'item c': 0
-                    }
-                },
-                'user b': {
-                    claims: {
-                        'item a': 0,
-                        'item b': 0,
-                        'item c': 0
-                    }
-                }
-            },
-            items: {
-                'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0, shared: false},
-                'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0, shared: false},
-                'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
-            },
-            rows: [
-                new SubtotalRow(this),
-                new ServiceChargeRow(this)
-            ]
-        };
     }
 
     render() {
@@ -53,7 +27,7 @@ class ExpenseForm extends Component {
                             <th className="shared">Shared?</th>
                             {this.renderNameHeader()}
                             <th className="addUser">
-                                <AddUserForm onUserAdd={user => this.addUser(user)}/>
+                                <AddUserForm />
                             </th>
                         </tr>
                     </thead>
@@ -73,28 +47,15 @@ class ExpenseForm extends Component {
     }
 
     renderNameHeader() {
-        return _.keys(this.state.users).map(user => {
+        return _.keys(this.props.CurrentExpense.users).map(user => {
             return (
                 <th key={user} className="users">{user}</th>
             );
         });
     }
 
-    addUser(user) {
-        const itemNames = _.keys(this.state.items);
-        const initValues = _.fill(Array(itemNames.length), 0);
-
-        const users = _.cloneDeep(this.state.users);
-        users[user.name] = {
-            claims: _.zipObject(itemNames, initValues)
-        };
-        this.setState({
-            users
-        });
-    }
-
     renderBody() {
-        return _.map(this.state.items, item => {
+        return _.map(this.props.CurrentExpense.items, item => {
             return (
                 <tr key={item.name} className={this.determineRowStyle(item)}>
                     {this.renderItem(item)}
@@ -105,7 +66,7 @@ class ExpenseForm extends Component {
         });
     }
 
-        determineRowStyle(item) {
+    determineRowStyle(item) {
         if (item.shared) {
             return classNames({
                 'table-success': item.claimedQuantity > 0,
@@ -139,55 +100,29 @@ class ExpenseForm extends Component {
                     <label className="form-check-label">
                         <input className="form-check-input" type="checkbox"
                             checked={item.shared}
-                            onChange={event => this.toggleShared(event,item.name)}/>
+                            onChange={event => this.props.toggleSharing(item.name, event.target.checked)}/>
                     </label>
                 </div>
             </td>
         );
     }
 
-    toggleShared(event, itemName) {
-        const items = _.cloneDeep(this.state.items);
-        items[itemName].shared = event.target.checked;
-        this.setState({
-            items
-        });
-    }
-
     renderExpense(item) {
-        return _.keys(this.state.users).map(user => {
+        return _.keys(this.props.CurrentExpense.users).map(user => {
             return (
                 <td key={user}>
                     <div className="input-group">
                         <input type="number" pattern="[0-9]*" min="0" className="form-control" 
-                            value={this.state.users[user].claims[item.name]}
-                            onChange={(event) => this.updateClaim(event, user, item.name)} />
+                            value={this.props.CurrentExpense.users[user].claims[item.name]}
+                            onChange={event => this.props.updateClaim(user, item.name, event.target.value)} />
                     </div>
                 </td>
             );
         });
     }
 
-    updateClaim(event, user, itemName) {
-        const users = _.cloneDeep(this.state.users);
-        users[user].claims[itemName] = Number(event.target.value);
-
-        const items = _.cloneDeep(this.state.items);
-        items[itemName].claimedQuantity = this.getClaimedQuantity(itemName, users);
-
-        this.setState({
-            users,
-            items
-        });
-    }
-
-    getClaimedQuantity(itemName, users = this.state.users) {
-        return _(users).map(`claims[${itemName}]`)
-            .reduce(sum);
-    }
-
     renderSpecialRows() {
-        return _.map(this.state.rows, row => {
+        return _.map(this.props.CurrentExpense.rows, row => {
             return (
                 <tr key={row.getLabel()}>
                     <th>{row.getLabel()}</th>
@@ -201,33 +136,20 @@ class ExpenseForm extends Component {
     }
 
     renderUserCellOfSpecialRow(row) {
-        return _(this.state.users)
+        return _(this.props.CurrentExpense.users)
           .keys().map(user => <td key={user}>{row.computeUser(user)}</td>)
           .value();
     }
 
     renderItemAdderRow() {
-        return <tr><td colSpan="3"><AddItemForm onItemAdd={data => this.addItem(data)} /></td></tr>;
-    }
-
-
-    addItem(item) {
-        item.claimedQuantity = 0;
-        item.shared = false;
-
-        const items = _.cloneDeep(this.state.items);
-        items[item.name] = item;
-
-        const users = _.mapValues(_.cloneDeep(this.state.users), user => {
-            user.claims[item.name] = 0;
-            return user;
-        });
-
-        this.setState({
-            items,
-            users
-        });
+        return <tr><td colSpan="3"><AddItemForm /></td></tr>;
     }
 }
 
-export default ExpenseForm;
+function mapStateToProps({CurrentExpense}) {
+    return {
+        CurrentExpense
+    };
+}
+
+export default connect(mapStateToProps, {updateClaim, toggleSharing})(ExpenseForm);
