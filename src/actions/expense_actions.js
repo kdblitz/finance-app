@@ -1,43 +1,34 @@
-export const ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
-// const expenseData = new Firebase('https://singils-app.firebaseio.com/');
-
-const expenseData = {
-    users: {
-        'user a': {
-            claims: {
-                'item a': 0,
-                'item b': 0,
-                'item c': 0
-            }
-        },
-        'user b': {
-            claims: {
-                'item a': 0,
-                'item b': 0,
-                'item c': 0
-            }
-        }
-    },
-    items: {
-        'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0, shared: false},
-        'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0, shared: false},
-        'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
-    },
-    rows: [
-        'SubtotalRow',
-        'ServiceChargeRow'
-    ]
+const config = {
+    apiKey: "AIzaSyCb4Qc3jpLBRQZGg91GMrE1qN0cu5pdP4c",
+    authDomain: "singils-app.firebaseapp.com",
+    databaseURL: "https://singils-app.firebaseio.com",
+    projectId: "singils-app",
+    storageBucket: "singils-app.appspot.com",
+    messagingSenderId: "505027770679"
 };
+
+firebase.initializeApp(config);
+const database = firebase.database();
+const expenseRef = database.ref('expense');
+// const ExpenseData = new Firebase('https://singils-app.firebaseio.com/');
 
 export const FETCH_EXPENSE_DATA = 'fetch_expense_data';
 
 export function fetchExpenseData() {
-    return {
-        type: FETCH_EXPENSE_DATA,
-        payload: expenseData
-    }
+    return dispatch => {
+        expenseRef.on('value', snapshot => {
+            dispatch({
+                type: FETCH_EXPENSE_DATA,
+                payload: snapshot.val()
+            });
+        });
+    };
 }
+
+export const ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
 
 export function addUser(user) {
     return {
