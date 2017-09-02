@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateClaim, toggleSharing } from '../../actions/expense_actions';
+import { fetchExpenseData, updateClaim, toggleSharing } from '../../actions/expense_actions';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
@@ -14,6 +14,10 @@ const rows = {
 }
 
 class ExpenseForm extends Component {
+    componentDidMount() {
+        this.props.fetchExpenseData();
+    }
+
     render() {
         return (
             <div className="Expense-form">
@@ -143,4 +147,8 @@ function mapStateToProps({CurrentExpense}) {
     };
 }
 
-export default connect(mapStateToProps, {updateClaim, toggleSharing})(ExpenseForm);
+export default connect(mapStateToProps, {
+    fetchExpenseData,
+    updateClaim, 
+    toggleSharing
+})(ExpenseForm);

@@ -1,38 +1,12 @@
 import _ from 'lodash';
-import { ADD_USER_TO_EXPENSE_FORM, ADD_ITEM_TO_EXPENSE_FORM, UPDATE_CLAIM, TOGGLE_SHARING } from '../actions/expense_actions';
+import { FETCH_EXPENSE_DATA, ADD_USER_TO_EXPENSE_FORM, ADD_ITEM_TO_EXPENSE_FORM, UPDATE_CLAIM, TOGGLE_SHARING } from '../actions/expense_actions';
 
 import { sum } from '../utils';
 
-const expenseData = {
-    users: {
-        'user a': {
-            claims: {
-                'item a': 0,
-                'item b': 0,
-                'item c': 0
-            }
-        },
-        'user b': {
-            claims: {
-                'item a': 0,
-                'item b': 0,
-                'item c': 0
-            }
-        }
-    },
-    items: {
-        'item a': {name: 'item a', price: 100, quantity: 10, claimedQuantity: 0, shared: false},
-        'item b': {name: 'item b', price: 200, quantity: 5, claimedQuantity: 0, shared: false},
-        'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
-    },
-    rows: [
-        'SubtotalRow',
-        'ServiceChargeRow'
-    ]
-};
-
-export default function(state = expenseData, action) {
+export default function(state = {}, action) {
     switch (action.type) {
+        case FETCH_EXPENSE_DATA:
+            return action.payload;
         case ADD_USER_TO_EXPENSE_FORM:
             return addUser(state, action.payload);
         case ADD_ITEM_TO_EXPENSE_FORM:
