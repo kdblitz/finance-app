@@ -4,15 +4,19 @@ import { sum } from '../../../utils';
 import BaseRow from './base_row';
 
 export default class ServiceChargeRow extends BaseRow {
-    constructor(state, title = 'Service charge') {
-        super(state, title);
+    constructor(props) {
+        super(props);
         this.percent = 0.12;
     }
 
+    getDefaultLabel() {
+        return 'Service Charge';
+    }
+
     computeUser(userName) {
-        const userTotal = _(this.getState().users[userName].claims)
+        const userTotal = _(this.props.expenseData.users[userName].claims)
             .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.getState().items[itemName];
+                const {price, quantity, claimedQuantity, shared} = this.props.expenseData.items[itemName];
                 return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
                     : claim * price;
             })
@@ -22,7 +26,7 @@ export default class ServiceChargeRow extends BaseRow {
     }
 
     computeTotal() {
-        return _(this.getState().items)
+        return _(this.props.expenseData.items)
             .map(item => item.quantity * item.price)
             .reduce(sum) * this.percent;
     }

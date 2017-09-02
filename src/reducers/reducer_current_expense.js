@@ -1,10 +1,7 @@
 import _ from 'lodash';
-
 import { ADD_USER_TO_EXPENSE_FORM, ADD_ITEM_TO_EXPENSE_FORM, UPDATE_CLAIM, TOGGLE_SHARING } from '../actions/expense_actions';
 
 import { sum } from '../utils';
-// import SubtotalRow from '../components/expenses/rows/subtotal_row';
-// import ServiceChargeRow from '../components/expenses/rows/service_charge_row';
 
 const expenseData = {
     users: {
@@ -29,8 +26,8 @@ const expenseData = {
         'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
     },
     rows: [
-        'SubtotalRow'
-        // new ServiceChargeRow(this)
+        'SubtotalRow',
+        'ServiceChargeRow'
     ]
 };
 
