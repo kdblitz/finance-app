@@ -13,7 +13,6 @@ const config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 const expenseRef = database.ref('expense');
-// const ExpenseData = new Firebase('https://singils-app.firebaseio.com/');
 
 export const FETCH_EXPENSE_DATA = 'fetch_expense_data';
 
@@ -24,6 +23,17 @@ export function fetchExpenseData() {
                 type: FETCH_EXPENSE_DATA,
                 payload: snapshot.val()
             });
+        });
+    };
+}
+
+export const SAVE_EXPENSE_DATA = 'save_expense_data';
+
+export function saveExpenseData(expenseData) {
+    console.log(expenseData);
+    return dispatch => {
+        return database.ref().update({
+            expense: expenseData
         });
     };
 }

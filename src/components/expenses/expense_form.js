@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchExpenseData, updateClaim, toggleSharing } from '../../actions/expense_actions';
+import { fetchExpenseData, updateClaim, toggleSharing, saveExpenseData } from '../../actions/expense_actions';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
@@ -39,8 +39,18 @@ class ExpenseForm extends Component {
                         {this.renderItemAdderRow()}
                     </tbody>
                 </table>
+                <button className="btn btn-primary"
+                    onClick={()=>this.saveExpense()}>Save</button>
             </div>
         );
+    }
+
+    saveExpense() {
+        this.props.saveExpenseData({
+            users: this.props.CurrentExpense.users,
+            items: this.props.CurrentExpense.items,
+            rows: this.props.CurrentExpense.rows
+        });
     }
 
     renderItemHeader() {
@@ -150,5 +160,6 @@ function mapStateToProps({CurrentExpense}) {
 export default connect(mapStateToProps, {
     fetchExpenseData,
     updateClaim, 
-    toggleSharing
+    toggleSharing,
+    saveExpenseData
 })(ExpenseForm);
