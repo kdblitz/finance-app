@@ -8,8 +8,11 @@ import './expense_form.css';
 import AddUserForm from './add_user_form';
 import AddItemForm from './add_item_form';
 
-import SubtotalRow from './rows/subtotal_row';
 import ServiceChargeRow from './rows/service_charge_row';
+
+const rows = {
+    SubtotalRow: require('./rows/subtotal_row').default
+}
 
 class ExpenseForm extends Component {
     constructor(props) {
@@ -123,16 +126,11 @@ class ExpenseForm extends Component {
 
     renderSpecialRows() {
         return _.map(this.props.CurrentExpense.rows, row => {
-            return (
-                <tr key={row.getLabel()}>
-                    <th>{row.getLabel()}</th>
-                    <td className="price" colSpan={2}>{row.computeTotal()}</td>
-                    <td></td>
-                    {this.renderUserCellOfSpecialRow(row)}
-                </tr>
-            );
+            const SpecialRow = rows[row];
+            return (<SpecialRow key={row} expenseData={this.props.CurrentExpense} />);
         });
 
+        // return <SubtotalRow expenseData={this.props.CurrentExpense} />;
     }
 
     renderUserCellOfSpecialRow(row) {

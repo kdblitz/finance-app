@@ -29,7 +29,7 @@ const expenseData = {
         'item c': {name: 'item c', price: 300, quantity: 3, claimedQuantity: 0, shared: false}
     },
     rows: [
-        // new SubtotalRow(this),
+        'SubtotalRow'
         // new ServiceChargeRow(this)
     ]
 };
