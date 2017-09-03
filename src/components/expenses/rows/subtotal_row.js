@@ -7,11 +7,6 @@ import { sum } from '../../../utils';
 import BaseRow from './base_row';
 
 class SubtotalRow extends BaseRow {
-
-    getDefaultLabel() {
-        return 'Subtotal';
-    }
-
     computeUser(props, user) {
         const userTotal = _(user.claims)
             .map((claim, itemName) => {
@@ -29,5 +24,9 @@ class SubtotalRow extends BaseRow {
             .reduce(sum);
     }
 }
+
+SubtotalRow.defaultProps = {
+    label: 'Subtotal'
+};
 
 export default connect(null, {updateComputation})(SubtotalRow)

@@ -9,10 +9,6 @@ export default class BaseRow extends Component {
         this.state = {};
     }
 
-    getLabel() {
-        return this.props.label ? this.props.label : this.getDefaultLabel();
-    }
-
     componentWillMount() {
         this.compute();
     }
@@ -39,7 +35,7 @@ export default class BaseRow extends Component {
     render() {
         return (
             <tr>
-                <th>{this.getLabel()}</th>
+                <th>{this.props.label}</th>
                 <td className="price" colSpan={2}>{this.state.total}</td>
                 <td></td>
                 {this.renderUserCellOfSpecialRow()} 

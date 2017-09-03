@@ -12,10 +12,6 @@ class ServiceChargeRow extends BaseRow {
         this.percent = 0.12;
     }
 
-    getDefaultLabel() {
-        return 'Service Charge';
-    }
-
     computeUser(props, user) {
         const userTotal = _(user.claims)
             .map((claim, itemName) => {
@@ -33,6 +29,10 @@ class ServiceChargeRow extends BaseRow {
             .map(item => item.quantity * item.price)
             .reduce(sum) * this.percent;
     }
+}
+
+ServiceChargeRow.defaultProps = {
+    label: 'Service Charge'
 }
 
 export default connect(null, { updateComputation })(ServiceChargeRow);
