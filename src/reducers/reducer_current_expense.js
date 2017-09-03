@@ -1,5 +1,8 @@
 import _ from 'lodash';
-import { FETCH_EXPENSE_DATA, ADD_USER_TO_EXPENSE_FORM, ADD_ITEM_TO_EXPENSE_FORM, UPDATE_CLAIM, TOGGLE_SHARING } from '../actions/expense_actions';
+import { FETCH_EXPENSE_DATA, ADD_USER_TO_EXPENSE_FORM, 
+    ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
+    UPDATE_CLAIM, TOGGLE_SHARING } 
+    from '../actions/expense_actions';
 
 import { sum } from '../utils';
 
@@ -11,6 +14,8 @@ export default function(state = {}, action) {
             return addUser(state, action.payload);
         case ADD_ITEM_TO_EXPENSE_FORM:
             return addItem(state, action.payload);
+        case REMOVE_ITEM_TO_EXPENSE_FORM:
+            return removeItem(state, action.payload);
         case TOGGLE_SHARING:
             return toggleSharing(state, action.payload);
         case UPDATE_CLAIM:
@@ -41,6 +46,17 @@ function addItem(state, item) {
     newState.users = _.mapValues(state.users, user => {
         user.claims[item.name] = 0;
         return user;
+    });
+
+    return newState;
+}
+
+function removeItem(state, item) {
+    const newState = _.cloneDeep(state);
+
+    delete newState.items[item.name];
+    _.map(newState.users, user => {
+        delete user.claims[item.name]; 
     });
 
     return newState;

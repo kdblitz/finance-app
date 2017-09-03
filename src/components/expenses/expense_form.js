@@ -2,7 +2,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchExpenseData, updateClaim, toggleSharing, saveExpenseData } from '../../actions/expense_actions';
+import { fetchExpenseData, removeItem, updateClaim, toggleSharing, saveExpenseData } 
+    from '../../actions/expense_actions';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
@@ -46,10 +47,11 @@ class ExpenseForm extends Component {
     }
 
     saveExpense() {
+        const { users, items, rows } = this.props.CurrentExpense; 
         this.props.saveExpenseData({
-            users: this.props.CurrentExpense.users,
-            items: this.props.CurrentExpense.items,
-            rows: this.props.CurrentExpense.rows
+            users,
+            items,
+            rows
         });
     }
 
@@ -96,7 +98,9 @@ class ExpenseForm extends Component {
 
     renderItem(item) {
         return [
-            (<th key='name'>{item.name}</th>),
+            (<th key='name'>{item.name}
+                <button type="button" onClick={() => this.props.removeItem(item)}>-</button>
+            </th>),
             (<td className="quantity" key='quantity'>{item.quantity}</td>),
             (<td className="price" key='price'>
                 {item.price * item.quantity}<br/>
@@ -159,6 +163,7 @@ function mapStateToProps({CurrentExpense}) {
 
 export default connect(mapStateToProps, {
     fetchExpenseData,
+    removeItem,
     updateClaim, 
     toggleSharing,
     saveExpenseData

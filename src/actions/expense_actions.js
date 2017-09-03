@@ -56,6 +56,15 @@ export function addItem(item) {
     };
 }
 
+export const REMOVE_ITEM_TO_EXPENSE_FORM = 'remove_item_to_expense';
+
+export function removeItem(item) {
+    return {
+        type: REMOVE_ITEM_TO_EXPENSE_FORM,
+        payload: item
+    }
+}
+
 export const UPDATE_CLAIM = 'update_claim';
 
 export function updateClaim(user, itemName, claim) {
