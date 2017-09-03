@@ -98,8 +98,8 @@ class ExpenseForm extends Component {
 
     renderItem(item) {
         return [
-            (<th key='name'>{item.name}
-                <button type="button" onClick={() => this.props.removeItem(item)}>-</button>
+            (<th key='name'>{item.name} <button className="btn btn-danger btn-sm"
+                    type="button" onClick={() => this.props.removeItem(item)}>-</button>
             </th>),
             (<td className="quantity" key='quantity'>{item.quantity}</td>),
             (<td className="price" key='price'>
