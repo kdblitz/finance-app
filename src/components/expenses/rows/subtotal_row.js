@@ -1,28 +1,33 @@
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import { updateComputation } from '../../../actions/computation_actions';
+
 import { sum } from '../../../utils';
 
 import BaseRow from './base_row';
 
-export default class SubtotalRow extends BaseRow {
+class SubtotalRow extends BaseRow {
+
     getDefaultLabel() {
         return 'Subtotal';
     }
 
-    computeUser(userName) {
-        const userTotal = _(this.props.expenseData.users[userName].claims)
+    computeUser(props, user) {
+        const userTotal = _(user.claims)
             .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.props.expenseData.items[itemName];
+                const {price, quantity, claimedQuantity, shared} = props.expenseData.items[itemName];
                 return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
                     : claim * price;
             })
             .reduce(sum);
-
-        return userTotal;
+        return userTotal;        
     }
 
-    computeTotal() {
-        return _(this.props.expenseData.items)
+    computeTotal(props) {
+        return _(props.expenseData.items)
             .map(item => item.quantity * item.price)
             .reduce(sum);
     }
 }
+
+export default connect(null, {updateComputation})(SubtotalRow)

@@ -3,15 +3,44 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 
 export default class BaseRow extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {};
+    }
+
     getLabel() {
         return this.props.label ? this.props.label : this.getDefaultLabel();
+    }
+
+    componentWillMount() {
+        this.compute();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.compute(nextProps);
+    }
+
+    compute(props = this.props) {
+        const state = {
+            total: this.computeTotal(props),
+            users: this.computeUsers(props)
+        };
+        this.setState(state);
+        this.props.updateComputation(state);
+    }
+
+    computeUsers(props) {
+        return _(props.expenseData.users)
+            .mapValues(user => this.computeUser(props, user))
+            .value();
     }
 
     render() {
         return (
             <tr>
                 <th>{this.getLabel()}</th>
-                <td className="price" colSpan={2}>{this.computeTotal()}</td>
+                <td className="price" colSpan={2}>{this.state.total}</td>
                 <td></td>
                 {this.renderUserCellOfSpecialRow()} 
             </tr>
@@ -20,7 +49,7 @@ export default class BaseRow extends Component {
 
     renderUserCellOfSpecialRow() {
         return _(this.props.expenseData.users)
-            .keys().map(user => <td key={user}>{this.computeUser(user)}</td>)
+            .keys().map(user => <td key={user}>{this.state.users[user]}</td>)
             .value();
     }
 }
