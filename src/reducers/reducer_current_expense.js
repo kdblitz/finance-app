@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { FETCH_EXPENSE_DATA, ADD_USER_TO_EXPENSE_FORM, 
+import { FETCH_EXPENSE_DATA, UPDATE_CLAIM, TOGGLE_SHARING,
+    ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM, 
     ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
-    UPDATE_CLAIM, TOGGLE_SHARING } 
-    from '../actions/expense_actions';
+ } from '../actions/expense_actions';
 
 import { sum } from '../utils';
 
@@ -12,6 +12,8 @@ export default function(state = {}, action) {
             return action.payload;
         case ADD_USER_TO_EXPENSE_FORM:
             return addUser(state, action.payload);
+        case REMOVE_USER_TO_EXPENSE_FORM:
+            return removeUser(state, action.payload);
         case ADD_ITEM_TO_EXPENSE_FORM:
             return addItem(state, action.payload);
         case REMOVE_ITEM_TO_EXPENSE_FORM:
@@ -33,6 +35,12 @@ function addUser(state, user) {
     newState.users[user.name] = {
         claims: _.zipObject(itemNames, initValues)
     };
+    return newState;
+}
+
+function removeUser(state, userName) {
+    const newState = _.cloneDeep(state);
+    delete newState.users[userName];
     return newState;
 }
 

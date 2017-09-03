@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchExpenseData, saveExpenseData } 
+import { fetchExpenseData, saveExpenseData, removeUser } 
     from '../../actions/expense_actions';
 
 import './expense_form.css';
@@ -54,7 +54,10 @@ class ExpenseForm extends Component {
     renderNameHeader() {
         return _.keys(this.props.CurrentExpense.users).map(user => {
             return (
-                <th key={user} className="users">{user}</th>
+                <th key={user} className="users">
+                    <span>{user}</span>
+                    <button className="btn btn-danger"
+                        onClick={() => this.props.removeUser(user)}>-</button></th>
             );
         });
     }
@@ -95,5 +98,6 @@ function mapStateToProps({CurrentExpense}) {
 
 export default connect(mapStateToProps, {
     fetchExpenseData,
-    saveExpenseData
+    saveExpenseData,
+    removeUser
 })(ExpenseForm);

@@ -47,6 +47,15 @@ export function addUser(user) {
     };
 }
 
+export const REMOVE_USER_TO_EXPENSE_FORM = 'remove_user_to_expense';
+
+export function removeUser(user) {
+    return {
+        type: REMOVE_USER_TO_EXPENSE_FORM,
+        payload: user
+    };
+}
+
 export const ADD_ITEM_TO_EXPENSE_FORM = 'add_item_to_expense';
 
 export function addItem(item) {
