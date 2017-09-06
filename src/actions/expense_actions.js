@@ -30,7 +30,6 @@ export function fetchExpenseData() {
 export const SAVE_EXPENSE_DATA = 'save_expense_data';
 
 export function saveExpenseData(expenseData) {
-    console.log(expenseData);
     return dispatch => {
         return database.ref().update({
             expense: expenseData

@@ -1,10 +1,8 @@
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { updateComputation } from '../../../actions/computation_actions';
 
 import { sum } from '../../../utils';
 
-import BaseRow from './base_row';
+import BaseRow, { setupReduxBindings } from './base_row';
 
 class SubtotalRow extends BaseRow {
     computeUser(props, user) {
@@ -26,7 +24,8 @@ class SubtotalRow extends BaseRow {
 }
 
 SubtotalRow.defaultProps = {
-    label: 'Subtotal'
+    label: 'Subtotal',
+    key: 'subtotal'
 };
 
-export default connect(null, {updateComputation})(SubtotalRow)
+export default setupReduxBindings(SubtotalRow);

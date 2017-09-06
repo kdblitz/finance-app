@@ -11,7 +11,8 @@ import ItemRow from './rows/item_row';
 
 const rows = {
     SubtotalRow: require('./rows/subtotal_row').default,
-    ServiceChargeRow: require('./rows/service_charge_row').default
+    ServiceChargeRow: require('./rows/service_charge_row').default,
+    Total: require('./rows/total_row').default
 }
 
 class ExpenseForm extends Component {
@@ -71,7 +72,10 @@ class ExpenseForm extends Component {
     renderSpecialRows() {
         return _.map(this.props.CurrentExpense.rows, row => {
             const SpecialRow = rows[row];
-            return (<SpecialRow key={row} expenseData={this.props.CurrentExpense} />);
+            return (
+                <SpecialRow key={row} expenseData={this.props.CurrentExpense} 
+                    computations={this.props.Computations} />
+            );
         });
     }
 
@@ -90,9 +94,10 @@ class ExpenseForm extends Component {
 
 }
 
-function mapStateToProps({CurrentExpense}) {
+function mapStateToProps({CurrentExpense, Computations}) {
     return {
-        CurrentExpense
+        CurrentExpense,
+        Computations
     };
 }
 

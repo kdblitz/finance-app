@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { UPDATE_COMPUTATIONS } from '../actions/computation_actions';
 
 export default (state = {}, action) => {
@@ -10,7 +11,8 @@ export default (state = {}, action) => {
     }
 }
 
-function update(state, data) {
-    console.log(data);
-    return state;
+function update(state, {key, computations}) {
+    const newState = _.cloneDeep(state);
+    newState[key] = computations;
+    return newState;
 }
