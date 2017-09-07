@@ -40,7 +40,8 @@ class ItemRow extends BaseRow {
     }
 
     renderSharingCell() {
-        const { name, shared } = this.props.item;
+        const { name, shared, price, quantity, claimedQuantity } = this.props.item;
+        console.log(this.props.item);
         return (
             <td className="shared">
                 <div className="form-check">
@@ -50,6 +51,7 @@ class ItemRow extends BaseRow {
                             onChange={event => this.props.toggleSharing(name, event.target.checked)}/>
                     </label>
                 </div>
+                {(shared) ? <small className="text-muted">({ quantity * price / claimedQuantity})</small> : ''}
             </td>
         );
     }
