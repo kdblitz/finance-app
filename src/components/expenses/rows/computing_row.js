@@ -44,8 +44,19 @@ export default class ComputingRow extends BaseRow {
             .value();
     }
 
+    renderHeaderCells() {
+        return [
+            (<th>{this.props.label}</th>),
+            (<td className="price" colSpan={2}>{this.renderOverallCell()}</td>)
+        ];
+    }
+
     renderOverallCell() {
         return this.state.total;
+    }
+
+    renderSharingCell() {
+        return '';
     }
 
     renderUserCells() {

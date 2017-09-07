@@ -8,15 +8,22 @@ export default class BaseRow extends Component {
     render() {
         return (
             <tr>
-                <th>{this.props.label}</th>
-                <td className="price" colSpan={2}>{this.renderOverallCell()}</td>
-                <td></td>
+                {this.renderHeaderCells()}
+                <td>{this.renderSharingCell()}</td>
                 {this.renderUserCells()} 
             </tr>
         )
     }
-    
+
+    renderHeaderCells() {
+        throw new Error('please implement this method');
+    }
+
     renderOverallCell() {
+        throw new Error('please implement this method');
+    }
+
+    renderSharingCell() {
         throw new Error('please implement this method');
     }
 

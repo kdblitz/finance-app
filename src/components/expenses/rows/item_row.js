@@ -9,7 +9,7 @@ import { removeItem, toggleSharing, updateClaim } from '../../../actions/expense
 class ItemRow extends Component {
     render() {
         return (
-            <tr key={this.props.item.name} className={this.determineRowStyle()}>
+            <tr className={this.determineRowStyle()}>
                 {this.renderItem()}
                 {this.renderSharingCell()}
                 {this.renderExpense()}
