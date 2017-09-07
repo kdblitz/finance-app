@@ -7,12 +7,16 @@ import { updateComputation } from '../../../actions/computation_actions';
 export default class BaseRow extends Component {
     render() {
         return (
-            <tr>
+            <tr className={this.determineRowStyle()}>
                 {this.renderHeaderCells()}
-                <td>{this.renderSharingCell()}</td>
+                {this.renderSharingCell()}
                 {this.renderUserCells()} 
             </tr>
         )
+    }
+
+    determineRowStyle() {
+        return '';
     }
 
     renderHeaderCells() {

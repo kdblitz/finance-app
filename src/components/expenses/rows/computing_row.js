@@ -56,7 +56,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderSharingCell() {
-        return '';
+        return <td></td>;
     }
 
     renderUserCells() {

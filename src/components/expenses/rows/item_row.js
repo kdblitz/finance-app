@@ -1,22 +1,13 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import BaseRow from './base_row';
 
 import { removeItem, toggleSharing, updateClaim } from '../../../actions/expense_actions';
 
-class ItemRow extends Component {
-    render() {
-        return (
-            <tr className={this.determineRowStyle()}>
-                {this.renderItem()}
-                {this.renderSharingCell()}
-                {this.renderExpense()}
-            </tr>
-        );
-    }
-
+class ItemRow extends BaseRow {
     determineRowStyle() {
         const { shared, quantity, claimedQuantity } = this.props.item;
         if (shared) {
@@ -34,7 +25,7 @@ class ItemRow extends Component {
         }
     }
 
-    renderItem() {
+    renderHeaderCells() {
         const { name, quantity, price } = this.props.item;
         return [
             (<th key='name'>{name} <button className="btn btn-danger btn-sm"
@@ -63,7 +54,7 @@ class ItemRow extends Component {
         );
     }
 
-    renderExpense() {
+    renderUserCells() {
         const { name } = this.props.item;
         return _.keys(this.props.users).map(user => {
             return (
