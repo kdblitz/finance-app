@@ -1,29 +1,28 @@
-import _ from 'lodash';
-import { sum } from '../../../utils';
+import React from 'react';
+import { connect } from 'react-redux';
 
-import BaseRow from './base_row';
+import ComputingRow, { setupReduxBindings } from './computing_row';
 
-export default class ServiceChargeRow extends BaseRow {
-    constructor(state, title = 'Service charge') {
-        super(state, title);
+class ServiceChargeRow extends ComputingRow {
+    constructor(props) {
+        super(props);
         this.percent = 0.12;
     }
 
-    computeUser(userName) {
-        const userTotal = _(this.getState().users[userName].claims)
-            .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.getState().items[itemName];
-                return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
-                    : claim * price;
-            })
-            .reduce(sum) * this.percent;
-
-        return userTotal;
+    computeUser(props, user, username) {
+        const { subtotal } = props.computations;
+        return (subtotal) ? subtotal.users[username] * this.percent : 0;
     }
 
-    computeTotal() {
-        return _(this.getState().items)
-            .map(item => item.quantity * item.price)
-            .reduce(sum) * this.percent;
+    computeTotal(props) {
+        const { subtotal } = props.computations;
+        return (subtotal) ? subtotal.total * this.percent : 0;
     }
 }
+
+ServiceChargeRow.defaultProps = {
+    label: 'Service Charge',
+    key: 'serviceCharge'
+}
+
+export default setupReduxBindings(ServiceChargeRow);

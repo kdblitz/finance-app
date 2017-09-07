@@ -1,28 +1,31 @@
 import _ from 'lodash';
+
 import { sum } from '../../../utils';
 
-import BaseRow from './base_row';
+import ComputingRow, { setupReduxBindings } from './computing_row';
 
-export default class SubtotalRow extends BaseRow {
-    constructor(state, title = 'Subtotal') {
-        super(state, title);
-    }
-
-    computeUser(userName) {
-        const userTotal = _(this.getState().users[userName].claims)
+class SubtotalRow extends ComputingRow {
+    computeUser(props, user) {
+        const userTotal = _(user.claims)
             .map((claim, itemName) => {
-                const {price, quantity, claimedQuantity, shared} = this.getState().items[itemName];
+                const {price, quantity, claimedQuantity, shared} = props.expenseData.items[itemName];
                 return shared ? (claimedQuantity ? claim * quantity / claimedQuantity * price : 0)
                     : claim * price;
             })
             .reduce(sum);
-
-        return userTotal;
+        return userTotal;        
     }
 
-    computeTotal() {
-        return _(this.getState().items)
+    computeTotal(props) {
+        return _(props.expenseData.items)
             .map(item => item.quantity * item.price)
             .reduce(sum);
     }
 }
+
+SubtotalRow.defaultProps = {
+    label: 'Subtotal',
+    key: 'subtotal'
+};
+
+export default setupReduxBindings(SubtotalRow);

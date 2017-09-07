@@ -24,10 +24,18 @@
 
 .Expense-form table th.quantity,
 .Expense-form table th.price,
-.Expense-form table th.users,
 .Expense-form table th.shared {
     width: 100px;
 }
+
+.Expense-form table th.users {
+    width: 150px;
+}
+
+.Expense-form table th.users span {
+    padding-right: 15px;
+}
+
 
 .Expense-form th.addUser {
     width: 200px;
