@@ -46,8 +46,8 @@ export default class ComputingRow extends BaseRow {
 
     renderHeaderCells() {
         return [
-            (<th>{this.props.label}</th>),
-            (<td className="price" colSpan={2}>{this.renderOverallCell()}</td>)
+            (<th key="label">{this.props.label}</th>),
+            (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
     }
 

@@ -1,27 +1,30 @@
 import _ from 'lodash';
-import { FETCH_EXPENSE_DATA, UPDATE_CLAIM, TOGGLE_SHARING,
+import { FETCH_EXPENSE_DATA, TOGGLE_SHARING,
+    UPDATE_CLAIM, UPDATE_PAYMENT,
     ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM, 
     ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
  } from '../actions/expense_actions';
 
 import { sum } from '../utils';
 
-export default function(state = {}, action) {
-    switch (action.type) {
+export default function(state = {}, {type, payload}) {
+    switch (type) {
         case FETCH_EXPENSE_DATA:
-            return action.payload;
+            return payload;
         case ADD_USER_TO_EXPENSE_FORM:
-            return addUser(state, action.payload);
+            return addUser(state, payload);
         case REMOVE_USER_TO_EXPENSE_FORM:
-            return removeUser(state, action.payload);
+            return removeUser(state, payload);
         case ADD_ITEM_TO_EXPENSE_FORM:
-            return addItem(state, action.payload);
+            return addItem(state, payload);
         case REMOVE_ITEM_TO_EXPENSE_FORM:
-            return removeItem(state, action.payload);
+            return removeItem(state, payload);
         case TOGGLE_SHARING:
-            return toggleSharing(state, action.payload);
+            return toggleSharing(state, payload);
         case UPDATE_CLAIM:
-            return updateClaim(state, action.payload);
+            return updateClaim(state, payload);
+        case UPDATE_PAYMENT:
+            return updatePayment(state, payload);
         default:
             return state;
     }
@@ -82,6 +85,10 @@ function updateClaim(state, {user, itemName, claim}) {
 function getClaimedQuantity(itemName, users) {
     return _(users).map(`claims[${itemName}]`)
         .reduce(sum);
+}
+
+function updatePayment(state, paymentInfo) {
+    return state;
 }
 
 function toggleSharing(state, {itemName, flag}) {
