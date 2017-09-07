@@ -5,25 +5,25 @@ import { setupReduxBindings } from './computing_row';
 import { sum } from '../../../utils';
 
 class TotalRow extends SubtotalRow {
-    computeUser(props, user, username) {
-        if (_.isEmpty(props.computations)) {
-            return super.computeUser(props, user, username);
-        }
+    getRows(props) {
+        return _(props.computations).omit('total')
+    }
 
-        const userTotal = _(props.computations).omit('total')
-            .map(computation => (computation.users) ? computation.users[username] : 0)
-            .reduce(sum);
+    computeUser(props, user, username) {
+        const rows = this.getRows(props);
+        const userTotal = rows.isEmpty()
+            ? super.computeUser(props, user, username)
+            : rows.map(computation => (computation.users) ? computation.users[username] : 0)
+                .reduce(sum);
         return userTotal;
     }
 
     computeTotal(props) {
-        if (_.isEmpty(props.computations)) {
-            return super.computeTotal(props);
-        }
-
-        const total = _(props.computations).omit('total')
-            .map(computation => (computation.total) ? computation.total : 0)
-            .reduce(sum);
+        const rows = this.getRows(props);
+        const total = rows.isEmpty() 
+            ? super.computeTotal(props)
+            : rows.map(computation => (computation.total) ? computation.total : 0)
+                .reduce(sum);
         return total;
     }
 }
