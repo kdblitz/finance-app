@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { updateComputation } from '../../../actions/computation_actions';

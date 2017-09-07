@@ -1,6 +1,3 @@
-import React from 'react';
-import { connect } from 'react-redux';
-
 import ComputingRow, { setupReduxBindings } from './computing_row';
 
 class ServiceChargeRow extends ComputingRow {
