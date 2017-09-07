@@ -1,6 +1,9 @@
-import BaseRow, { setupReduxBindings } from './base_row';
+import React from 'react';
+import { connect } from 'react-redux';
 
-class ServiceChargeRow extends BaseRow {
+import ComputingRow, { setupReduxBindings } from './computing_row';
+
+class ServiceChargeRow extends ComputingRow {
     constructor(props) {
         super(props);
         this.percent = 0.12;

@@ -2,9 +2,9 @@ import _ from 'lodash';
 
 import { sum } from '../../../utils';
 
-import BaseRow, { setupReduxBindings } from './base_row';
+import ComputingRow, { setupReduxBindings } from './computing_row';
 
-class SubtotalRow extends BaseRow {
+class SubtotalRow extends ComputingRow {
     computeUser(props, user) {
         const userTotal = _(user.claims)
             .map((claim, itemName) => {
