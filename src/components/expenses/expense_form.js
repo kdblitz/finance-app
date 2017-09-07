@@ -10,10 +10,13 @@ import AddItemForm from './add_item_form';
 import ItemRow from './rows/item_row';
 import PaymentRow from './rows/payment_row';
 
+import SubtotalRow from './rows/subtotal_row';
+import ServiceChargeRow from './rows/service_charge_row';
+import TotalRow from './rows/total_row';
+
 const rows = {
-    SubtotalRow: require('./rows/subtotal_row').default,
-    ServiceChargeRow: require('./rows/service_charge_row').default,
-    Total: require('./rows/total_row').default
+    SubtotalRow,
+    ServiceChargeRow,
 }
 
 class ExpenseForm extends Component {
@@ -39,6 +42,7 @@ class ExpenseForm extends Component {
                     <tbody>
                         {this.renderBody()}
                         {this.renderSpecialRows()}
+                        <TotalRow expenseData={this.props.CurrentExpense} computations={this.props.Computations}/>
                         <PaymentRow users={this.props.CurrentExpense.users} />
                         {this.renderItemAdderRow()}
                     </tbody>

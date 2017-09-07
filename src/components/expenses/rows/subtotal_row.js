@@ -4,7 +4,7 @@ import { sum } from '../../../utils';
 
 import ComputingRow, { setupReduxBindings } from './computing_row';
 
-class SubtotalRow extends ComputingRow {
+export class SubtotalRow extends ComputingRow {
     computeUser(props, user) {
         const userTotal = _(user.claims)
             .map((claim, itemName) => {
