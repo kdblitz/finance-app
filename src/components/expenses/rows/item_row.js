@@ -41,7 +41,6 @@ class ItemRow extends BaseRow {
 
     renderSharingCell() {
         const { name, shared, price, quantity, claimedQuantity } = this.props.item;
-        console.log(this.props.item);
         return (
             <td className="shared">
                 <div className="form-check">
