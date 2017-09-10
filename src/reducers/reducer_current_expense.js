@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import { FETCH_EXPENSE_DATA, TOGGLE_SHARING,
-    UPDATE_CLAIM, UPDATE_PAYMENT,
+import { FETCH_EXPENSE_DATA, TOGGLE_SHARING, UPDATE_CLAIM,
     ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM, 
     ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
  } from '../actions/expense_actions';
@@ -24,8 +23,6 @@ export default function(state = {}, {type, payload}) {
             return toggleSharing(state, payload);
         case UPDATE_CLAIM:
             return updateClaim(state, payload);
-        case UPDATE_PAYMENT:
-            return updatePayment(state, payload);
         default:
             return state;
     }
@@ -91,10 +88,6 @@ function updateClaim(state, {user, itemName, claim}) {
 function getClaimedQuantity(itemName, users) {
     return _(users).map(`claims[${itemName}]`)
         .reduce(sum);
-}
-
-function updatePayment(state, paymentInfo) {
-    return state;
 }
 
 function toggleSharing(state, {itemName, flag}) {

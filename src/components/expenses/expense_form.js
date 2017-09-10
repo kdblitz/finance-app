@@ -9,6 +9,7 @@ import AddUserForm from './add_user_form';
 import AddItemForm from './add_item_form';
 import ItemRow from './rows/item_row';
 import PaymentRow from './rows/payment_row';
+import ChangeRow from './rows/change_row';
 
 import SubtotalRow from './rows/subtotal_row';
 import ServiceChargeRow from './rows/service_charge_row';
@@ -43,7 +44,8 @@ class ExpenseForm extends Component {
                         {this.renderBody()}
                         {this.renderSpecialRows()}
                         <TotalRow expenseData={this.props.CurrentExpense} computations={this.props.Computations}/>
-                        <PaymentRow users={this.props.CurrentExpense.users} />
+                        <PaymentRow users={this.props.CurrentExpense.users} computations={this.props.Computations} />
+                        <ChangeRow expenseData={this.props.CurrentExpense} computations={this.props.Computations} />
                         {this.renderItemAdderRow()}
                     </tbody>
                 </table>

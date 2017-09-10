@@ -6,3 +6,12 @@ export function updateComputation(data) {
         payload: data
     };
 }
+
+export const UPDATE_COMPUTATION_FOR_KEY = 'update_computation_for_key';
+
+export function updateComputationForKey(payload) {
+    return {
+        type: UPDATE_COMPUTATION_FOR_KEY,
+        payload
+    }
+}

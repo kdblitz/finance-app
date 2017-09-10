@@ -22,8 +22,9 @@ class TotalRow extends SubtotalRow {
         const rows = this.getRows(props);
         const total = rows.isEmpty() 
             ? super.computeTotal(props)
-            : rows.map(computation => (computation.total) ? computation.total : 0)
-                .reduce(sum);
+            : rows.map(computation => {
+                return (computation.total) ? computation.total : 0
+            }).reduce(sum);
         return total;
     }
 }
