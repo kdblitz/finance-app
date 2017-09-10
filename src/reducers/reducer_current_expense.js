@@ -4,13 +4,14 @@ import { FETCH_EXPENSE_DATA, TOGGLE_SHARING,
     ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM, 
     ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
  } from '../actions/expense_actions';
+import Item from '../components/expenses/models/item';
 
 import { sum } from '../utils';
 
 export default function(state = {}, {type, payload}) {
     switch (type) {
         case FETCH_EXPENSE_DATA:
-            return payload;
+            return createModels(payload);
         case ADD_USER_TO_EXPENSE_FORM:
             return addUser(state, payload);
         case REMOVE_USER_TO_EXPENSE_FORM:
@@ -28,6 +29,11 @@ export default function(state = {}, {type, payload}) {
         default:
             return state;
     }
+}
+
+function createModels(payload) {
+    payload.items = _.mapValues(payload.items, item => new Item(item));
+    return payload;
 }
 
 function addUser(state, user) {

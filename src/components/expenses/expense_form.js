@@ -70,9 +70,8 @@ class ExpenseForm extends Component {
     }
 
     renderBody() {
-        return _.map(this.props.CurrentExpense.items, item => {
-            return (<ItemRow key={item.name} item={item} users={this.props.CurrentExpense.users} />);
-        });
+        return _.map(this.props.CurrentExpense.items, item =>
+            <ItemRow key={item.name} item={item} users={this.props.CurrentExpense.users} />);
     }
 
     renderSpecialRows() {

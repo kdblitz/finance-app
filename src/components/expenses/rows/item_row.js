@@ -11,10 +11,7 @@ class ItemRow extends BaseRow {
     determineRowStyle() {
         const { shared, quantity, claimedQuantity } = this.props.item;
         if (shared) {
-            return classNames({
-                'table-success': claimedQuantity > 0,
-                'table-danger': claimedQuantity === 0
-            });
+            return 'table-success';
         } else {
             const remainingQuantity = quantity - claimedQuantity;
             return classNames({
@@ -40,7 +37,8 @@ class ItemRow extends BaseRow {
     }
 
     renderSharingCell() {
-        const { name, shared, price, quantity, claimedQuantity } = this.props.item;
+        const { item } = this.props;
+        const { name, shared } = item;
         return (
             <td className="shared">
                 <div className="form-check">
@@ -50,9 +48,13 @@ class ItemRow extends BaseRow {
                             onChange={event => this.props.toggleSharing(name, event.target.checked)}/>
                     </label>
                 </div>
-                {(shared) ? <small className="text-muted">({ quantity * price / claimedQuantity})</small> : ''}
+                {(shared) ? <small className="text-muted">({ this.computeShare(item) })</small> : ''}
             </td>
         );
+    }
+
+    computeShare(item) {
+        return item.computeShare(1, _.size(this.props.users));
     }
 
     renderUserCells() {
