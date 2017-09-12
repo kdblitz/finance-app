@@ -21,7 +21,6 @@ function update(state, {key, computations}) {
 
 function updateForKey(state, {key, user, value}) {
     const newState = _.cloneDeep(state);
-    console.log(newState, key, user, value);
     newState[key].users[user] = value;
     return newState;
 }

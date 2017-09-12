@@ -7,14 +7,6 @@ import BaseRow from './base_row';
 import { updateComputation, updateComputationForKey } from '../../../actions/computation_actions';
 
 class PaymentRow extends BaseRow {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            total:0,
-            users:{}
-        };
-    }
     componentWillMount() {
         this.compute();
     }
@@ -30,20 +22,22 @@ class PaymentRow extends BaseRow {
         };
 
         if (!_.isEqual(this.props.computations.payment, computations)) {
-            const data = {
+            this.props.updateComputation({
                 key: this.props.key,
                 computations
-            };
-            this.props.updateComputation(
-                data
-            );
+            });
         }
+    }
+
+    getUserPayment(user, props = this.props) {
+        const { payment } = props.computations;
+        return payment ? payment.users[user] : 0;
     }
 
     populate(props) {
         return _(props.users)
-            .mapValues(user => {
-                return this.state.users[user] || 0;
+            .mapValues((claims,user)  => {
+                return this.getUserPayment(user, props) || 0;
             }).value();
     }
 
@@ -57,22 +51,19 @@ class PaymentRow extends BaseRow {
 
     renderUserCells() {
         return _.keys(this.props.users).map(user => {
-            return (
+            return !_.isUndefined(this.getUserPayment(user)) ? (
                 <td key={user}>
                     <div className="input-group">
                         <input type="number" pattern="[0-9]*" min="0" className="form-control" 
-                            value={this.state.users[user]}
+                            value={this.getUserPayment(user)}
                             onChange={event => this.updatePayment(user, event.target.value)} />
                     </div>
                 </td>
-            );
+            ):<td key={user}></td>;
         });
     }
 
     updatePayment(user, value) {
-        const users = _.cloneDeep(this.state.users);
-        users[user] = Number(value);
-        this.setState({users});
         return this.props.updateComputationForKey({
             key: this.props.key,
             user,
