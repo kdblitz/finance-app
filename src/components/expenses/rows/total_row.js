@@ -15,7 +15,6 @@ class TotalRow extends SubtotalRow {
 
     computeUser(props, user, username) {
         const rows = this.getRows(props);
-        console.log(rows.value());
         const userTotal = rows.isEmpty()
             ? super.computeUser(props, user, username)
             : rows.map(computation => (computation.users) ? computation.users[username] : 0)
