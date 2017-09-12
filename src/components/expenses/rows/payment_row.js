@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import BaseRow from './base_row';
 import { updateComputation, updateComputationForKey } from '../../../actions/computation_actions';
 
+export const key = 'payment';
+
 class PaymentRow extends BaseRow {
     componentWillMount() {
         this.compute();
@@ -74,7 +76,7 @@ class PaymentRow extends BaseRow {
 
 PaymentRow.defaultProps = {
     label: 'Paid',
-    key: 'payment'
-}
+    key
+};
 
 export default connect(null, {updateComputation, updateComputationForKey})(PaymentRow);

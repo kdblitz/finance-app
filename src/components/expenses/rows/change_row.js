@@ -1,5 +1,7 @@
 import ComputingRow, { setupReduxBindings } from './computing_row';
 
+export const key = 'change';
+
 class ChangeRow extends ComputingRow {
     computeUser(props, user, username) {
         return 0;
@@ -12,7 +14,7 @@ class ChangeRow extends ComputingRow {
 
 ChangeRow.defaultProps = {
     label: 'Change',
-    key: 'change'
+    key
 }
 
 export default setupReduxBindings(ChangeRow);
