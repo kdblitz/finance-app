@@ -55,6 +55,14 @@ class AddItemForm extends Component {
                     <span className="input-group-btn">
                         <button className="btn btn-secondary" type="submit"
                             disabled={this.isFormComplete()}>Add</button>
+                        <button type="button"
+                            className="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                            data-toggle="dropdown">
+                                <span className="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div className="dropdown-menu">
+                            <button className="dropdown-item" type="button">Action</button>
+                        </div> 
                     </span>
                 </div>
             </form>

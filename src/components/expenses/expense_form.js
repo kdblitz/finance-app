@@ -43,10 +43,8 @@ class ExpenseForm extends Component {
                     <tbody>
                         {this.renderBody()}
                         {this.renderSpecialRows()}
-                        <TotalRow expenseData={this.props.CurrentExpense} computations={this.props.Computations}/>
-                        <PaymentRow users={this.props.CurrentExpense.users} computations={this.props.Computations} />
-                        <ChangeRow expenseData={this.props.CurrentExpense} computations={this.props.Computations} />
                         {this.renderItemAdderRow()}
+                        {this.renderFooterRows()}
                     </tbody>
                 </table>
                 <button className="btn btn-primary"
@@ -84,6 +82,14 @@ class ExpenseForm extends Component {
                     computations={this.props.Computations} />
             );
         });
+    }
+
+    renderFooterRows() {
+        return [
+            <TotalRow expenseData={this.props.CurrentExpense} computations={this.props.Computations} />,
+            <PaymentRow users={this.props.CurrentExpense.users} computations={this.props.Computations} />,
+            <ChangeRow expenseData={this.props.CurrentExpense} computations={this.props.Computations} />
+        ];
     }
 
     renderItemAdderRow() {
