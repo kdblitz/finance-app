@@ -3,37 +3,42 @@ import { connect } from 'react-redux';
 import { updateComputation } from '../../../actions/computation_actions';
 
 export default class BaseRow extends Component {
-    render() {
-        return (
-            <tr className={this.determineRowStyle()}>
-                {this.renderHeaderCells()}
-                {this.renderSharingCell()}
-                {this.renderUserCells()} 
-            </tr>
-        )
-    }
+  render() {
+    return (
+      <tr className={this.determineRowStyle()}>
+        {this.renderHeaderCells()}
+        {this.renderSharingCell()}
+        {this.renderUserCells()}
+      </tr>
+    )
+  }
 
-    determineRowStyle() {
-        return '';
-    }
+  determineRowStyle() {
+    return '';
+  }
 
-    renderHeaderCells() {
-        throw new Error('please implement this method');
-    }
+  renderHeaderCells() {
+    throw new Error('please implement this method');
+  }
 
-    renderOverallCell() {
-        throw new Error('please implement this method');
-    }
+  renderOverallCell() {
+    throw new Error('please implement this method');
+  }
 
-    renderSharingCell() {
-        throw new Error('please implement this method');
-    }
+  renderSharingCell() {
+    throw new Error('please implement this method');
+  }
 
-    renderUserCells() {
-        throw new Error('please implement this method');
-    }
+  renderUserCells() {
+    throw new Error('please implement this method');
+  }
+
+  getUsers(props = this.props) {
+    const expense = props.expenseData;
+    return expense ? expense.users : {};
+  }
 }
 
 export function setupReduxBindings(Row) {
-    return connect(null, { updateComputation })(Row);
+  return connect(null, { updateComputation })(Row);
 }

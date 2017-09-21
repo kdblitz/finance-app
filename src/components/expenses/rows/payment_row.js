@@ -37,7 +37,7 @@ class PaymentRow extends BaseRow {
     }
 
     populate(props) {
-        return _(props.users)
+        return _(this.getUsers(props))
             .mapValues((claims,user)  => {
                 return this.getUserPayment(user, props) || 0;
             }).value();
@@ -52,7 +52,7 @@ class PaymentRow extends BaseRow {
     }
 
     renderUserCells() {
-        return _.keys(this.props.users).map(user => {
+        return _.keys(this.getUsers()).map(user => {
             return !_.isUndefined(this.getUserPayment(user)) ? (
                 <td key={user}>
                     <div className="input-group">
