@@ -9,10 +9,6 @@
     text-align: center;
 }
 
-.Expense-form table td {
-    overflow: hidden;
-}
-
 .Expense-form table .price, 
 .Expense-form table .quantity {
     text-align: right;

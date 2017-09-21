@@ -18,14 +18,7 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx'],
-    plugins: [
-      // new webpack.HotModuleReplacementPlugin(),
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: path.resolve(__dirname, 'public', 'index.html')
-      })
-    ]
+    extensions: ['.js', '.jsx']
   },
   module: {
     strictExportPresence: true,
@@ -84,5 +77,18 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    // new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve(__dirname, 'public', 'index.html')
+    })
+  ]
 }
