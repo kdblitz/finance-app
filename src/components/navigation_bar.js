@@ -18,6 +18,9 @@ class NavigationBar extends Component {
             </li>
           </ul>
         </div>
+        <div>
+          <button className="btn btn-outline-success" type="button">Login</button>
+        </div>
       </nav>
     );
   }

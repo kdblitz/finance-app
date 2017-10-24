@@ -23,7 +23,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "webpack-dev-server",
+    "dev": "webpack-dev-server --content-base build/ -w",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
