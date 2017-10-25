@@ -97,3 +97,14 @@ export function addSpecialRow(rowName) {
     }
   };
 }
+
+export const REMOVE_SPECIAL_ROW = 'remove_special_row';
+
+export function removeSpecialRow(rowName) {
+  return {
+    type: REMOVE_SPECIAL_ROW,
+    payload: {
+      rowName
+    }
+  };
+}

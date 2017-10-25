@@ -83,7 +83,7 @@ class ExpenseForm extends Component {
     const specialRows = _.map(currentRows, row => {
       const SpecialRow = rows[row];
       return (
-        <SpecialRow key={row} expenseData={this.props.CurrentExpense}
+        <SpecialRow allowDeletion={true} key={row} expenseData={this.props.CurrentExpense}
           computations={this.props.Computations} />
       );
     });

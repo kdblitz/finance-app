@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import BaseRow from './base_row';
+import { removeSpecialRow } from '../../../actions/expense_actions';
 import { updateComputation } from '../../../actions/computation_actions';
 
 export default class ComputingRow extends BaseRow {
@@ -46,7 +47,9 @@ export default class ComputingRow extends BaseRow {
 
     renderHeaderCells() {
         return [
-            (<th key="label">{this.props.label}</th>),
+            (<th key="label">{this.props.label} {this.props.allowDeletion?
+              <button type="button" className="btn btn-danger btn-sm"
+                onClick={() => this.props.removeSpecialRow(this.constructor.name)}>-</button>:''}</th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
     }
@@ -71,5 +74,5 @@ export default class ComputingRow extends BaseRow {
 }
 
 export function setupReduxBindings(Row) {
-    return connect(null, { updateComputation })(Row);
+    return connect(null, { updateComputation, removeSpecialRow })(Row);
 }
