@@ -11,6 +11,7 @@ module.exports = {
     // require.resolve('./polyfills'),
     './src'
   ],
+  devtool: 'cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',

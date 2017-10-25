@@ -45,7 +45,7 @@ class AddItemForm extends Component {
 
   render() {
     return (
-      <form onSubmit={() => this.addItem} className="Add-item-form" >
+      <form onSubmit={event => this.addItem(event)} className="Add-item-form" >
         <div className="input-group">
           {this.renderInput({ placeholder: 'Add new item', data: 'name', type: 'text' })}
           {this.renderInput({ placeholder: 'Qty', data: 'quantity', type: 'number' })}
