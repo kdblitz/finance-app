@@ -28,10 +28,9 @@
     "dev": "webpack-dev-server --content-base build/ -w",
     "build": "webpack",
     "predeploy": "cross-env PUBLIC_PATH=/finance-app npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "cross-env NODE_DEBUG=gh-pages gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "postinstall": "npm run build"
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.0",
