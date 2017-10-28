@@ -56,11 +56,14 @@ export default class ComputingRow extends BaseRow {
                   onClick={() => this.props.removeSpecialRow(this.constructor.name)}>-</button> 
                 : '' }
               <br/>
-              Config
-
+              {this.renderConfig()}
               </th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
+    }
+
+    renderConfig() {
+      return '';
     }
 
     renderOverallCell() {
