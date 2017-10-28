@@ -77395,7 +77395,7 @@ var ExpenseForm = function (_Component) {
 
       var specialRows = _lodash2.default.map(currentRows, function (row) {
         var SpecialRow = rows[row];
-        return _react2.default.createElement(SpecialRow, { allowDeletion: true, key: row, expenseData: _this5.props.CurrentExpense,
+        return _react2.default.createElement(SpecialRow, { key: row, expenseData: _this5.props.CurrentExpense,
           computations: _this5.props.Computations });
       });
 
@@ -78084,7 +78084,8 @@ var ServiceChargeRow = function (_ComputingRow) {
 
 ServiceChargeRow.defaultProps = {
     label: 'Service Charge',
-    key: 'serviceCharge'
+    key: 'serviceCharge',
+    allowDeletion: true
 };
 
 exports.default = (0, _computing_row.setupReduxBindings)(ServiceChargeRow);
