@@ -3,24 +3,26 @@ import ComputingRow, { setupReduxBindings } from './computing_row';
 class ServiceChargeRow extends ComputingRow {
     constructor(props) {
         super(props);
-        this.percent = 0.12;
     }
 
     computeUser(props, user, username) {
         const { subtotal } = props.computations;
-        return (subtotal) ? subtotal.users[username] * this.percent : 0;
+        return (subtotal && this.state.config) ? subtotal.users[username] * this.state.config.percent : 0;
     }
 
     computeTotal(props) {
         const { subtotal } = props.computations;
-        return (subtotal) ? subtotal.total * this.percent : 0;
+        return (subtotal && this.state.config) ? subtotal.total * this.state.config.percent : 0;
     }
 }
 
 ServiceChargeRow.defaultProps = {
     label: 'Service Charge',
     key: 'serviceCharge',
-    allowDeletion: true
+    allowDeletion: true,
+    config: {
+      percent: 0.12
+    }
 }
 
 export default setupReduxBindings(ServiceChargeRow);

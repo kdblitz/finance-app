@@ -10,10 +10,10 @@ import { updateComputation } from '../../../actions/computation_actions';
 export default class ComputingRow extends BaseRow {
     constructor(props) {
         super(props);
-
         this.state = {
             total: 0,
-            users: {}
+            users: {},
+            config: this.props.config
         };
     }
 
@@ -22,16 +22,19 @@ export default class ComputingRow extends BaseRow {
     }
 
     componentWillReceiveProps(nextProps) {
+        // console.log('recompute', this.constructor.name);
         this.compute(nextProps);
     }
 
     compute(props = this.props) {
         const computations = {
             total: this.computeTotal(props),
-            users: this.computeUsers(props)
+            users: this.computeUsers(props),
+            config: this.state.config
         };
         this.setState(computations);
         if (!_.isEqual(this.state, computations)) {
+            // console.log('trigger recompute', this.constructor.name, this.state, computations);
             this.props.updateComputation({
                 key: this.props.key,
                 computations
@@ -51,7 +54,11 @@ export default class ComputingRow extends BaseRow {
               this.props.allowDeletion
                 ? <button type="button" className="btn btn-danger btn-sm"
                   onClick={() => this.props.removeSpecialRow(this.constructor.name)}>-</button> 
-                : '' }</th>),
+                : '' }
+              <br/>
+              Config
+
+              </th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
     }
