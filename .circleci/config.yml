@@ -10,4 +10,4 @@ jobs:
           command: npm install
       - run:
           name: Build and deploy app
-          command: npm run deploy
+          command: ./scripts/deploy.sh
