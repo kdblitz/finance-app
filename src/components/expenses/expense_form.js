@@ -77,13 +77,15 @@ class ExpenseForm extends Component {
   renderSpecialRows() {
     const currentRows = _.cloneDeep(this.props.CurrentExpense.rows) || [];
     if (currentRows.length) {
-      currentRows.push('SubtotalRow');
+      currentRows.push({
+        type: 'SubtotalRow'
+      });
     }
 
     const specialRows = _.map(currentRows, row => {
-      const SpecialRow = rows[row];
+      const SpecialRow = rows[row.type];
       return (
-        <SpecialRow key={row} expenseData={this.props.CurrentExpense}
+        <SpecialRow key={row.type} expenseData={this.props.CurrentExpense}
           computations={this.props.Computations} />
       );
     });

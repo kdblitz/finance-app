@@ -107,14 +107,16 @@ function addSpecialRow(state, { rowName }) {
   if (!newState.rows) {
     newState.rows = [];
   }
-  newState.rows.push(rowName);
+  newState.rows.push({
+    type: rowName
+  });
   return newState;
 }
 
 function removeSpecialRow(state, { rowName }) {
   const newState = _.cloneDeep(state);
   if (newState.rows) {
-      _.remove(newState.rows, item => item === rowName);
+      _.remove(newState.rows, item => item.type === rowName);
   }
   return newState;
 }
