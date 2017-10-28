@@ -19,7 +19,8 @@ class ServiceChargeRow extends ComputingRow {
 
 ServiceChargeRow.defaultProps = {
     label: 'Service Charge',
-    key: 'serviceCharge'
+    key: 'serviceCharge',
+    allowDeletion: true
 }
 
 export default setupReduxBindings(ServiceChargeRow);
