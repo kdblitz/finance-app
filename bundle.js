@@ -14686,7 +14686,7 @@ exports.Change = Change;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
+exports.UPDATE_ROW_CONFIG = exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
 exports.fetchExpenseData = fetchExpenseData;
 exports.saveExpenseData = saveExpenseData;
 exports.addUser = addUser;
@@ -14697,6 +14697,7 @@ exports.updateClaim = updateClaim;
 exports.toggleSharing = toggleSharing;
 exports.addSpecialRow = addSpecialRow;
 exports.removeSpecialRow = removeSpecialRow;
+exports.updateRowConfig = updateRowConfig;
 
 var _firebase = __webpack_require__(153);
 
@@ -14809,6 +14810,18 @@ function removeSpecialRow(rowName) {
     type: REMOVE_SPECIAL_ROW,
     payload: {
       rowName: rowName
+    }
+  };
+}
+
+var UPDATE_ROW_CONFIG = exports.UPDATE_ROW_CONFIG = 'update_row_config';
+
+function updateRowConfig(rowName, config) {
+  return {
+    type: UPDATE_ROW_CONFIG,
+    payload: {
+      rowName: rowName,
+      config: config
     }
   };
 }
@@ -19191,6 +19204,7 @@ var ComputingRow = function (_BaseRow) {
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
+            // console.log('recompute', this.constructor.name);
             this.compute(nextProps);
         }
     }, {
@@ -19202,13 +19216,19 @@ var ComputingRow = function (_BaseRow) {
                 total: this.computeTotal(props),
                 users: this.computeUsers(props)
             };
-            this.setState(computations);
-            if (!_lodash2.default.isEqual(this.state, computations)) {
+            if (!_lodash2.default.isEqual(_lodash2.default.pick(this.state, ['total', 'users']), computations)) {
+                // console.log('trigger recompute', this.constructor.name, this.state, computations);
                 this.props.updateComputation({
                     key: this.props.key,
                     computations: computations
                 });
             }
+            var config = props.config || this.props.defaultConfig;
+            console.log(this.constructor.name, props.config, config);
+            if (!_lodash2.default.isEqual(config, props.config)) {
+                this.props.updateRowConfig(this.constructor.name, config);
+            }
+            this.setState(_lodash2.default.merge(computations, config));
         }
     }, {
         key: 'computeUsers',
@@ -19236,12 +19256,19 @@ var ComputingRow = function (_BaseRow) {
                             return _this3.props.removeSpecialRow(_this3.constructor.name);
                         } },
                     '-'
-                ) : ''
+                ) : '',
+                _react2.default.createElement('br', null),
+                this.renderConfig()
             ), _react2.default.createElement(
                 'td',
                 { key: 'price', className: 'price', colSpan: 2 },
                 this.renderOverallCell()
             )];
+        }
+    }, {
+        key: 'renderConfig',
+        value: function renderConfig() {
+            return '';
         }
     }, {
         key: 'renderOverallCell',
@@ -19274,7 +19301,7 @@ var ComputingRow = function (_BaseRow) {
 
 exports.default = ComputingRow;
 function setupReduxBindings(Row) {
-    return (0, _reactRedux.connect)(null, { updateComputation: _computation_actions.updateComputation, removeSpecialRow: _expense_actions.removeSpecialRow })(Row);
+    return (0, _reactRedux.connect)(null, { updateComputation: _computation_actions.updateComputation, removeSpecialRow: _expense_actions.removeSpecialRow, updateRowConfig: _expense_actions.updateRowConfig })(Row);
 }
 
 /***/ }),
@@ -77390,13 +77417,15 @@ var ExpenseForm = function (_Component) {
 
       var currentRows = _lodash2.default.cloneDeep(this.props.CurrentExpense.rows) || [];
       if (currentRows.length) {
-        currentRows.push('SubtotalRow');
+        currentRows.push({
+          type: 'SubtotalRow'
+        });
       }
 
       var specialRows = _lodash2.default.map(currentRows, function (row) {
-        var SpecialRow = rows[row];
-        return _react2.default.createElement(SpecialRow, { key: row, expenseData: _this5.props.CurrentExpense,
-          computations: _this5.props.Computations });
+        var SpecialRow = rows[row.type];
+        return _react2.default.createElement(SpecialRow, { key: row.type, expenseData: _this5.props.CurrentExpense,
+          computations: _this5.props.Computations, config: row.config });
       });
 
       return specialRows;
@@ -78034,10 +78063,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
 
 var _computing_row = __webpack_require__(66);
 
@@ -78052,40 +78085,67 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ServiceChargeRow = function (_ComputingRow) {
-    _inherits(ServiceChargeRow, _ComputingRow);
+  _inherits(ServiceChargeRow, _ComputingRow);
 
-    function ServiceChargeRow(props) {
-        _classCallCheck(this, ServiceChargeRow);
+  function ServiceChargeRow(props) {
+    _classCallCheck(this, ServiceChargeRow);
 
-        var _this = _possibleConstructorReturn(this, (ServiceChargeRow.__proto__ || Object.getPrototypeOf(ServiceChargeRow)).call(this, props));
+    return _possibleConstructorReturn(this, (ServiceChargeRow.__proto__ || Object.getPrototypeOf(ServiceChargeRow)).call(this, props));
+  }
 
-        _this.percent = 0.12;
-        return _this;
+  _createClass(ServiceChargeRow, [{
+    key: 'computeUser',
+    value: function computeUser(props, user, username) {
+      var subtotal = props.computations.subtotal;
+
+      return subtotal && props.config ? subtotal.users[username] * props.config.percent : 0;
     }
+  }, {
+    key: 'computeTotal',
+    value: function computeTotal(props) {
+      var subtotal = props.computations.subtotal;
 
-    _createClass(ServiceChargeRow, [{
-        key: 'computeUser',
-        value: function computeUser(props, user, username) {
-            var subtotal = props.computations.subtotal;
+      return subtotal && props.config ? subtotal.total * props.config.percent : 0;
+    }
+  }, {
+    key: 'renderConfig',
+    value: function renderConfig() {
+      var _this2 = this;
 
-            return subtotal ? subtotal.users[username] * this.percent : 0;
-        }
-    }, {
-        key: 'computeTotal',
-        value: function computeTotal(props) {
-            var subtotal = props.computations.subtotal;
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'label',
+          { htmlFor: 'percent' },
+          'Percent'
+        ),
+        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'percent',
+          value: this.props.config ? this.props.config.percent : this.props.defaultConfig.percent,
+          onChange: function onChange(event) {
+            return _this2.updateConfig(event.target.value);
+          }
+        })
+      );
+    }
+  }, {
+    key: 'updateConfig',
+    value: function updateConfig(value) {
+      this.props.updateRowConfig(this.constructor.name, { percent: value });
+      this.compute();
+    }
+  }]);
 
-            return subtotal ? subtotal.total * this.percent : 0;
-        }
-    }]);
-
-    return ServiceChargeRow;
+  return ServiceChargeRow;
 }(_computing_row2.default);
 
 ServiceChargeRow.defaultProps = {
-    label: 'Service Charge',
-    key: 'serviceCharge',
-    allowDeletion: true
+  label: 'Service Charge',
+  key: 'serviceCharge',
+  allowDeletion: true,
+  defaultConfig: {
+    percent: 0.12
+  }
 };
 
 exports.default = (0, _computing_row.setupReduxBindings)(ServiceChargeRow);
@@ -78280,6 +78340,8 @@ exports.default = function () {
       return addSpecialRow(state, payload);
     case _expense_actions.REMOVE_SPECIAL_ROW:
       return removeSpecialRow(state, payload);
+    case _expense_actions.UPDATE_ROW_CONFIG:
+      return updateRowConfig(state, payload);
     default:
       return state;
   }
@@ -78382,7 +78444,9 @@ function addSpecialRow(state, _ref4) {
   if (!newState.rows) {
     newState.rows = [];
   }
-  newState.rows.push(rowName);
+  newState.rows.push({
+    type: rowName
+  });
   return newState;
 }
 
@@ -78392,9 +78456,22 @@ function removeSpecialRow(state, _ref5) {
   var newState = _lodash2.default.cloneDeep(state);
   if (newState.rows) {
     _lodash2.default.remove(newState.rows, function (item) {
-      return item === rowName;
+      return item.type === rowName;
     });
   }
+  return newState;
+}
+
+function updateRowConfig(state, _ref6) {
+  var rowName = _ref6.rowName,
+      config = _ref6.config;
+
+  var newState = _lodash2.default.cloneDeep(state);
+  var row = _lodash2.default.find(newState.rows, function (item) {
+    return item.type === rowName;
+  });
+  row.config = config;
+  console.log(row);
   return newState;
 }
 
