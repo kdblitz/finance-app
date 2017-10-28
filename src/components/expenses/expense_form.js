@@ -86,7 +86,7 @@ class ExpenseForm extends Component {
       const SpecialRow = rows[row.type];
       return (
         <SpecialRow key={row.type} expenseData={this.props.CurrentExpense}
-          computations={this.props.Computations} />
+          computations={this.props.Computations} config={row.config} />
       );
     });
 

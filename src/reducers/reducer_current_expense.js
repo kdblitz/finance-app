@@ -3,7 +3,7 @@ import {
   FETCH_EXPENSE_DATA, TOGGLE_SHARING, UPDATE_CLAIM,
   ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM,
   ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
-  ADD_SPECIAL_ROW, REMOVE_SPECIAL_ROW
+  ADD_SPECIAL_ROW, REMOVE_SPECIAL_ROW, UPDATE_ROW_CONFIG
 } from '../actions/expense_actions';
 import Item from '../components/expenses/models/item';
 
@@ -29,6 +29,8 @@ export default function (state = {}, { type, payload }) {
       return addSpecialRow(state, payload);
     case REMOVE_SPECIAL_ROW:
       return removeSpecialRow(state, payload);
+    case UPDATE_ROW_CONFIG:
+      return updateRowConfig(state, payload);
     default:
       return state;
   }
@@ -118,5 +120,13 @@ function removeSpecialRow(state, { rowName }) {
   if (newState.rows) {
       _.remove(newState.rows, item => item.type === rowName);
   }
+  return newState;
+}
+
+function updateRowConfig(state, { rowName, config }) {
+  const newState = _.cloneDeep(state);
+  const row = _.find(newState.rows, item => item.type === rowName);
+  row.config = config;
+  console.log(row);
   return newState;
 }

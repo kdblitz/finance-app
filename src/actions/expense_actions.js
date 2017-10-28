@@ -108,3 +108,15 @@ export function removeSpecialRow(rowName) {
     }
   };
 }
+
+export const UPDATE_ROW_CONFIG = 'update_row_config';
+
+export function updateRowConfig(rowName, config) {
+  return {
+    type: UPDATE_ROW_CONFIG,
+    payload: {
+      rowName,
+      config
+    }
+  };
+}

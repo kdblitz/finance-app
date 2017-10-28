@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import BaseRow from './base_row';
-import { removeSpecialRow } from '../../../actions/expense_actions';
+import { removeSpecialRow, updateRowConfig } from '../../../actions/expense_actions';
 import { updateComputation } from '../../../actions/computation_actions';
 
 export default class ComputingRow extends BaseRow {
@@ -12,8 +12,7 @@ export default class ComputingRow extends BaseRow {
         super(props);
         this.state = {
             total: 0,
-            users: {},
-            config: this.props.config
+            users: {}
         };
     }
 
@@ -30,16 +29,22 @@ export default class ComputingRow extends BaseRow {
         const computations = {
             total: this.computeTotal(props),
             users: this.computeUsers(props),
-            config: this.state.config
         };
-        this.setState(computations);
-        if (!_.isEqual(this.state, computations)) {
+        if (!_.isEqual(_.pick(this.state, ['total', 'users']), computations)) {
             // console.log('trigger recompute', this.constructor.name, this.state, computations);
             this.props.updateComputation({
                 key: this.props.key,
                 computations
             });
         }
+        const config = props.config || this.props.defaultConfig;
+        console.log(this.constructor.name, props.config, config);
+        if (!_.isEqual(config, props.config)) {
+            this.props.updateRowConfig(
+                this.constructor.name, config
+            );
+        }
+        this.setState(_.merge(computations, config));
     }
 
     computeUsers(props) {
@@ -86,5 +91,5 @@ export default class ComputingRow extends BaseRow {
 }
 
 export function setupReduxBindings(Row) {
-    return connect(null, { updateComputation, removeSpecialRow })(Row);
+    return connect(null, { updateComputation, removeSpecialRow, updateRowConfig })(Row);
 }

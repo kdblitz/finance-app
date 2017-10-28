@@ -8,12 +8,12 @@ class ServiceChargeRow extends ComputingRow {
 
     computeUser(props, user, username) {
         const { subtotal } = props.computations;
-        return (subtotal) ? subtotal.users[username] * this.state.config.percent : 0;
+        return (subtotal && props.config) ? subtotal.users[username] * props.config.percent : 0;
     }
 
     computeTotal(props) {
         const { subtotal } = props.computations;
-        return (subtotal) ? subtotal.total * this.state.config.percent : 0;
+        return (subtotal && props.config) ? subtotal.total * props.config.percent : 0;
     }
 
     renderConfig() {
@@ -21,7 +21,7 @@ class ServiceChargeRow extends ComputingRow {
         <div>
           <label htmlFor="percent">Percent</label>
           <input type="text" className="form-control" id="percent" 
-            value={this.state.config.percent}
+            value={(this.props.config) ? this.props.config.percent : this.props.defaultConfig.percent}
             onChange={event => this.updateConfig(event.target.value)}
           />
         </div>
@@ -29,9 +29,10 @@ class ServiceChargeRow extends ComputingRow {
     }
 
     updateConfig(value) {
-      this.setState({
-        config: {percent: value}
-      });
+      this.props.updateRowConfig(
+        this.constructor.name, {percent: value}
+      );
+      this.compute();
     }
 }
 
@@ -39,7 +40,7 @@ ServiceChargeRow.defaultProps = {
     label: 'Service Charge',
     key: 'serviceCharge',
     allowDeletion: true,
-    config: {
+    defaultConfig: {
       percent: 0.12
     }
 }
