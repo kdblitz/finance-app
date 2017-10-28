@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const publicPath = '/';
+const publicPath = process.env.PUBLIC_PATH || '';
 
 module.exports = {
   entry: [
@@ -15,7 +15,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: publicPath
+    publicPath: publicPath + '/'
   },
   resolve: {
     modules: ['node_modules'],
