@@ -12,7 +12,8 @@ export default class ComputingRow extends BaseRow {
         super(props);
         this.state = {
             total: 0,
-            users: {}
+            users: {},
+            showConfig: false
         };
     }
 
@@ -55,13 +56,14 @@ export default class ComputingRow extends BaseRow {
     renderHeaderCells() {
         return [
             (<th key="label">{this.props.label} 
-              <span className="oi oi-wrench"></span> { 
-              this.props.allowDeletion
+              { this.props.configurable 
+                ? <span className="oi oi-wrench" onClick={() => this.setState({showConfig: !this.state.showConfig})}></span> : ''}
+              { this.props.allowDeletion
                 ? <button type="button" className="btn btn-danger btn-sm"
                   onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> 
                 : '' }
               <br/>
-              {this.renderConfig()}
+              { this.state.showConfig ? this.renderConfig() : '' }
               </th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
@@ -94,6 +96,19 @@ export default class ComputingRow extends BaseRow {
         return <td key={index}>{user}</td>;
     }
 }
+
+/* 
+configurable properties of defaultProps
+fields marked with * are required
+
+RowName.defaultProps = {
+  *label: 'Your label',
+  *key: 'uniqueKey',
+  allowDeletion: false,
+  defaultConfig: {},
+  configurable: false
+}
+*/
 
 export function setupReduxBindings(Row) {
     return connect(null, { 

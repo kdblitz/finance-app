@@ -42,7 +42,8 @@ ServiceChargeRow.defaultProps = {
     allowDeletion: true,
     defaultConfig: {
       percent: 0.12
-    }
+    },
+    configurable: true
 }
 
 export default setupReduxBindings(ServiceChargeRow);
