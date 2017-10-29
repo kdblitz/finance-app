@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import BaseRow from './base_row';
 import { removeSpecialRow, updateRowConfig } from '../../../actions/expense_actions';
-import { updateComputation } from '../../../actions/computation_actions';
+import { updateComputation, removeComputationForKey } from '../../../actions/computation_actions';
 
 export default class ComputingRow extends BaseRow {
     constructor(props) {
@@ -38,7 +38,6 @@ export default class ComputingRow extends BaseRow {
             });
         }
         const config = props.config || this.props.defaultConfig;
-        console.log(this.constructor.name, props.config, config);
         if (!_.isEqual(config, props.config)) {
             this.props.updateRowConfig(
                 this.constructor.name, config
@@ -58,13 +57,18 @@ export default class ComputingRow extends BaseRow {
             (<th key="label">{this.props.label} { 
               this.props.allowDeletion
                 ? <button type="button" className="btn btn-danger btn-sm"
-                  onClick={() => this.props.removeSpecialRow(this.constructor.name)}>-</button> 
+                  onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> 
                 : '' }
               <br/>
               {this.renderConfig()}
               </th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
+    }
+
+    removeSpecialRow(rowName) {
+        this.props.removeSpecialRow(rowName);
+        this.props.removeComputationForKey(this.props.key);
     }
 
     renderConfig() {
@@ -91,5 +95,8 @@ export default class ComputingRow extends BaseRow {
 }
 
 export function setupReduxBindings(Row) {
-    return connect(null, { updateComputation, removeSpecialRow, updateRowConfig })(Row);
+    return connect(null, { 
+      updateComputation, removeComputationForKey, 
+      removeSpecialRow, updateRowConfig
+    })(Row);
 }

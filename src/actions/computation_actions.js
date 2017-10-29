@@ -15,3 +15,12 @@ export function updateComputationForKey(payload) {
         payload
     }
 }
+
+export const REMOVE_COMPUTATION_FOR_KEY = 'remove_computation_for_key';
+
+export function removeComputationForKey(payload) {
+    return {
+        type: REMOVE_COMPUTATION_FOR_KEY,
+        payload
+    }
+}
