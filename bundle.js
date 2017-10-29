@@ -19122,6 +19122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateComputation = updateComputation;
 exports.updateComputationForKey = updateComputationForKey;
+exports.removeComputationForKey = removeComputationForKey;
 var UPDATE_COMPUTATIONS = exports.UPDATE_COMPUTATIONS = 'update_computations';
 
 function updateComputation(data) {
@@ -19136,6 +19137,15 @@ var UPDATE_COMPUTATION_FOR_KEY = exports.UPDATE_COMPUTATION_FOR_KEY = 'update_co
 function updateComputationForKey(payload) {
     return {
         type: UPDATE_COMPUTATION_FOR_KEY,
+        payload: payload
+    };
+}
+
+var REMOVE_COMPUTATION_FOR_KEY = exports.REMOVE_COMPUTATION_FOR_KEY = 'remove_computation_for_key';
+
+function removeComputationForKey(payload) {
+    return {
+        type: REMOVE_COMPUTATION_FOR_KEY,
         payload: payload
     };
 }
@@ -19224,7 +19234,6 @@ var ComputingRow = function (_BaseRow) {
                 });
             }
             var config = props.config || this.props.defaultConfig;
-            console.log(this.constructor.name, props.config, config);
             if (!_lodash2.default.isEqual(config, props.config)) {
                 this.props.updateRowConfig(this.constructor.name, config);
             }
@@ -19253,7 +19262,7 @@ var ComputingRow = function (_BaseRow) {
                     'button',
                     { type: 'button', className: 'btn btn-danger btn-sm',
                         onClick: function onClick() {
-                            return _this3.props.removeSpecialRow(_this3.constructor.name);
+                            return _this3.removeSpecialRow(_this3.constructor.name);
                         } },
                     '-'
                 ) : '',
@@ -19264,6 +19273,12 @@ var ComputingRow = function (_BaseRow) {
                 { key: 'price', className: 'price', colSpan: 2 },
                 this.renderOverallCell()
             )];
+        }
+    }, {
+        key: 'removeSpecialRow',
+        value: function removeSpecialRow(rowName) {
+            this.props.removeSpecialRow(rowName);
+            this.props.removeComputationForKey(this.props.key);
         }
     }, {
         key: 'renderConfig',
@@ -19301,7 +19316,10 @@ var ComputingRow = function (_BaseRow) {
 
 exports.default = ComputingRow;
 function setupReduxBindings(Row) {
-    return (0, _reactRedux.connect)(null, { updateComputation: _computation_actions.updateComputation, removeSpecialRow: _expense_actions.removeSpecialRow, updateRowConfig: _expense_actions.updateRowConfig })(Row);
+    return (0, _reactRedux.connect)(null, {
+        updateComputation: _computation_actions.updateComputation, removeComputationForKey: _computation_actions.removeComputationForKey,
+        removeSpecialRow: _expense_actions.removeSpecialRow, updateRowConfig: _expense_actions.updateRowConfig
+    })(Row);
 }
 
 /***/ }),
@@ -34117,7 +34135,7 @@ var ChangeRow = function (_ComputingRow) {
     _createClass(ChangeRow, [{
         key: 'computeUser',
         value: function computeUser(props, user, username) {
-            var _props$computations = this.props.computations,
+            var _props$computations = props.computations,
                 payment = _props$computations.payment,
                 total = _props$computations.total;
 
@@ -78505,6 +78523,8 @@ exports.default = function () {
             return update(state, payload);
         case _computation_actions.UPDATE_COMPUTATION_FOR_KEY:
             return updateForKey(state, payload);
+        case _computation_actions.REMOVE_COMPUTATION_FOR_KEY:
+            return removeForKey(state, payload);
         default:
             return state;
     }
@@ -78526,6 +78546,12 @@ function updateForKey(state, _ref2) {
 
     var newState = _lodash2.default.cloneDeep(state);
     newState[key].users[user] = value;
+    return newState;
+}
+
+function removeForKey(state, key) {
+    var newState = _lodash2.default.cloneDeep(state);
+    delete newState[key];
     return newState;
 }
 
