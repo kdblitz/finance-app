@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import BaseRow from './base_row';
+import { updatePayment } from '../../../actions/expense_actions';
 import { updateComputation, updateComputationForKey } from '../../../actions/computation_actions';
 
 export const key = 'payment';
@@ -32,8 +33,8 @@ class PaymentRow extends BaseRow {
     }
 
     getUserPayment(user, props = this.props) {
-        const { payment } = props.computations;
-        return payment ? payment.users[user] : 0;
+        const { payment } = props.expenseData.users[user];
+        return payment ? payment : 0;
     }
 
     populate(props) {
@@ -66,6 +67,7 @@ class PaymentRow extends BaseRow {
     }
 
     updatePayment(user, value) {
+        this.props.updatePayment(user, Number(value));
         return this.props.updateComputationForKey({
             key: this.props.key,
             user,
@@ -79,4 +81,7 @@ PaymentRow.defaultProps = {
     key
 };
 
-export default connect(null, {updateComputation, updateComputationForKey})(PaymentRow);
+export default connect(null, {
+  updateComputation, updateComputationForKey,
+  updatePayment
+})(PaymentRow);

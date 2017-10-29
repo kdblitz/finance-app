@@ -120,3 +120,15 @@ export function updateRowConfig(rowName, config) {
     }
   };
 }
+
+export const UPDATE_PAYMENT = 'update_payment';
+
+export function updatePayment(user, payment) {
+  return {
+    type: UPDATE_PAYMENT,
+    payload: {
+      user,
+      payment
+    }
+  };
+}
