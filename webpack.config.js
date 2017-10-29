@@ -5,6 +5,29 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const publicPath = process.env.PUBLIC_PATH || '';
 
+const plugins = [
+  // new webpack.HotModuleReplacementPlugin(),
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    'window.jQuery': 'jquery',
+    Popper: ['popper.js', 'default'],
+  }),
+  new HtmlWebpackPlugin({
+    inject: true,
+    template: path.resolve(__dirname, 'public', 'index.html')
+  })
+];
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production')
+    }
+  }));
+  plugins.push(new webpack.optimize.UglifyJsPlugin());
+}
+
 module.exports = {
   entry: [
     // require.resolve('webpack')
@@ -47,6 +70,10 @@ module.exports = {
             }
           },
           {
+            test: /\.(eot|otf|woff|woff2|svg|ttf)([\?]?.*)$/,
+            loader: 'file-loader'
+          },
+          {
             test: /\.css$/,
             use: [
               require.resolve('style-loader'),
@@ -79,17 +106,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    // new webpack.HotModuleReplacementPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      Popper: ['popper.js', 'default'],
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: path.resolve(__dirname, 'public', 'index.html')
-    })
-  ]
+  plugins
 }

@@ -54,7 +54,8 @@ export default class ComputingRow extends BaseRow {
 
     renderHeaderCells() {
         return [
-            (<th key="label">{this.props.label} { 
+            (<th key="label">{this.props.label} 
+              <span className="oi oi-wrench"></span> { 
               this.props.allowDeletion
                 ? <button type="button" className="btn btn-danger btn-sm"
                   onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> 
