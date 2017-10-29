@@ -19304,7 +19304,7 @@ var ComputingRow = function (_BaseRow) {
     }, {
         key: 'renderOverallCell',
         value: function renderOverallCell() {
-            return this.state.total;
+            return this.state.total ? this.state.total.toFixed(2) : 0;
         }
     }, {
         key: 'renderSharingCell',
@@ -19318,11 +19318,11 @@ var ComputingRow = function (_BaseRow) {
         }
     }, {
         key: 'renderUserCell',
-        value: function renderUserCell(user, index) {
+        value: function renderUserCell(value, index) {
             return _react2.default.createElement(
                 'td',
                 { key: index },
-                user
+                value.toFixed(2)
             );
         }
     }]);
@@ -78082,7 +78082,7 @@ var ItemRow = function (_BaseRow) {
                     'small',
                     { className: 'text-muted' },
                     '(',
-                    this.computeShare(item),
+                    this.computeShare(item).toFixed(2),
                     ')'
                 ) : ''
             );
