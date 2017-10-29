@@ -1,0 +1,2 @@
+improvements:
+- freeze name / order for less scrolling
