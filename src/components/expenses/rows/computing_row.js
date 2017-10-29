@@ -79,7 +79,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderOverallCell() {
-        return this.state.total;
+        return this.state.total ? this.state.total.toFixed(2): 0;
     }
 
     renderSharingCell() {
@@ -92,8 +92,8 @@ export default class ComputingRow extends BaseRow {
             .value();
     }
 
-    renderUserCell(user, index) {
-        return <td key={index}>{user}</td>;
+    renderUserCell(value, index) {
+        return <td key={index}>{value.toFixed(2)}</td>;
     }
 }
 

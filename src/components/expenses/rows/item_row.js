@@ -48,7 +48,7 @@ class ItemRow extends BaseRow {
                             onChange={event => this.props.toggleSharing(name, event.target.checked)}/>
                     </label>
                 </div>
-                {(shared) ? <small className="text-muted">({ this.computeShare(item) })</small> : ''}
+                {(shared) ? <small className="text-muted">({ this.computeShare(item).toFixed(2) })</small> : ''}
             </td>
         );
     }
