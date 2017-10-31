@@ -1,0 +1,16 @@
+version: 2
+branches:
+  only:
+    - master
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6
+    steps:
+      - checkout
+      - run: 
+          name: Installing deps
+          command: npm install
+      - run:
+          name: Build and deploy app
+          command: chmod +x ./scripts/deploy.sh && ./scripts/deploy.sh
