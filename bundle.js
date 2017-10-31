@@ -64522,7 +64522,7 @@ var NavigationBar = function (_Component) {
               { className: 'nav-item' },
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
-                { to: '/', exact: true, className: 'nav-link', activeClassName: 'active' },
+                { to: "/finance-app/", exact: true, className: 'nav-link', activeClassName: 'active' },
                 'Expenses'
               )
             ),
@@ -64531,7 +64531,7 @@ var NavigationBar = function (_Component) {
               { className: 'nav-item' },
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
-                { to: '/users', exact: true, className: 'nav-link', activeClassName: 'active' },
+                { to: "/finance-app/" + "users", exact: true, className: 'nav-link', activeClassName: 'active' },
                 'Users'
               )
             )
@@ -77517,16 +77517,16 @@ var ExpenseForm = function (_Component) {
           { key: user, className: 'users' },
           _react2.default.createElement(
             'span',
-            null,
+            { className: 'name' },
             user
           ),
           _react2.default.createElement(
             'button',
-            { className: 'btn btn-danger',
+            { className: 'btn btn-outline-danger btn-sm',
               onClick: function onClick() {
                 return _this3.props.removeUser(user);
               } },
-            '-'
+            _react2.default.createElement('span', { className: 'oi oi-trash' })
           )
         );
       });
@@ -77577,7 +77577,7 @@ var ExpenseForm = function (_Component) {
         null,
         _react2.default.createElement(
           'td',
-          { colSpan: '3' },
+          { colSpan: '4' },
           _react2.default.createElement(_add_item_form2.default, null)
         )
       );
@@ -77657,7 +77657,7 @@ exports = module.exports = __webpack_require__(37)(undefined);
 
 
 // module
-exports.push([module.i, ".Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 300px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 150px;\n}\n\n.Expense-form table th.users span {\n    padding-right: 15px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
+exports.push([module.i, ".Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 250px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 130px;\n}\n\n.Expense-form table th.users span.name {\n    padding-right: 10px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
 
 // exports
 
