@@ -28,7 +28,7 @@
     "start": "node server.js",
     "dev": "webpack-dev-server --content-base build/ -w",
     "build": "webpack",
-    "predeploy": "cross-env PUBLIC_PATH=/finance-app npm run build",
+    "predeploy": "cross-env PUBLIC_PATH='finance-app/' npm run build && cp -r .circleci/ build/",
     "deploy": "cross-env NODE_DEBUG=gh-pages gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
