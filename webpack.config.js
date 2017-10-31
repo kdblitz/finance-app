@@ -3,7 +3,11 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const publicPath = process.env.PUBLIC_PATH || '';
+const publicPath = (process.env.PUBLIC_PATH || '') + '/';
+
+const DEFINITIONS = {
+  PUBLIC_PATH: JSON.stringify(publicPath)
+};
 
 const plugins = [
   // new webpack.HotModuleReplacementPlugin(),
@@ -16,15 +20,14 @@ const plugins = [
   new HtmlWebpackPlugin({
     inject: true,
     template: path.resolve(__dirname, 'public', 'index.html')
-  })
+  }),
+  new webpack.DefinePlugin(DEFINITIONS)
 ];
 
 if (process.env.NODE_ENV === 'production') {
-  plugins.push(new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify('production')
-    }
-  }));
+  DEFINITIONS['process.env'] = {
+    NODE_ENV: JSON.stringify('production')
+  };
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
 
@@ -38,7 +41,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: publicPath + '/'
+    publicPath
   },
   resolve: {
     modules: ['node_modules'],
@@ -47,17 +50,6 @@ module.exports = {
   module: {
     strictExportPresence: true,
     rules: [
-      // {
-      //     test: /\.(js|jsx)$/,
-      //     enforce: 'pre',
-      //     use: [{
-      //         options: {
-      //             formatter: {
-      //                 //setup formatter
-      //             }
-      //         }
-      //     }]
-      // }, 
       {
         oneOf: [
           {

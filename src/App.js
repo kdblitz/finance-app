@@ -12,8 +12,8 @@ class App extends Component {
         <NavigationBar />
         <div className="container-fluid mt-3">
           <Switch>
-            <Route path="/users" component={UserView}/>
-            <Route path="/" component={ExpenseForm}/>
+            <Route path={PUBLIC_PATH + "users"} component={UserView}/>
+            <Route path={PUBLIC_PATH} component={ExpenseForm}/>
           </Switch>
         </div>
       </div>
