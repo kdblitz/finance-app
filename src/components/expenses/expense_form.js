@@ -62,9 +62,11 @@ class ExpenseForm extends Component {
     return _.keys(this.props.CurrentExpense.users).map(user => {
       return (
         <th key={user} className="users">
-          <span>{user}</span>
-          <button className="btn btn-danger"
-            onClick={() => this.props.removeUser(user)}>-</button></th>
+          <span className="name">{user}</span>
+          <button className="btn btn-outline-danger btn-sm"
+            onClick={() => this.props.removeUser(user)}>
+            <span className="oi oi-trash"></span>
+            </button></th>
       );
     });
   }
@@ -99,7 +101,7 @@ class ExpenseForm extends Component {
   }
 
   renderItemAdderRow() {
-    return <tr><td colSpan="3"><AddItemForm /></td></tr>;
+    return <tr><td colSpan="4"><AddItemForm /></td></tr>;
   }
 
   saveExpense() {

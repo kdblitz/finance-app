@@ -15,7 +15,7 @@
 }
 
 .Expense-form table .name {
-    width: 300px;
+    width: 250px;
 }
 
 .Expense-form table th.quantity,
@@ -25,11 +25,11 @@
 }
 
 .Expense-form table th.users {
-    width: 150px;
+    width: 130px;
 }
 
-.Expense-form table th.users span {
-    padding-right: 15px;
+.Expense-form table th.users span.name {
+    padding-right: 10px;
 }
 
 
