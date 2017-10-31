@@ -3,8 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const publicPath = (process.env.PUBLIC_PATH || '') + '/';
-
+const publicPath = '/' + (process.env.PUBLIC_PATH || '');
 const DEFINITIONS = {
   PUBLIC_PATH: JSON.stringify(publicPath)
 };
