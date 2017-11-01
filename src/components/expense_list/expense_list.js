@@ -7,9 +7,6 @@ import { fetchExpenseList } from '../../actions/expense_list_actions';
 class ExpenseList extends Component {
   constructor(props) {
     super(props);
-    // this.list = {
-    //   '123': {title:'test title'}
-    // };
   }
 
   componentDidMount() {

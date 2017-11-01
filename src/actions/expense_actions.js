@@ -1,28 +1,38 @@
+import Expense from '../components/expenses/models/expense';
+
 import firebase from '../firebase.config';
 
 const database = firebase.database();
-const expenseRef = database.ref('expense');
+let expenseRef;
+
 
 export const FETCH_EXPENSE_DATA = 'fetch_expense_data';
 
-export function fetchExpenseData() {
-  return dispatch => {
-    expenseRef.on('value', snapshot => {
-      dispatch({
-        type: FETCH_EXPENSE_DATA,
-        payload: snapshot.val()
+export function fetchExpenseData(expenseId) {
+  if (expenseId) {
+    expenseRef = database.ref(`expense/${expenseId}`);
+    return dispatch => {
+      expenseRef.on('value', snapshot => {
+        dispatch({
+          type: FETCH_EXPENSE_DATA,
+          payload: new Expense(snapshot.val())
+        });
       });
-    });
+    };
+  }
+  return {
+    type: FETCH_EXPENSE_DATA,
+    payload: new Expense()
   };
 }
 
 export const SAVE_EXPENSE_DATA = 'save_expense_data';
 
-export function saveExpenseData(expenseData) {
+export function saveExpenseData(expenseId,expenseData) {
   return dispatch => {
-    return database.ref().update({
-      expense: expenseData
-    });
+    const updates = {};
+    updates[`expense/${expenseId}`] = expenseData;
+    return database.ref().update(updates);
   };
 }
 

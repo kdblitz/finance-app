@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchExpenseData, saveExpenseData, removeUser }
   from '../../actions/expense_actions';
+import { match } from 'react-router-dom';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
@@ -21,8 +22,12 @@ const rows = {
 }
 
 class ExpenseForm extends Component {
+  getExpenseId() {
+    return this.props.match.params.expenseId;
+  }
+
   componentDidMount() {
-    this.props.fetchExpenseData();
+    this.props.fetchExpenseData(this.getExpenseId());
   }
 
   render() {
@@ -106,7 +111,7 @@ class ExpenseForm extends Component {
 
   saveExpense() {
     const { users, items, rows } = this.props.CurrentExpense;
-    this.props.saveExpenseData({
+    this.props.saveExpenseData(this.getExpenseId(), {
       users,
       items,
       rows
