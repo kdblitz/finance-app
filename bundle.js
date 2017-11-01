@@ -14170,6 +14170,10 @@ function fetchExpenseData(expenseId) {
 var SAVE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = 'save_expense_data';
 
 function saveExpenseData(expenseId, expenseData) {
+  if (!expenseId) {
+    expenseId = database.ref().child('expense').push().key;
+  }
+
   return function (dispatch) {
     var updates = {};
     updates['expense/' + expenseId] = expenseData;
@@ -61099,9 +61103,9 @@ var App = function (_Component) {
             _reactRouterDom.Switch,
             null,
             _react2.default.createElement(_reactRouterDom.Route, { path: "/finance-app/" + 'users', component: _user_view2.default }),
-            _react2.default.createElement(_reactRouterDom.Route, { path: "/finance-app/" + 'list', component: _expense_list2.default }),
+            _react2.default.createElement(_reactRouterDom.Route, { path: "/finance-app/" + 'expense/new', component: _expense_form2.default }),
             _react2.default.createElement(_reactRouterDom.Route, { path: "/finance-app/" + 'expense/:expenseId', component: _expense_form2.default }),
-            _react2.default.createElement(_reactRouterDom.Route, { path: '' + "/finance-app/", component: _expense_form2.default })
+            _react2.default.createElement(_reactRouterDom.Route, { path: '' + "/finance-app/", component: _expense_list2.default })
           )
         )
       );
@@ -64566,7 +64570,7 @@ var NavigationBar = function (_Component) {
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
                 { to: "/finance-app/", exact: true, className: 'nav-link', activeClassName: 'active' },
-                'Expenses'
+                'List'
               )
             ),
             _react2.default.createElement(
@@ -64574,8 +64578,8 @@ var NavigationBar = function (_Component) {
               { className: 'nav-item' },
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
-                { to: "/finance-app/" + "list", exact: true, className: 'nav-link', activeClassName: 'active' },
-                'List'
+                { to: "/finance-app/" + "expense/new", exact: true, className: 'nav-link', activeClassName: 'active' },
+                'New'
               )
             ),
             _react2.default.createElement(
