@@ -14,6 +14,9 @@ class NavigationBar extends Component {
               <NavLink to={PUBLIC_PATH} exact className="nav-link" activeClassName="active">Expenses</NavLink>
             </li>
             <li className="nav-item">
+              <NavLink to={PUBLIC_PATH + "list"} exact className="nav-link" activeClassName="active">List</NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink to={PUBLIC_PATH + "users"} exact className="nav-link" activeClassName="active">Users</NavLink>
             </li>
           </ul>

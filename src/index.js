@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import './index.css';
 import App from './App';
 import reducers from './reducers';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 import registerServiceWorker from './registerServiceWorker';
 
@@ -19,9 +19,9 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
-    <BrowserRouter>
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>
   , document.getElementById('root'));
 registerServiceWorker();
