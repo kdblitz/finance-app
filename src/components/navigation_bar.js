@@ -11,10 +11,10 @@ class NavigationBar extends Component {
         <div className="collapse navbar-collapse" id="navbarDropdown">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <NavLink to={PUBLIC_PATH} exact className="nav-link" activeClassName="active">Expenses</NavLink>
+              <NavLink to={PUBLIC_PATH} exact className="nav-link" activeClassName="active">List</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to={PUBLIC_PATH + "list"} exact className="nav-link" activeClassName="active">List</NavLink>
+              <NavLink to={PUBLIC_PATH + "expense/new"} exact className="nav-link" activeClassName="active">New</NavLink>
             </li>
             <li className="nav-item">
               <NavLink to={PUBLIC_PATH + "users"} exact className="nav-link" activeClassName="active">Users</NavLink>

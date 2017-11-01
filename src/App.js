@@ -14,9 +14,9 @@ class App extends Component {
         <div className="container-fluid mt-3">
           <Switch>
             <Route path={`${PUBLIC_PATH}users`} component={UserView}/>
-            <Route path={`${PUBLIC_PATH}list`} component={ExpenseList}/>
+            <Route path={`${PUBLIC_PATH}expense/new`} component={ExpenseForm}/>
             <Route path={`${PUBLIC_PATH}expense/:expenseId`} component={ExpenseForm}/>
-            <Route path={`${PUBLIC_PATH}`} component={ExpenseForm}/>
+            <Route path={`${PUBLIC_PATH}`} component={ExpenseList}/>
           </Switch>
         </div>
       </div>

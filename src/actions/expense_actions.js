@@ -29,6 +29,10 @@ export function fetchExpenseData(expenseId) {
 export const SAVE_EXPENSE_DATA = 'save_expense_data';
 
 export function saveExpenseData(expenseId,expenseData) {
+  if (!expenseId) {
+    expenseId = database.ref().child('expense').push().key;
+  }
+
   return dispatch => {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
