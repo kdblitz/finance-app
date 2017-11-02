@@ -5,7 +5,6 @@ import firebase from '../firebase.config';
 const database = firebase.database();
 let expenseRef;
 
-
 export const FETCH_EXPENSE_DATA = 'fetch_expense_data';
 
 export function fetchExpenseData(expenseId) {
@@ -36,7 +35,8 @@ export function saveExpenseData(expenseId,expenseData) {
   return dispatch => {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
-    return database.ref().update(updates);
+    updates[`expenseList/${expenseId}`] = {title: 'Test title'};
+    return database.ref().update(updates, () => expenseId);
   };
 }
 

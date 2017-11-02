@@ -93,7 +93,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderUserCell(value, index) {
-        return <td key={index}>{value.toFixed(2)}</td>;
+        return <td key={index}>{value ? value.toFixed(2): ''}</td>;
     }
 }
 
