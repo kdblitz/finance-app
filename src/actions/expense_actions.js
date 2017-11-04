@@ -36,7 +36,8 @@ export function saveExpenseData(expenseId,expenseData) {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
     updates[`expenseList/${expenseId}`] = {title: 'Test title'};
-    return database.ref().update(updates, () => expenseId);
+    return database.ref().update(updates)
+      .then(() => expenseId);
   };
 }
 
