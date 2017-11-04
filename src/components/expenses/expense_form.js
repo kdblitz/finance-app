@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchExpenseData, saveExpenseData, removeUser }
   from '../../actions/expense_actions';
 import { match } from 'react-router-dom';
-import { GET_EXPENSE_FORM } from '../../paths';
+import { getExpenseFormLink } from '../../paths';
 
 import './expense_form.css';
 import AddUserForm from './add_user_form';
@@ -117,7 +117,7 @@ class ExpenseForm extends Component {
       items,
       rows
     }).then(expenseId => {
-      this.props.history.push(`${GET_EXPENSE_FORM}${expenseId}`);
+      this.props.history.push(getExpenseFormLink(expenseId));
     });
   }
 

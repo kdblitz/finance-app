@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchExpenseList } from '../../actions/expense_list_actions';
 
-import {GET_EXPENSE_FORM} from '../../paths';
+import {getExpenseFormLink} from '../../paths';
 
 class ExpenseList extends Component {
   constructor(props) {
@@ -27,9 +27,9 @@ class ExpenseList extends Component {
   }
 
   renderExpenses() {
-    return _.map(this.props.ExpenseList, (expense, key) => {
+    return _.map(this.props.ExpenseList, (expense, expenseFormId) => {
       return (
-        <NavLink to={`${GET_EXPENSE_FORM}${key}`} exact className="nav-link list-group-item" key={key}>
+        <NavLink to={getExpenseFormLink(expenseFormId)} exact className="nav-link list-group-item" key={expenseFormId}>
           {expense.title}
         </NavLink>
       );
