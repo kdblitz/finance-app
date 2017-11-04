@@ -3072,7 +3072,7 @@ var _prodInvariant = __webpack_require__(5),
     _assign = __webpack_require__(7);
 
 var CallbackQueue = __webpack_require__(119);
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 var ReactFeatureFlags = __webpack_require__(120);
 var ReactReconciler = __webpack_require__(34);
 var Transaction = __webpack_require__(52);
@@ -12759,7 +12759,7 @@ else if(freeModule){// Export for Node.js.
 (freeModule.exports=_)._=_;// Export for CommonJS support.
 freeExports._=_;}else{// Export to the global object.
 root._=_;}}).call(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26), __webpack_require__(68)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(68)(module)))
 
 /***/ }),
 /* 24 */
@@ -12778,7 +12778,7 @@ root._=_;}}).call(undefined);
 
 var _assign = __webpack_require__(7);
 
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 
 var emptyFunction = __webpack_require__(16);
 var warning = __webpack_require__(3);
@@ -13256,6 +13256,209 @@ module.exports = DOMProperty;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.UPDATE_PAYMENT = exports.UPDATE_ROW_CONFIG = exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.UPDATE_TITLE = exports.DELETE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
+exports.fetchExpenseData = fetchExpenseData;
+exports.saveExpenseData = saveExpenseData;
+exports.deleteExpenseData = deleteExpenseData;
+exports.updateTitle = updateTitle;
+exports.addUser = addUser;
+exports.removeUser = removeUser;
+exports.addItem = addItem;
+exports.removeItem = removeItem;
+exports.updateClaim = updateClaim;
+exports.toggleSharing = toggleSharing;
+exports.addSpecialRow = addSpecialRow;
+exports.removeSpecialRow = removeSpecialRow;
+exports.updateRowConfig = updateRowConfig;
+exports.updatePayment = updatePayment;
+
+var _expense = __webpack_require__(420);
+
+var _expense2 = _interopRequireDefault(_expense);
+
+var _firebase = __webpack_require__(97);
+
+var _firebase2 = _interopRequireDefault(_firebase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var database = _firebase2.default.database();
+var expenseRef = void 0;
+
+var FETCH_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = 'fetch_expense_data';
+
+function fetchExpenseData(expenseId) {
+  if (expenseId) {
+    expenseRef = database.ref('expense/' + expenseId);
+    return function (dispatch) {
+      expenseRef.on('value', function (snapshot) {
+        dispatch({
+          type: FETCH_EXPENSE_DATA,
+          payload: new _expense2.default(snapshot.val())
+        });
+      });
+    };
+  }
+  return {
+    type: FETCH_EXPENSE_DATA,
+    payload: new _expense2.default()
+  };
+}
+
+var SAVE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = 'save_expense_data';
+
+function saveExpenseData(expenseId, expenseData) {
+  if (!expenseId) {
+    expenseId = database.ref().child('expense').push().key;
+  }
+
+  return function (dispatch) {
+    var updates = {};
+    updates['expense/' + expenseId] = expenseData;
+    updates['expenseList/' + expenseId] = { name: expenseData.name };
+    return database.ref().update(updates).then(function () {
+      return expenseId;
+    });
+  };
+}
+
+var DELETE_EXPENSE_DATA = exports.DELETE_EXPENSE_DATA = 'delete_expense_data';
+
+function deleteExpenseData(expenseId) {
+  var updates = {};
+  updates['expense/' + expenseId] = null;
+  updates['expenseList/' + expenseId] = null;
+  return function (dispatch) {
+    return database.ref().update(updates);
+  };
+}
+
+var UPDATE_TITLE = exports.UPDATE_TITLE = 'update_title';
+
+function updateTitle(title) {
+  return {
+    type: UPDATE_TITLE,
+    payload: title
+  };
+}
+
+var ADD_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
+
+function addUser(user) {
+  return {
+    type: ADD_USER_TO_EXPENSE_FORM,
+    payload: user
+  };
+}
+
+var REMOVE_USER_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = 'remove_user_to_expense';
+
+function removeUser(user) {
+  return {
+    type: REMOVE_USER_TO_EXPENSE_FORM,
+    payload: user
+  };
+}
+
+var ADD_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = 'add_item_to_expense';
+
+function addItem(item) {
+  return {
+    type: ADD_ITEM_TO_EXPENSE_FORM,
+    payload: item
+  };
+}
+
+var REMOVE_ITEM_TO_EXPENSE_FORM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = 'remove_item_to_expense';
+
+function removeItem(item) {
+  return {
+    type: REMOVE_ITEM_TO_EXPENSE_FORM,
+    payload: item
+  };
+}
+
+var UPDATE_CLAIM = exports.UPDATE_CLAIM = 'update_claim';
+
+function updateClaim(user, itemName, claim) {
+  return {
+    type: UPDATE_CLAIM,
+    payload: {
+      user: user,
+      itemName: itemName,
+      claim: claim
+    }
+  };
+}
+
+var TOGGLE_SHARING = exports.TOGGLE_SHARING = 'toggle_sharing';
+
+function toggleSharing(itemName, flag) {
+  return {
+    type: TOGGLE_SHARING,
+    payload: {
+      itemName: itemName,
+      flag: flag
+    }
+  };
+}
+
+var ADD_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = 'add_special_row';
+
+function addSpecialRow(rowName) {
+  return {
+    type: ADD_SPECIAL_ROW,
+    payload: {
+      rowName: rowName
+    }
+  };
+}
+
+var REMOVE_SPECIAL_ROW = exports.REMOVE_SPECIAL_ROW = 'remove_special_row';
+
+function removeSpecialRow(rowName) {
+  return {
+    type: REMOVE_SPECIAL_ROW,
+    payload: {
+      rowName: rowName
+    }
+  };
+}
+
+var UPDATE_ROW_CONFIG = exports.UPDATE_ROW_CONFIG = 'update_row_config';
+
+function updateRowConfig(rowName, config) {
+  return {
+    type: UPDATE_ROW_CONFIG,
+    payload: {
+      rowName: rowName,
+      config: config
+    }
+  };
+}
+
+var UPDATE_PAYMENT = exports.UPDATE_PAYMENT = 'update_payment';
+
+function updatePayment(user, payment) {
+  return {
+    type: UPDATE_PAYMENT,
+    payload: {
+      user: user,
+      payment: payment
+    }
+  };
+}
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var g;
@@ -13280,7 +13483,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13627,7 +13830,7 @@ module.exports = ReactElement;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13743,7 +13946,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14032,7 +14235,7 @@ exports.validateObjectContainsKey = function (fnName, argumentNumber, obj, key, 
 //# sourceMappingURL=validation.js.map
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14111,187 +14314,6 @@ exports.OperationSource = OperationSource;
 //# sourceMappingURL=Operation.js.map
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.UPDATE_PAYMENT = exports.UPDATE_ROW_CONFIG = exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
-exports.fetchExpenseData = fetchExpenseData;
-exports.saveExpenseData = saveExpenseData;
-exports.addUser = addUser;
-exports.removeUser = removeUser;
-exports.addItem = addItem;
-exports.removeItem = removeItem;
-exports.updateClaim = updateClaim;
-exports.toggleSharing = toggleSharing;
-exports.addSpecialRow = addSpecialRow;
-exports.removeSpecialRow = removeSpecialRow;
-exports.updateRowConfig = updateRowConfig;
-exports.updatePayment = updatePayment;
-
-var _expense = __webpack_require__(420);
-
-var _expense2 = _interopRequireDefault(_expense);
-
-var _firebase = __webpack_require__(97);
-
-var _firebase2 = _interopRequireDefault(_firebase);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var database = _firebase2.default.database();
-var expenseRef = void 0;
-
-var FETCH_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = 'fetch_expense_data';
-
-function fetchExpenseData(expenseId) {
-  if (expenseId) {
-    expenseRef = database.ref('expense/' + expenseId);
-    return function (dispatch) {
-      expenseRef.on('value', function (snapshot) {
-        dispatch({
-          type: FETCH_EXPENSE_DATA,
-          payload: new _expense2.default(snapshot.val())
-        });
-      });
-    };
-  }
-  return {
-    type: FETCH_EXPENSE_DATA,
-    payload: new _expense2.default()
-  };
-}
-
-var SAVE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = 'save_expense_data';
-
-function saveExpenseData(expenseId, expenseData) {
-  if (!expenseId) {
-    expenseId = database.ref().child('expense').push().key;
-  }
-
-  return function (dispatch) {
-    var updates = {};
-    updates['expense/' + expenseId] = expenseData;
-    updates['expenseList/' + expenseId] = { title: 'Test title' };
-    return database.ref().update(updates).then(function () {
-      return expenseId;
-    });
-  };
-}
-
-var ADD_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
-
-function addUser(user) {
-  return {
-    type: ADD_USER_TO_EXPENSE_FORM,
-    payload: user
-  };
-}
-
-var REMOVE_USER_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = 'remove_user_to_expense';
-
-function removeUser(user) {
-  return {
-    type: REMOVE_USER_TO_EXPENSE_FORM,
-    payload: user
-  };
-}
-
-var ADD_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = 'add_item_to_expense';
-
-function addItem(item) {
-  return {
-    type: ADD_ITEM_TO_EXPENSE_FORM,
-    payload: item
-  };
-}
-
-var REMOVE_ITEM_TO_EXPENSE_FORM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = 'remove_item_to_expense';
-
-function removeItem(item) {
-  return {
-    type: REMOVE_ITEM_TO_EXPENSE_FORM,
-    payload: item
-  };
-}
-
-var UPDATE_CLAIM = exports.UPDATE_CLAIM = 'update_claim';
-
-function updateClaim(user, itemName, claim) {
-  return {
-    type: UPDATE_CLAIM,
-    payload: {
-      user: user,
-      itemName: itemName,
-      claim: claim
-    }
-  };
-}
-
-var TOGGLE_SHARING = exports.TOGGLE_SHARING = 'toggle_sharing';
-
-function toggleSharing(itemName, flag) {
-  return {
-    type: TOGGLE_SHARING,
-    payload: {
-      itemName: itemName,
-      flag: flag
-    }
-  };
-}
-
-var ADD_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = 'add_special_row';
-
-function addSpecialRow(rowName) {
-  return {
-    type: ADD_SPECIAL_ROW,
-    payload: {
-      rowName: rowName
-    }
-  };
-}
-
-var REMOVE_SPECIAL_ROW = exports.REMOVE_SPECIAL_ROW = 'remove_special_row';
-
-function removeSpecialRow(rowName) {
-  return {
-    type: REMOVE_SPECIAL_ROW,
-    payload: {
-      rowName: rowName
-    }
-  };
-}
-
-var UPDATE_ROW_CONFIG = exports.UPDATE_ROW_CONFIG = 'update_row_config';
-
-function updateRowConfig(rowName, config) {
-  return {
-    type: UPDATE_ROW_CONFIG,
-    payload: {
-      rowName: rowName,
-      config: config
-    }
-  };
-}
-
-var UPDATE_PAYMENT = exports.UPDATE_PAYMENT = 'update_payment';
-
-function updatePayment(user, payment) {
-  return {
-    type: UPDATE_PAYMENT,
-    payload: {
-      user: user,
-      payment: payment
-    }
-  };
-}
-
-/***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14311,7 +14333,7 @@ var _assign = __webpack_require__(7);
 var ReactBaseClasses = __webpack_require__(108);
 var ReactChildren = __webpack_require__(205);
 var ReactDOMFactories = __webpack_require__(209);
-var ReactElement = __webpack_require__(27);
+var ReactElement = __webpack_require__(28);
 var ReactPropTypes = __webpack_require__(213);
 var ReactVersion = __webpack_require__(215);
 
@@ -19290,7 +19312,7 @@ var _base_row = __webpack_require__(105);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 var _computation_actions = __webpack_require__(66);
 
@@ -22202,7 +22224,7 @@ var Query_1 = __webpack_require__(165);
 var Repo_1 = __webpack_require__(63);
 var Path_1 = __webpack_require__(9);
 var QueryParams_1 = __webpack_require__(412);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 var util_2 = __webpack_require__(0);
 var util_3 = __webpack_require__(0);
 var SyncPoint_1 = __webpack_require__(176);
@@ -22483,7 +22505,7 @@ SyncPoint_1.SyncPoint.__referenceConstructor = Reference;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 var Path_1 = __webpack_require__(9);
 var PriorityIndex_1 = __webpack_require__(13);
 /**
@@ -23191,7 +23213,7 @@ var util_1 = __webpack_require__(0);
 var Repo_1 = __webpack_require__(63);
 var util_2 = __webpack_require__(4);
 var parser_1 = __webpack_require__(162);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 __webpack_require__(414);
 /** @const {string} */
 var DATABASE_URL_OPTION = 'databaseURL';
@@ -23760,7 +23782,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var ReactCurrentOwner = __webpack_require__(21);
 var ReactComponentTreeHook = __webpack_require__(14);
-var ReactElement = __webpack_require__(27);
+var ReactElement = __webpack_require__(28);
 
 var checkReactTypeSpec = __webpack_require__(210);
 
@@ -24723,7 +24745,7 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 
 var invariant = __webpack_require__(2);
 
@@ -29182,7 +29204,7 @@ var Reference_1 = __webpack_require__(99);
 var Repo_1 = __webpack_require__(63);
 var RepoManager_1 = __webpack_require__(104);
 var util_2 = __webpack_require__(0);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 /**
  * Class representing a firebase database.
  * @implements {FirebaseService}
@@ -29554,7 +29576,7 @@ exports.RepoInfo = RepoInfo;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 var util_2 = __webpack_require__(4);
 var util_3 = __webpack_require__(0);
 /**
@@ -29682,7 +29704,7 @@ var ValueIndex_1 = __webpack_require__(167);
 var PathIndex_1 = __webpack_require__(171);
 var util_2 = __webpack_require__(4);
 var Path_1 = __webpack_require__(9);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 var util_3 = __webpack_require__(0);
 var EventRegistration_1 = __webpack_require__(389);
 var util_4 = __webpack_require__(0);
@@ -31172,7 +31194,7 @@ exports.CountedSet = CountedSet;
  */
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var Path_1 = __webpack_require__(9);
 /**
  * @param {!OperationSource} source
@@ -34167,7 +34189,7 @@ var _base_row = __webpack_require__(105);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 var _computation_actions = __webpack_require__(66);
 
@@ -47907,7 +47929,7 @@ Popper.Defaults = Defaults;
 
 exports.default = Popper;
 //# sourceMappingURL=popper.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ }),
 /* 205 */
@@ -47925,7 +47947,7 @@ exports.default = Popper;
 
 
 var PooledClass = __webpack_require__(206);
-var ReactElement = __webpack_require__(27);
+var ReactElement = __webpack_require__(28);
 
 var emptyFunction = __webpack_require__(16);
 var traverseAllChildren = __webpack_require__(207);
@@ -48477,7 +48499,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(27);
+var ReactElement = __webpack_require__(28);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -48792,7 +48814,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(27),
+var _require = __webpack_require__(28),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(113);
@@ -48902,7 +48924,7 @@ module.exports = '15.6.2';
 var _require = __webpack_require__(108),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(27),
+var _require2 = __webpack_require__(28),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(109);
@@ -49665,7 +49687,7 @@ module.exports = factory;
 
 var _prodInvariant = __webpack_require__(33);
 
-var ReactElement = __webpack_require__(27);
+var ReactElement = __webpack_require__(28);
 
 var invariant = __webpack_require__(2);
 
@@ -50387,7 +50409,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(7);
 
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 
 var getTextContentAccessor = __webpack_require__(118);
 
@@ -56480,7 +56502,7 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(7);
 
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 var Transaction = __webpack_require__(52);
 var ReactInstrumentation = __webpack_require__(17);
 var ReactServerUpdateQueue = __webpack_require__(269);
@@ -57158,7 +57180,7 @@ var _assign = __webpack_require__(7);
 
 var EventListener = __webpack_require__(135);
 var ExecutionEnvironment = __webpack_require__(10);
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 var ReactDOMComponentTree = __webpack_require__(8);
 var ReactUpdates = __webpack_require__(22);
 
@@ -57394,7 +57416,7 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(7);
 
 var CallbackQueue = __webpack_require__(119);
-var PooledClass = __webpack_require__(28);
+var PooledClass = __webpack_require__(29);
 var ReactBrowserEventEmitter = __webpack_require__(56);
 var ReactInputSelection = __webpack_require__(136);
 var ReactInstrumentation = __webpack_require__(17);
@@ -59796,7 +59818,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var freeGlobal = (typeof global === 'undefined' ? 'undefined' : _typeof(global)) == 'object' && global && global.Object === Object && global;
 
 exports.default = freeGlobal;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ }),
 /* 308 */
@@ -60028,7 +60050,7 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26), __webpack_require__(68)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(68)(module)))
 
 /***/ }),
 /* 315 */
@@ -65039,7 +65061,7 @@ if (typeof Promise === 'undefined') {
 }
 
 //# sourceMappingURL=promise.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ }),
 /* 364 */
@@ -65533,7 +65555,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.setImmediate = setImmediate;
     attachTo.clearImmediate = clearImmediate;
 })(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26), __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(1)))
 
 /***/ }),
 /* 367 */
@@ -70895,7 +70917,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     } else throw Error("Cannot find the firebase namespace; be sure to include firebase-app.js before this library.");
   })();
 }).call(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ }),
 /* 383 */
@@ -71622,7 +71644,7 @@ var util_3 = __webpack_require__(0);
 var ImmutableTree_1 = __webpack_require__(101);
 var ListenComplete_1 = __webpack_require__(393);
 var Merge_1 = __webpack_require__(394);
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var Overwrite_1 = __webpack_require__(175);
 var Path_1 = __webpack_require__(9);
 var SyncPoint_1 = __webpack_require__(176);
@@ -72311,7 +72333,7 @@ exports.SyncTree = SyncTree;
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
 var Path_1 = __webpack_require__(9);
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var AckUserWrite = /** @class */function () {
     /**
      *
@@ -72377,7 +72399,7 @@ exports.AckUserWrite = AckUserWrite;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Path_1 = __webpack_require__(9);
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 /**
  * @param {!OperationSource} source
  * @param {!Path} path
@@ -72427,7 +72449,7 @@ exports.ListenComplete = ListenComplete;
  */
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var Overwrite_1 = __webpack_require__(175);
 var Path_1 = __webpack_require__(9);
 var util_1 = __webpack_require__(0);
@@ -72512,7 +72534,7 @@ var CacheNode_1 = __webpack_require__(64);
 var ViewCache_1 = __webpack_require__(177);
 var EventGenerator_1 = __webpack_require__(399);
 var util_1 = __webpack_require__(0);
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var Change_1 = __webpack_require__(36);
 var PriorityIndex_1 = __webpack_require__(13);
 /**
@@ -72713,7 +72735,7 @@ exports.View = View;
  */
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Operation_1 = __webpack_require__(30);
+var Operation_1 = __webpack_require__(31);
 var util_1 = __webpack_require__(0);
 var ChildChangeAccumulator_1 = __webpack_require__(397);
 var Change_1 = __webpack_require__(36);
@@ -76016,7 +76038,7 @@ var Tree_1 = __webpack_require__(415);
 var PriorityIndex_1 = __webpack_require__(13);
 var util_2 = __webpack_require__(4);
 var ServerValues_1 = __webpack_require__(172);
-var validation_1 = __webpack_require__(29);
+var validation_1 = __webpack_require__(30);
 var util_3 = __webpack_require__(0);
 var nodeFromJSON_1 = __webpack_require__(48);
 var ChildrenNode_1 = __webpack_require__(15);
@@ -77041,7 +77063,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(20);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 var _reactRouterDom = __webpack_require__(43);
 
@@ -77118,13 +77140,21 @@ var ExpenseForm = function (_Component) {
     value: function render() {
       var _this2 = this;
 
+      if (_lodash2.default.isEmpty(this.props.CurrentExpense)) {
+        return null;
+      }
+
       return _react2.default.createElement(
         'div',
         { className: 'Expense-form' },
         _react2.default.createElement(
-          'h2',
-          null,
-          'Expense form'
+          'div',
+          { className: 'title d-flex flex-row mb-3' },
+          _react2.default.createElement('input', { type: 'text', className: 'form-control col-2',
+            value: this.props.CurrentExpense.name,
+            onChange: function onChange(event) {
+              return _this2.props.updateTitle(event.target.value);
+            } })
         ),
         _react2.default.createElement(
           'table',
@@ -77265,12 +77295,10 @@ var ExpenseForm = function (_Component) {
           items = _props$CurrentExpense.items,
           rows = _props$CurrentExpense.rows;
 
-      this.props.saveExpenseData(this.getExpenseId(), {
-        users: users,
-        items: items,
-        rows: rows
-      }).then(function (expenseId) {
-        _this7.props.history.push((0, _paths.getExpenseFormLink)(expenseId));
+      this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense).then(function (expenseId) {
+        if (_this7.getExpenseId() !== expenseId) {
+          _this7.props.history.push((0, _paths.getExpenseFormLink)(expenseId));
+        }
       });
     }
   }]);
@@ -77291,6 +77319,7 @@ function mapStateToProps(_ref) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {
   fetchExpenseData: _expense_actions.fetchExpenseData,
   saveExpenseData: _expense_actions.saveExpenseData,
+  updateTitle: _expense_actions.updateTitle,
   removeUser: _expense_actions.removeUser
 })(ExpenseForm);
 
@@ -77309,6 +77338,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Expense = function Expense() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      name = _ref.name,
       _ref$items = _ref.items,
       items = _ref$items === undefined ? {} : _ref$items,
       _ref$rows = _ref.rows,
@@ -77318,6 +77348,7 @@ var Expense = function Expense() {
 
   _classCallCheck(this, Expense);
 
+  this.name = name || 'Expense form';
   this.items = items;
   this.rows = rows;
   this.users = users;
@@ -77365,7 +77396,7 @@ exports = module.exports = __webpack_require__(37)(undefined);
 
 
 // module
-exports.push([module.i, ".Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 250px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 130px;\n}\n\n.Expense-form table th.users span.name {\n    padding-right: 10px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
+exports.push([module.i, "\n.Expense-form h2 {\n  display: inline-block;\n}\n\n.Expense-form .title span.oi {\n  margin-left: 5px;\n  display: none;\n}\n\n.Expense-form .title:hover span.oi {\n  display: inherit;\n}\n\n.Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 250px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 130px;\n}\n\n.Expense-form table th.users span.name {\n    padding-right: 10px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
 
 // exports
 
@@ -77389,7 +77420,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(20);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77478,7 +77509,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(20);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 var _item = __webpack_require__(186);
 
@@ -77682,7 +77713,7 @@ var _base_row = __webpack_require__(105);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78096,6 +78127,8 @@ var _reactRedux = __webpack_require__(20);
 
 var _expense_list_actions = __webpack_require__(190);
 
+var _expense_actions = __webpack_require__(26);
+
 var _paths = __webpack_require__(96);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -78141,13 +78174,36 @@ var ExpenseList = function (_Component) {
   }, {
     key: 'renderExpenses',
     value: function renderExpenses() {
+      var _this2 = this;
+
       return _.map(this.props.ExpenseList, function (expense, expenseFormId) {
         return _react2.default.createElement(
           _reactRouterDom.NavLink,
           { to: (0, _paths.getExpenseFormLink)(expenseFormId), exact: true, className: 'nav-link list-group-item', key: expenseFormId },
-          expense.title
+          _react2.default.createElement(
+            'div',
+            { className: 'd-flex flex-row justify-content-between' },
+            _react2.default.createElement(
+              'span',
+              { className: 'align-self-center' },
+              expense.name
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'btn btn-danger', onClick: function onClick(event) {
+                  return _this2.deleteExpenseData(event, expenseFormId);
+                } },
+              'Delete'
+            )
+          )
         );
       });
+    }
+  }, {
+    key: 'deleteExpenseData',
+    value: function deleteExpenseData(event, expenseFormId) {
+      this.props.deleteExpenseData(expenseFormId);
+      event.preventDefault();
     }
   }]);
 
@@ -78163,7 +78219,8 @@ function mapStateToProps(_ref) {
 }
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {
-  fetchExpenseList: _expense_list_actions.fetchExpenseList
+  fetchExpenseList: _expense_list_actions.fetchExpenseList,
+  deleteExpenseData: _expense_actions.deleteExpenseData
 })(ExpenseList);
 
 /***/ }),
@@ -78261,6 +78318,8 @@ exports.default = function () {
   switch (type) {
     case _expense_actions.FETCH_EXPENSE_DATA:
       return createModels(payload);
+    case _expense_actions.UPDATE_TITLE:
+      return updateTitle(state, payload);
     case _expense_actions.ADD_USER_TO_EXPENSE_FORM:
       return addUser(state, payload);
     case _expense_actions.REMOVE_USER_TO_EXPENSE_FORM:
@@ -78290,7 +78349,7 @@ var _lodash = __webpack_require__(23);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _expense_actions = __webpack_require__(31);
+var _expense_actions = __webpack_require__(26);
 
 var _item = __webpack_require__(186);
 
@@ -78305,6 +78364,12 @@ function createModels(payload) {
     return new _item2.default(item);
   });
   return payload;
+}
+
+function updateTitle(state, title) {
+  var newState = _lodash2.default.cloneDeep(state);
+  newState.name = title;
+  return newState;
 }
 
 function addUser(state, user) {
