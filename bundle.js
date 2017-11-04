@@ -19442,7 +19442,7 @@ var ComputingRow = function (_BaseRow) {
             return _react2.default.createElement(
                 'td',
                 { key: index },
-                value ? value.toFixed(2) : ''
+                typeof value === 'number' ? value.toFixed(2) : ''
             );
         }
     }]);
@@ -34360,7 +34360,11 @@ var ChangeRow = function (_ComputingRow) {
                 payment = _props$computations.payment,
                 total = _props$computations.total;
 
-            return payment.users[username] - total.users[username];
+            if (payment && total) {
+                return payment.users[username] - total.users[username];
+            } else {
+                return 0;
+            }
         }
     }, {
         key: 'computeTotal',
@@ -77143,7 +77147,6 @@ var ExpenseForm = function (_Component) {
       if (_lodash2.default.isEmpty(this.props.CurrentExpense)) {
         return null;
       }
-
       return _react2.default.createElement(
         'div',
         { className: 'Expense-form' },
