@@ -35,7 +35,6 @@ class ExpenseForm extends Component {
     if (_.isEmpty(this.props.CurrentExpense)) {
       return (null);
     }
-
     return (
       <div className="Expense-form">
         <div className="title d-flex flex-row mb-3">

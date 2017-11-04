@@ -5,7 +5,11 @@ export const key = 'change';
 class ChangeRow extends ComputingRow {
     computeUser(props, user, username) {
         const {payment, total} = props.computations;
-        return payment.users[username] - total.users[username];
+        if (payment && total) {
+            return payment.users[username] - total.users[username];
+        } else {
+            return 0;
+        }
     }
 
     computeTotal(props) {
