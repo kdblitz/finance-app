@@ -35,9 +35,27 @@ export function saveExpenseData(expenseId,expenseData) {
   return dispatch => {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
-    updates[`expenseList/${expenseId}`] = {title: 'Test title'};
+    updates[`expenseList/${expenseId}`] = {name: expenseData.name};
     return database.ref().update(updates)
       .then(() => expenseId);
+  };
+}
+
+export const DELETE_EXPENSE_DATA = 'delete_expense_data';
+
+export function deleteExpenseData(expenseId) {
+  const updates = {};
+  updates[`expense/${expenseId}`] = null;
+  updates[`expenseList/${expenseId}`] = null;
+  return dispatch => database.ref().update(updates);
+}
+
+export const UPDATE_TITLE = 'update_title';
+
+export function updateTitle(title) {
+  return {
+    type: UPDATE_TITLE,
+    payload: title
   };
 }
 

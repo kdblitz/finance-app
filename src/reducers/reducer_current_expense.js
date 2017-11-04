@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import {
-  FETCH_EXPENSE_DATA, TOGGLE_SHARING, UPDATE_CLAIM,
+  FETCH_EXPENSE_DATA, UPDATE_TITLE,
+  TOGGLE_SHARING, UPDATE_CLAIM,
   ADD_USER_TO_EXPENSE_FORM, REMOVE_USER_TO_EXPENSE_FORM,
   ADD_ITEM_TO_EXPENSE_FORM, REMOVE_ITEM_TO_EXPENSE_FORM,
   ADD_SPECIAL_ROW, REMOVE_SPECIAL_ROW, UPDATE_ROW_CONFIG,
@@ -14,6 +15,8 @@ export default function (state = {}, { type, payload }) {
   switch (type) {
     case FETCH_EXPENSE_DATA:
       return createModels(payload);
+    case UPDATE_TITLE:
+      return updateTitle(state, payload);
     case ADD_USER_TO_EXPENSE_FORM:
       return addUser(state, payload);
     case REMOVE_USER_TO_EXPENSE_FORM:
@@ -42,6 +45,12 @@ export default function (state = {}, { type, payload }) {
 function createModels(payload) {
   payload.items = _.mapValues(payload.items, item => new Item(item));
   return payload;
+}
+
+function updateTitle(state, title) {
+  const newState = _.cloneDeep(state);
+  newState.name = title;
+  return newState;
 }
 
 function addUser(state, user) {

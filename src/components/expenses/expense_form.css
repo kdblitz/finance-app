@@ -1,3 +1,17 @@
+
+.Expense-form h2 {
+  display: inline-block;
+}
+
+.Expense-form .title span.oi {
+  margin-left: 5px;
+  display: none;
+}
+
+.Expense-form .title:hover span.oi {
+  display: inherit;
+}
+
 .Expense-form table {
     table-layout: fixed;
     width: fit-content;

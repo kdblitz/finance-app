@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchExpenseData, saveExpenseData, removeUser }
+import { updateTitle, fetchExpenseData, saveExpenseData, removeUser }
   from '../../actions/expense_actions';
 import { match } from 'react-router-dom';
 import { getExpenseFormLink } from '../../paths';
@@ -32,9 +32,17 @@ class ExpenseForm extends Component {
   }
 
   render() {
+    if (_.isEmpty(this.props.CurrentExpense)) {
+      return (null);
+    }
+
     return (
       <div className="Expense-form">
-        <h2>Expense form</h2>
+        <div className="title d-flex flex-row mb-3">
+          <input type="text" className="form-control col-2"
+            value={this.props.CurrentExpense.name}
+            onChange={event => this.props.updateTitle(event.target.value)}/> 
+        </div>
         <table className="table">
           <thead>
             <tr>
@@ -112,13 +120,12 @@ class ExpenseForm extends Component {
 
   saveExpense() {
     const { users, items, rows } = this.props.CurrentExpense;
-    this.props.saveExpenseData(this.getExpenseId(), {
-      users,
-      items,
-      rows
-    }).then(expenseId => {
-      this.props.history.push(getExpenseFormLink(expenseId));
-    });
+    this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense)
+      .then(expenseId => {
+        if (this.getExpenseId() !== expenseId) {
+          this.props.history.push(getExpenseFormLink(expenseId))
+        }
+      });
   }
 
 }
@@ -133,5 +140,6 @@ function mapStateToProps({ CurrentExpense, Computations }) {
 export default connect(mapStateToProps, {
   fetchExpenseData,
   saveExpenseData,
+  updateTitle,
   removeUser
 })(ExpenseForm);
