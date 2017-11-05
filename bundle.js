@@ -13318,7 +13318,7 @@ function saveExpenseData(expenseId, expenseData) {
   return function (dispatch) {
     var updates = {};
     updates['expense/' + expenseId] = expenseData;
-    updates['expenseList/' + expenseId] = { name: expenseData.name };
+    updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = { name: expenseData.name };
     return database.ref().update(updates).then(function () {
       return expenseId;
     });
@@ -13330,7 +13330,7 @@ var DELETE_EXPENSE_DATA = exports.DELETE_EXPENSE_DATA = 'delete_expense_data';
 function deleteExpenseData(expenseId) {
   var updates = {};
   updates['expense/' + expenseId] = null;
-  updates['expenseList/' + expenseId] = null;
+  updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = null;
   return function (dispatch) {
     return database.ref().update(updates);
   };
@@ -22110,7 +22110,7 @@ function getExpenseFormLink(expenseId) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LOGOUT = exports.LOGIN = exports.FETCH_USER = exports.ADD_USER = undefined;
+exports.FETCH_USER = exports.ADD_USER = undefined;
 exports.addUser = addUser;
 exports.fetchUser = fetchUser;
 exports.login = login;
@@ -22142,34 +22142,22 @@ function fetchUser() {
   };
 }
 
-var LOGIN = exports.LOGIN = 'login';
-
 function login() {
-  console.log('login :O');
   return function (dispatch) {
-    console.log('trigger');
     _firebase2.default.auth().signInWithPopup(provider).then(function (loginSuccess) {
       console.log('success', loginSuccess);
-      dispatch({
-        type: FETCH_USER,
-        payload: (0, _firebase.getUserInfo)()
-      });
+      dispatch(fetchUser());
     }).catch(function (error) {
       console.log('error', error);
     });
   };
 }
 
-var LOGOUT = exports.LOGOUT = 'logout';
-
 function logout() {
   return function (dispatch) {
     _firebase2.default.auth().signOut().then(function (response) {
       console.log('successful signout');
-      dispatch({
-        type: FETCH_USER,
-        payload: (0, _firebase.getUserInfo)()
-      });
+      dispatch(fetchUser());
     }).catch(function (error) {
       console.log('failed signout');
     });
@@ -22187,6 +22175,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getUserInfo = getUserInfo;
+exports.getUid = getUid;
 
 var _app = __webpack_require__(359);
 
@@ -22212,6 +22201,11 @@ _app2.default.initializeApp(config);
 exports.default = _app2.default;
 function getUserInfo() {
   return JSON.parse(window.localStorage.getItem('firebase:authUser:' + config.apiKey + ':[DEFAULT]'));
+}
+
+function getUid() {
+  var userInfo = getUserInfo();
+  return userInfo ? userInfo.uid : 'public';
 }
 
 /***/ }),
@@ -34506,11 +34500,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var database = _firebase2.default.database();
 
-var expenseListRef = database.ref('expenseList');
-
 var FETCH_EXPENSE_LIST = exports.FETCH_EXPENSE_LIST = 'fetchExpenseList';
 
 function fetchExpenseList() {
+  var expenseListRef = database.ref('expenseList/' + (0, _firebase.getUid)());
   return function (dispatch) {
     expenseListRef.on('value', function (snapshot) {
       var expenseList = snapshot.val() || {};
