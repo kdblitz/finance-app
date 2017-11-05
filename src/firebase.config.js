@@ -19,3 +19,8 @@ export function getUserInfo() {
   return JSON.parse(
     window.localStorage.getItem(`firebase:authUser:${config.apiKey}:[DEFAULT]`));
 }
+
+export function getUid() {
+  const userInfo = getUserInfo();
+  return userInfo ? userInfo.uid : 'public';
+}

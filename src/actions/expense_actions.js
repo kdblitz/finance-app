@@ -1,6 +1,6 @@
 import Expense from '../components/expenses/models/expense';
 
-import firebase from '../firebase.config';
+import firebase, {getUid} from '../firebase.config';
 
 const database = firebase.database();
 let expenseRef;
@@ -35,7 +35,7 @@ export function saveExpenseData(expenseId,expenseData) {
   return dispatch => {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
-    updates[`expenseList/${expenseId}`] = {name: expenseData.name};
+    updates[`expenseList/${getUid()}/${expenseId}`] = {name: expenseData.name};
     return database.ref().update(updates)
       .then(() => expenseId);
   };
@@ -46,7 +46,7 @@ export const DELETE_EXPENSE_DATA = 'delete_expense_data';
 export function deleteExpenseData(expenseId) {
   const updates = {};
   updates[`expense/${expenseId}`] = null;
-  updates[`expenseList/${expenseId}`] = null;
+  updates[`expenseList/${getUid()}/${expenseId}`] = null;
   return dispatch => database.ref().update(updates);
 }
 
