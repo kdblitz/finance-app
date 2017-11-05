@@ -14,3 +14,8 @@ const config = {
 firebase.initializeApp(config);
 
 export default firebase;
+
+export function getUserInfo() {
+  return JSON.parse(
+    window.localStorage.getItem(`firebase:authUser:${config.apiKey}:[DEFAULT]`));
+}
