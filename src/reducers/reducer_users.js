@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { ADD_USER, FETCH_USER, LOGIN, LOGOUT } from '../actions/user_actions';
+import { ADD_USER, FETCH_USER } from '../actions/user_actions';
 
 const defaultUser = {
   users: [
