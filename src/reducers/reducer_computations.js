@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import { UPDATE_COMPUTATIONS, 
   UPDATE_COMPUTATION_FOR_KEY, 
-  REMOVE_COMPUTATION_FOR_KEY } from '../actions/computation_actions';
+  REMOVE_COMPUTATION_FOR_KEY,
+  CLEAR_COMPUTATION
+ } from '../actions/computation_actions';
 
 export default (state = {}, action) => {
     const {type, payload} = action;
@@ -12,6 +14,8 @@ export default (state = {}, action) => {
             return updateForKey(state, payload);
         case REMOVE_COMPUTATION_FOR_KEY:
             return removeForKey(state, payload);
+        case CLEAR_COMPUTATION:
+            return clearComputation();
         default:
             return state;
     }
@@ -33,4 +37,8 @@ function removeForKey(state, key) {
     const newState = _.cloneDeep(state);
     delete newState[key];
     return newState;
+}
+
+function clearComputation() {
+    return {};
 }

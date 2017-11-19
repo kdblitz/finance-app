@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { updateTitle, fetchExpenseData, saveExpenseData, removeUser }
   from '../../actions/expense_actions';
+import { clearComputation } from '../../actions/computation_actions';
 import { match } from 'react-router-dom';
 import { getExpenseFormLink } from '../../paths';
 
@@ -28,8 +29,10 @@ class ExpenseForm extends Component {
   }
 
   componentDidMount() {
+    this.props.clearComputation();
     this.props.fetchExpenseData(this.getExpenseId());
   }
+
 
   render() {
     if (_.isEmpty(this.props.CurrentExpense)) {
@@ -140,5 +143,6 @@ export default connect(mapStateToProps, {
   fetchExpenseData,
   saveExpenseData,
   updateTitle,
-  removeUser
+  removeUser,
+  clearComputation
 })(ExpenseForm);

@@ -24,3 +24,11 @@ export function removeComputationForKey(payload) {
         payload
     }
 }
+
+export const CLEAR_COMPUTATION = 'clear_computation';
+
+export function clearComputation() {
+    return {
+        type: CLEAR_COMPUTATION
+    }
+}
