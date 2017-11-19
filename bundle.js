@@ -19473,7 +19473,16 @@ var ComputingRow = function (_BaseRow) {
             ) : null;
             var configuration = this.state.showConfig ? this.renderConfig() : '';
 
-            return [configurationButton, deleteButton, _react2.default.createElement('br', null), configuration];
+            return _react2.default.createElement(
+                'span',
+                null,
+                configurationButton,
+                ' ',
+                deleteButton,
+                ' ',
+                _react2.default.createElement('br', null),
+                configuration
+            );
         }
     }, {
         key: 'removeSpecialRow',
