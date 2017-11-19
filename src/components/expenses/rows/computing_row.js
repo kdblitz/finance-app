@@ -72,7 +72,10 @@ export default class ComputingRow extends BaseRow {
             <button type="button" className="btn btn-danger btn-sm" onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> : null;
         const configuration = this.state.showConfig ? this.renderConfig() : '';
         
-        return [configurationButton, deleteButton, <br/>, configuration];
+        return (<span>
+            {configurationButton} {deleteButton} <br/>
+            {configuration}
+        </span>);
     }
 
     removeSpecialRow(rowName) {
