@@ -7,6 +7,8 @@ import BaseRow from './base_row';
 import { updatePayment } from '../../../actions/expense_actions';
 import { updateComputation, updateComputationForKey } from '../../../actions/computation_actions';
 
+import './payment_row.css';
+
 export const key = 'payment';
 
 class PaymentRow extends BaseRow {
@@ -55,15 +57,19 @@ class PaymentRow extends BaseRow {
     renderUserCells() {
         return _.keys(this.getUsers()).map(user => {
             return !_.isUndefined(this.getUserPayment(user)) ? (
-                <td key={user}>
-                    <div className="input-group">
-                        <input type="number" pattern="[0-9]*" min="0" className="form-control" 
-                            value={this.getUserPayment(user)}
-                            onChange={event => this.updatePayment(user, event.target.value)} />
-                    </div>
+                <td key={user} className="payment">
+                    {this.renderPayment(user)}
                 </td>
             ):<td key={user}></td>;
         });
+    }
+
+    renderPayment(user) {
+        return this.props.hasWriteAccess ? (<div className="input-group">
+            <input type="number" pattern="[0-9]*" min="0" className="form-control" 
+            value={this.getUserPayment(user)}
+            onChange={event => this.updatePayment(user, event.target.value)} />
+            </div>) : this.getUserPayment(user);
     }
 
     updatePayment(user, value) {

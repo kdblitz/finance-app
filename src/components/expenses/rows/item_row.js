@@ -7,6 +7,8 @@ import BaseRow from './base_row';
 
 import { removeItem, toggleSharing, updateClaim } from '../../../actions/expense_actions';
 
+import './item_row.css';
+
 class ItemRow extends BaseRow {
     determineRowStyle() {
         const { shared, quantity, claimedQuantity } = this.props.item;
@@ -24,10 +26,10 @@ class ItemRow extends BaseRow {
 
     renderHeaderCells() {
         const { name, quantity, price } = this.props.item;
+        const removeButton = this.props.hasWriteAccess ? (<button className="btn btn-danger btn-sm"
+            type="button" onClick={() => this.props.removeItem(this.props.item)}>-</button>) : '';
         return [
-            (<th key='name'>{name} <button className="btn btn-danger btn-sm"
-                    type="button" onClick={() => this.props.removeItem(this.props.item)}>-</button>
-            </th>),
+            (<th key='name'>{name} {removeButton}</th>),
             (<td className="quantity" key='quantity'>{quantity}</td>),
             (<td className="price" key='price'>
                 {price * quantity}<br/>
@@ -45,7 +47,8 @@ class ItemRow extends BaseRow {
                     <label className="form-check-label">
                         <input className="form-check-input" type="checkbox"
                             checked={shared}
-                            onChange={event => this.props.toggleSharing(name, event.target.checked)}/>
+                            onChange={event => this.props.toggleSharing(name, event.target.checked)}
+                            disabled={!this.props.hasWriteAccess}/>
                     </label>
                 </div>
                 {(shared) ? <small className="text-muted">({ this.computeShare(item).toFixed(2) })</small> : ''}
@@ -60,13 +63,16 @@ class ItemRow extends BaseRow {
     renderUserCells() {
         const { name } = this.props.item;
         return _.keys(this.props.users).map(user => {
+            const claimDisplay = this.props.hasWriteAccess 
+                ? (<div className="input-group">
+                    <input type="number" pattern="[0-9]*" min="0" className="form-control" 
+                    value={this.props.users[user].claims[name]}
+                    onChange={event => this.props.updateClaim(user, name, event.target.value)} /></div>)
+                : <div className="claim">{this.props.users[user].claims[name]}</div>;
+
             return (
                 <td key={user}>
-                    <div className="input-group">
-                        <input type="number" pattern="[0-9]*" min="0" className="form-control" 
-                            value={this.props.users[user].claims[name]}
-                            onChange={event => this.props.updateClaim(user, name, event.target.value)} />
-                    </div>
+                    {claimDisplay}
                 </td>
             );
         });

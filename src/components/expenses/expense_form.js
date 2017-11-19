@@ -18,6 +18,8 @@ import SubtotalRow from './rows/subtotal_row';
 import ServiceChargeRow from './rows/service_charge_row';
 import TotalRow from './rows/total_row';
 
+import { hasWriteAccess } from '../../utils/auth';
+
 const rows = {
   SubtotalRow,
   ServiceChargeRow,
@@ -33,6 +35,9 @@ class ExpenseForm extends Component {
     this.props.fetchExpenseData(this.getExpenseId());
   }
 
+  hasWriteAccess() {
+    return hasWriteAccess(this.props.CurrentExpense);
+  }
 
   render() {
     if (_.isEmpty(this.props.CurrentExpense)) {
@@ -41,9 +46,9 @@ class ExpenseForm extends Component {
     return (
       <div className="Expense-form">
         <div className="title d-flex flex-row mb-3">
-          <input type="text" className="form-control col-2"
+          {this.hasWriteAccess() ? (<input type="text" className="form-control col-2"
             value={this.props.CurrentExpense.name}
-            onChange={event => this.props.updateTitle(event.target.value)}/> 
+            onChange={event => this.props.updateTitle(event.target.value)}/>) : <h2>{this.props.CurrentExpense.name}</h2>}
         </div>
         <table className="table">
           <thead>
@@ -51,9 +56,7 @@ class ExpenseForm extends Component {
               {this.renderItemHeader()}
               <th className="shared">Shared?</th>
               {this.renderNameHeader()}
-              <th className="addUser">
-                <AddUserForm />
-              </th>
+              {this.renderAddUserForm()}
             </tr>
           </thead>
           <tbody>
@@ -63,8 +66,8 @@ class ExpenseForm extends Component {
             {this.renderFooterRows()}
           </tbody>
         </table>
-        <button className="btn btn-primary"
-          onClick={() => this.saveExpense()}>Save</button>
+        { this.hasWriteAccess() ? <button className="btn btn-primary"
+          onClick={() => this.saveExpense()}>Save</button> : null}
       </div>
     );
   }
@@ -76,20 +79,37 @@ class ExpenseForm extends Component {
 
   renderNameHeader() {
     return _.keys(this.props.CurrentExpense.users).map(user => {
+      const deleteButton = this.hasWriteAccess() ?
+        (<button className="btn btn-outline-danger btn-sm"
+          onClick={() => this.props.removeUser(user)}>
+          <span className="oi oi-trash"></span></button>) : '';
+
       return (
         <th key={user} className="users">
           <span className="name">{user}</span>
-          <button className="btn btn-outline-danger btn-sm"
-            onClick={() => this.props.removeUser(user)}>
-            <span className="oi oi-trash"></span>
-            </button></th>
+          {deleteButton}
+        </th>
       );
     });
   }
 
+  renderAddUserForm() {
+    if (this.hasWriteAccess()) {
+      return (
+        <th className="addUser">
+          <AddUserForm />
+        </th>
+      );
+    }
+    return null;
+  }
+
   renderBody() {
     return _.map(this.props.CurrentExpense.items, item =>
-      <ItemRow key={item.name} item={item} users={this.props.CurrentExpense.users} />);
+      <ItemRow key={item.name} 
+        item={item} 
+        users={this.props.CurrentExpense.users} 
+        hasWriteAccess={this.hasWriteAccess()}/>);
   }
 
   renderSpecialRows() {
@@ -103,8 +123,11 @@ class ExpenseForm extends Component {
     const specialRows = _.map(currentRows, row => {
       const SpecialRow = rows[row.type];
       return (
-        <SpecialRow key={row.type} expenseData={this.props.CurrentExpense}
-          computations={this.props.Computations} config={row.config} />
+        <SpecialRow key={row.type}
+          expenseData={this.props.CurrentExpense}
+          computations={this.props.Computations} 
+          config={row.config}
+          hasWriteAccess={this.hasWriteAccess()} />
       );
     });
 
@@ -117,7 +140,9 @@ class ExpenseForm extends Component {
   }
 
   renderItemAdderRow() {
-    return <tr><td colSpan="4"><AddItemForm /></td></tr>;
+    return this.hasWriteAccess() 
+      ? <tr><td colSpan="4"><AddItemForm /></td></tr>
+      : null;
   }
 
   saveExpense() {

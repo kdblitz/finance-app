@@ -30,6 +30,7 @@ export const SAVE_EXPENSE_DATA = 'save_expense_data';
 export function saveExpenseData(expenseId,expenseData) {
   if (!expenseId) {
     expenseId = database.ref().child('expense').push().key;
+    expenseData.creator = getUid();
   }
 
   return dispatch => {

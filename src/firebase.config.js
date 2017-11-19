@@ -2,6 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
+export const PUBLIC_USER = 'public';
+
 const config = {
   apiKey: "AIzaSyCb4Qc3jpLBRQZGg91GMrE1qN0cu5pdP4c",
   authDomain: "singils-app.firebaseapp.com",
@@ -22,5 +24,5 @@ export function getUserInfo() {
 
 export function getUid() {
   const userInfo = getUserInfo();
-  return userInfo ? userInfo.uid : 'public';
+  return userInfo ? userInfo.uid : PUBLIC_USER;
 }

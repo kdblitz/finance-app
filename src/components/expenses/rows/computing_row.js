@@ -56,17 +56,23 @@ export default class ComputingRow extends BaseRow {
     renderHeaderCells() {
         return [
             (<th key="label">{this.props.label} 
-              { this.props.configurable 
-                ? <span className="oi oi-wrench" onClick={() => this.setState({showConfig: !this.state.showConfig})}></span> : ''}
-              { this.props.allowDeletion
-                ? <button type="button" className="btn btn-danger btn-sm"
-                  onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> 
-                : '' }
-              <br/>
-              { this.state.showConfig ? this.renderConfig() : '' }
+              { this.renderConfigurations() }
               </th>),
             (<td key="price" className="price" colSpan={2}>{this.renderOverallCell()}</td>)
         ];
+    }
+
+    renderConfigurations() {
+        if (!this.props.hasWriteAccess) {
+            return null;
+        }
+        const configurationButton = this.props.configurable ?
+            <span className="oi oi-wrench" onClick={() => this.setState({showConfig: !this.state.showConfig})}></span> : null;
+        const deleteButton = this.props.allowDeletion ?
+            <button type="button" className="btn btn-danger btn-sm" onClick={() => this.removeSpecialRow(this.constructor.name)}>-</button> : null;
+        const configuration = this.state.showConfig ? this.renderConfig() : '';
+        
+        return [configurationButton, deleteButton, <br/>, configuration];
     }
 
     removeSpecialRow(rowName) {
@@ -93,7 +99,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderUserCell(value, index) {
-        return <td key={index}>{typeof value === 'number' ? value.toFixed(2): ''}</td>;
+        return <td key={index} className="price">{typeof value === 'number' ? value.toFixed(2): ''}</td>;
     }
 }
 
