@@ -25,9 +25,9 @@ class NavigationBar extends Component {
             <li className="nav-item">
               <NavLink to={NEW_EXPENSE} exact className="nav-link" activeClassName="active">New</NavLink>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink to={USERS_LIST} exact className="nav-link" activeClassName="active">Users</NavLink>
-            </li>
+            </li> */}
           </ul>
           <div className="navbar-nav">
             {this.renderUserPanel()}
