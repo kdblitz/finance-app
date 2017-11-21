@@ -136,7 +136,12 @@ class ExpenseForm extends Component {
 
   renderFooterRows() {
     return _.map([TotalRow, PaymentRow, ChangeRow],
-      (Row, idx) => <Row key={idx} expenseData={this.props.CurrentExpense} computations={this.props.Computations}/>);
+      (Row, idx) => 
+        <Row key={idx} 
+          expenseData={this.props.CurrentExpense} 
+          computations={this.props.Computations}
+          hasWriteAccess={this.hasWriteAccess()}/>
+    );
   }
 
   renderItemAdderRow() {
