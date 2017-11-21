@@ -77443,7 +77443,10 @@ var ExpenseForm = function (_Component) {
       var _this6 = this;
 
       return _lodash2.default.map([_total_row2.default, _payment_row2.default, _change_row2.default], function (Row, idx) {
-        return _react2.default.createElement(Row, { key: idx, expenseData: _this6.props.CurrentExpense, computations: _this6.props.Computations });
+        return _react2.default.createElement(Row, { key: idx,
+          expenseData: _this6.props.CurrentExpense,
+          computations: _this6.props.Computations,
+          hasWriteAccess: _this6.hasWriteAccess() });
       });
     }
   }, {
