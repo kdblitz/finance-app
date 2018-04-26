@@ -11,13 +11,15 @@ class App extends Component {
     return (
       <div>
         <NavigationBar />
-        <div className="container-fluid mt-3">
-          <Switch>
-            <Route path={`${PUBLIC_PATH}users`} component={UserView}/>
-            <Route path={`${PUBLIC_PATH}expense/new`} component={ExpenseForm}/>
-            <Route path={`${PUBLIC_PATH}expense/:expenseId`} component={ExpenseForm}/>
-            <Route path={`${PUBLIC_PATH}`} component={ExpenseList}/>
-          </Switch>
+        <div className="container-fluid">
+          <div className="mt-3">
+            <Switch>
+              <Route path={`${PUBLIC_PATH}users`} component={UserView}/>
+              <Route path={`${PUBLIC_PATH}expense/new`} component={ExpenseForm}/>
+              <Route path={`${PUBLIC_PATH}expense/:expenseId`} component={ExpenseForm}/>
+              <Route path={`${PUBLIC_PATH}`} component={ExpenseList}/>
+            </Switch>
+          </div>
         </div>
       </div>
     );
