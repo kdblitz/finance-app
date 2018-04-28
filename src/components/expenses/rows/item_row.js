@@ -62,7 +62,9 @@ class ItemRow extends BaseRow {
 
     renderUserCells() {
         const { name } = this.props.item;
-        return _.keys(this.props.users).map(user => {
+        return _.keys(this.props.users)
+          .filter(this.props.determineShownUser)
+          .map(user => {
             const claimDisplay = this.props.hasWriteAccess 
                 ? (<div className="input-group">
                     <input type="number" pattern="[0-9]*" min="0" className="form-control" 

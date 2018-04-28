@@ -55,13 +55,15 @@ class PaymentRow extends BaseRow {
     }
 
     renderUserCells() {
-        return _.keys(this.getUsers()).map(user => {
-            return !_.isUndefined(this.getUserPayment(user)) ? (
-                <td key={user} className="payment">
-                    {this.renderPayment(user)}
-                </td>
-            ):<td key={user}></td>;
-        });
+        return _.keys(this.getUsers())
+            .filter(this.props.determineShownUser)
+            .map(user => {
+                return !_.isUndefined(this.getUserPayment(user)) ? (
+                    <td key={user} className="payment">
+                        {this.renderPayment(user)}
+                    </td>
+                ):<td key={user}></td>;
+            });
     }
 
     renderPayment(user) {

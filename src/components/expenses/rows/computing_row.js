@@ -10,6 +10,7 @@ import { updateComputation, removeComputationForKey } from '../../../actions/com
 export default class ComputingRow extends BaseRow {
     constructor(props) {
         super(props);
+
         this.state = {
             total: 0,
             users: {},
@@ -97,12 +98,13 @@ export default class ComputingRow extends BaseRow {
 
     renderUserCells() {
         return _(this.state.users)
+            .filter( (value, user) => this.props.determineShownUser(user))
             .map(this.renderUserCell)
             .value();
     }
 
     renderUserCell(value, index) {
-        return <td key={index} className="price">{typeof value === 'number' ? value.toFixed(2): ''}</td>;
+      return <td key={index} className="price">{typeof value === 'number' ? value.toFixed(2): ''}</td>;
     }
 }
 
