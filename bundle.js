@@ -47526,27 +47526,46 @@ var PaymentRow = function (_BaseRow) {
     }, {
         key: 'renderPayment',
         value: function renderPayment(user) {
+            return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user);
+        }
+    }, {
+        key: 'renderPaymentForm',
+        value: function renderPaymentForm(user) {
             var _this4 = this;
 
-            return this.props.hasWriteAccess ? _react2.default.createElement(
+            return _react2.default.createElement(
                 'div',
                 { className: 'input-group' },
                 _react2.default.createElement('input', { type: 'number', pattern: '[0-9]*', min: '0', className: 'form-control',
                     value: this.getUserPayment(user),
                     onChange: function onChange(event) {
                         return _this4.updatePayment(user, event.target.value);
-                    } })
-            ) : this.getUserPayment(user);
+                    } }),
+                _react2.default.createElement(
+                    'button',
+                    { type: 'button',
+                        onClick: function onClick() {
+                            return _this4.settleBalance(user);
+                        } },
+                    _react2.default.createElement('span', { className: 'oi oi-thumb-up' })
+                )
+            );
         }
     }, {
         key: 'updatePayment',
         value: function updatePayment(user, value) {
+            console.log(user, value);
             this.props.updatePayment(user, Number(value));
             return this.props.updateComputationForKey({
                 key: this.props.key,
                 user: user,
                 value: Number(value)
             });
+        }
+    }, {
+        key: 'settleBalance',
+        value: function settleBalance(user) {
+            this.updatePayment(user, Math.round(this.props.computations.total.users[user] * 100) / 100);
         }
     }]);
 
@@ -79935,7 +79954,7 @@ exports = module.exports = __webpack_require__(30)(undefined);
 
 
 // module
-exports.push([module.i, ".payment-row .payment {\n  text-align: right;\n}", ""]);
+exports.push([module.i, ".payment-row .payment {\n  text-align: right;\n}\n\n.payment-row input::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n} ", ""]);
 
 // exports
 
