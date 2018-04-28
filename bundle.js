@@ -19649,7 +19649,11 @@ var ComputingRow = function (_BaseRow) {
     }, {
         key: 'renderUserCells',
         value: function renderUserCells() {
-            return (0, _lodash2.default)(this.state.users).map(this.renderUserCell).value();
+            var _this4 = this;
+
+            return (0, _lodash2.default)(this.state.users).filter(function (value, user) {
+                return _this4.props.determineShownUser(user);
+            }).map(this.renderUserCell).value();
         }
     }, {
         key: 'renderUserCell',
@@ -47511,7 +47515,7 @@ var PaymentRow = function (_BaseRow) {
         value: function renderUserCells() {
             var _this3 = this;
 
-            return _lodash2.default.keys(this.getUsers()).map(function (user) {
+            return _lodash2.default.keys(this.getUsers()).filter(this.props.determineShownUser).map(function (user) {
                 return !_lodash2.default.isUndefined(_this3.getUserPayment(user)) ? _react2.default.createElement(
                     'td',
                     { key: user, className: 'payment' },
@@ -78964,13 +78968,27 @@ var rows = {
 var ExpenseForm = function (_Component) {
   _inherits(ExpenseForm, _Component);
 
-  function ExpenseForm() {
+  function ExpenseForm(props) {
     _classCallCheck(this, ExpenseForm);
 
-    return _possibleConstructorReturn(this, (ExpenseForm.__proto__ || Object.getPrototypeOf(ExpenseForm)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (ExpenseForm.__proto__ || Object.getPrototypeOf(ExpenseForm)).call(this, props));
+
+    _this.state = {
+      showPaid: true
+    };
+
+    _this.determineShownUser = _this.determineShownUser.bind(_this);
+    return _this;
   }
 
   _createClass(ExpenseForm, [{
+    key: 'toggleShowPaid',
+    value: function toggleShowPaid() {
+      this.setState({
+        showPaid: !this.state.showPaid
+      });
+    }
+  }, {
     key: 'getExpenseId',
     value: function getExpenseId() {
       return this.props.match.params.expenseId;
@@ -78985,6 +79003,17 @@ var ExpenseForm = function (_Component) {
     key: 'hasWriteAccess',
     value: function hasWriteAccess() {
       return (0, _auth.hasWriteAccess)(this.props.CurrentExpense);
+    }
+  }, {
+    key: 'isPaymentSettled',
+    value: function isPaymentSettled(user) {
+      var unsettled = _lodash2.default.get(this.props.Computations, 'change.users[' + user + ']', 0);
+      return !Math.round(unsettled * 100);
+    }
+  }, {
+    key: 'determineShownUser',
+    value: function determineShownUser(user) {
+      return this.state.showPaid ? true : !this.isPaymentSettled(user);
     }
   }, {
     key: 'render',
@@ -79008,6 +79037,14 @@ var ExpenseForm = function (_Component) {
             'h2',
             null,
             this.props.CurrentExpense.name
+          ),
+          _react2.default.createElement(
+            'button',
+            { type: 'button', className: 'btn btn-primary ' + (this.state.showPaid ? 'active' : ''),
+              onClick: function onClick() {
+                return _this2.toggleShowPaid();
+              } },
+            'Toggle Settled'
           )
         ),
         _react2.default.createElement(
@@ -79064,7 +79101,7 @@ var ExpenseForm = function (_Component) {
     value: function renderNameHeader() {
       var _this3 = this;
 
-      return _lodash2.default.keys(this.props.CurrentExpense.users).map(function (user) {
+      return _lodash2.default.keys(this.props.CurrentExpense.users).filter(this.determineShownUser).map(function (user) {
         var deleteButton = _this3.hasWriteAccess() ? _react2.default.createElement(
           'button',
           { className: 'btn btn-outline-danger btn-sm',
@@ -79104,10 +79141,11 @@ var ExpenseForm = function (_Component) {
       var _this4 = this;
 
       return _lodash2.default.map(this.props.CurrentExpense.items, function (item) {
-        return _react2.default.createElement(_item_row2.default, { key: item.name,
+        return _react2.default.createElement(_item_row2.default, { key: item.name + _this4.state.showPaid,
           item: item,
           users: _this4.props.CurrentExpense.users,
-          hasWriteAccess: _this4.hasWriteAccess() });
+          hasWriteAccess: _this4.hasWriteAccess(),
+          determineShownUser: _this4.determineShownUser });
       });
     }
   }, {
@@ -79124,11 +79162,12 @@ var ExpenseForm = function (_Component) {
 
       var specialRows = _lodash2.default.map(currentRows, function (row) {
         var SpecialRow = rows[row.type];
-        return _react2.default.createElement(SpecialRow, { key: row.type,
+        return _react2.default.createElement(SpecialRow, { key: row.type + _this5.state.showPaid,
           expenseData: _this5.props.CurrentExpense,
           computations: _this5.props.Computations,
           config: row.config,
-          hasWriteAccess: _this5.hasWriteAccess() });
+          hasWriteAccess: _this5.hasWriteAccess(),
+          determineShownUser: _this5.determineShownUser });
       });
 
       return specialRows;
@@ -79139,10 +79178,11 @@ var ExpenseForm = function (_Component) {
       var _this6 = this;
 
       return _lodash2.default.map([_total_row2.default, _payment_row2.default, _change_row2.default], function (Row, idx) {
-        return _react2.default.createElement(Row, { key: idx,
+        return _react2.default.createElement(Row, { key: idx + _this6.state.showPaid,
           expenseData: _this6.props.CurrentExpense,
           computations: _this6.props.Computations,
-          hasWriteAccess: _this6.hasWriteAccess() });
+          hasWriteAccess: _this6.hasWriteAccess(),
+          determineShownUser: _this6.determineShownUser });
       });
     }
   }, {
@@ -79718,7 +79758,7 @@ var ItemRow = function (_BaseRow) {
 
             var name = this.props.item.name;
 
-            return _lodash2.default.keys(this.props.users).map(function (user) {
+            return _lodash2.default.keys(this.props.users).filter(this.props.determineShownUser).map(function (user) {
                 var claimDisplay = _this4.props.hasWriteAccess ? _react2.default.createElement(
                     'div',
                     { className: 'input-group' },
