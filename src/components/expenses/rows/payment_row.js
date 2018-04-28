@@ -67,20 +67,34 @@ class PaymentRow extends BaseRow {
     }
 
     renderPayment(user) {
-        return this.props.hasWriteAccess ? (<div className="input-group">
-            <input type="number" pattern="[0-9]*" min="0" className="form-control" 
-            value={this.getUserPayment(user)}
-            onChange={event => this.updatePayment(user, event.target.value)} />
-            </div>) : this.getUserPayment(user);
+        return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user);
+    }
+
+    renderPaymentForm(user) {
+      return (
+          <div className="input-group">
+              <input type="number" pattern="[0-9]*" min="0" className="form-control" 
+                  value={this.getUserPayment(user)}
+                  onChange={event => this.updatePayment(user, event.target.value)} />
+              <button type="button"
+                  onClick={() => this.settleBalance(user)}><span className="oi oi-thumb-up"></span></button>
+          </div>
+      );
     }
 
     updatePayment(user, value) {
+        console.log(user, value);
         this.props.updatePayment(user, Number(value));
         return this.props.updateComputationForKey({
             key: this.props.key,
             user,
             value: Number(value)
         });
+    }
+
+    settleBalance(user) {
+        this.updatePayment(user, 
+          Math.round(this.props.computations.total.users[user] * 100) / 100);
     }
 }
 

@@ -85,7 +85,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderConfig() {
-      return '';
+        return '';
     }
 
     renderOverallCell() {
@@ -104,7 +104,7 @@ export default class ComputingRow extends BaseRow {
     }
 
     renderUserCell(value, index) {
-      return <td key={index} className="price">{typeof value === 'number' ? value.toFixed(2): ''}</td>;
+        return <td key={index} className="price">{typeof value === 'number' ? value.toFixed(2): ''}</td>;
     }
 }
 
