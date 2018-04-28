@@ -32,7 +32,7 @@ class ExpenseForm extends Component {
       showPaid: true
     };
 
-    this.determineShownUser = this.determineShownUser.bind(this)
+    this.determineShownUser = this.determineShownUser.bind(this);
   }
 
   toggleShowPaid() {
@@ -74,7 +74,7 @@ class ExpenseForm extends Component {
             value={this.props.CurrentExpense.name}
             onChange={event => this.props.updateTitle(event.target.value)}/>) : <h2>{this.props.CurrentExpense.name}</h2>}
           <button type="button" className={`btn btn-primary ${this.state.showPaid ? 'active': ''}`}
-            onClick={() => this.toggleShowPaid()}>Toggle Settled</button> 
+            onClick={() => this.toggleShowPaid()}>Toggle Settled</button>
         </div>
         <table className="table">
           <thead>
@@ -133,8 +133,8 @@ class ExpenseForm extends Component {
   }
 
   renderBody() {
-    return _.map(this.props.CurrentExpense.items, item => 
-      <ItemRow key={item.name + this.state.showPaid} 
+    return _.map(this.props.CurrentExpense.items, item =>
+      <ItemRow key={item.name + this.state.showPaid}
         item={item} 
         users={this.props.CurrentExpense.users} 
         hasWriteAccess={this.hasWriteAccess()}
@@ -155,9 +155,9 @@ class ExpenseForm extends Component {
       return (
         <SpecialRow key={row.type + this.state.showPaid}
           expenseData={this.props.CurrentExpense}
-          computations={this.props.Computations} 
+          computations={this.props.Computations}
           config={row.config}
-          hasWriteAccess={this.hasWriteAccess()} 
+          hasWriteAccess={this.hasWriteAccess()}
           determineShownUser={this.determineShownUser}/>
       );
     });
@@ -168,8 +168,8 @@ class ExpenseForm extends Component {
   renderFooterRows() {
     return _.map([TotalRow, PaymentRow, ChangeRow],
       (Row, idx) => 
-        <Row key={idx + this.state.showPaid} 
-          expenseData={this.props.CurrentExpense} 
+        <Row key={idx + this.state.showPaid}
+          expenseData={this.props.CurrentExpense}
           computations={this.props.Computations}
           hasWriteAccess={this.hasWriteAccess()}
           determineShownUser={this.determineShownUser}/>

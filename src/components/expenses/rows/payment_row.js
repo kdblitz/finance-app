@@ -76,8 +76,11 @@ class PaymentRow extends BaseRow {
               <input type="number" pattern="[0-9]*" min="0" className="form-control" 
                   value={this.getUserPayment(user)}
                   onChange={event => this.updatePayment(user, event.target.value)} />
-              <button type="button"
-                  onClick={() => this.settleBalance(user)}><span className="oi oi-thumb-up"></span></button>
+              <span className="input-group-btn">
+                <button type="button"
+                    className="btn btn-success"
+                    onClick={() => this.settleBalance(user)}><span className="oi oi-thumb-up"></span></button>
+              </span>
           </div>
       );
     }
