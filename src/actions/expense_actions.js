@@ -27,7 +27,7 @@ export function fetchExpenseData(expenseId) {
 
 export const SAVE_EXPENSE_DATA = 'save_expense_data';
 
-export function saveExpenseData(expenseId,expenseData) {
+export function saveExpenseData(expenseId, expenseData, computations) {
   if (!expenseId) {
     expenseId = database.ref().child('expense').push().key;
     expenseData.creator = getUid();
@@ -36,7 +36,10 @@ export function saveExpenseData(expenseId,expenseData) {
   return dispatch => {
     const updates = {};
     updates[`expense/${expenseId}`] = expenseData;
-    updates[`expenseList/${getUid()}/${expenseId}`] = {name: expenseData.name};
+    updates[`expenseList/${getUid()}/${expenseId}`] = {
+      name: expenseData.name,
+      unsettled: computations.getUnsettledCount()
+    };
     return database.ref().update(updates)
       .then(() => expenseId);
   };

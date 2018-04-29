@@ -86,7 +86,6 @@ class PaymentRow extends BaseRow {
     }
 
     updatePayment(user, value) {
-        console.log(user, value);
         this.props.updatePayment(user, Number(value));
         return this.props.updateComputationForKey({
             key: this.props.key,

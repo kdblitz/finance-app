@@ -18,6 +18,7 @@ import SubtotalRow from './rows/subtotal_row';
 import ServiceChargeRow from './rows/service_charge_row';
 import TotalRow from './rows/total_row';
 
+import Computation from './models/computation';
 import { hasWriteAccess } from '../../utils/auth';
 
 const rows = {
@@ -54,13 +55,8 @@ class ExpenseForm extends Component {
     return hasWriteAccess(this.props.CurrentExpense);
   }
 
-  isPaymentSettled(user) {
-    let unsettled = _.get(this.props.Computations, `change.users[${user}]`, 0);
-    return !(Math.round(unsettled * 100));
-  }
-
   determineShownUser(user) {
-    return this.state.showPaid ? true : !this.isPaymentSettled(user);
+    return this.state.showPaid ? true : !this.props.Computations.isPaymentSettled(user);
   }
 
   render() {
@@ -184,7 +180,7 @@ class ExpenseForm extends Component {
 
   saveExpense() {
     const { users, items, rows } = this.props.CurrentExpense;
-    this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense)
+    this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense, this.props.Computations)
       .then(expenseId => {
         if (this.getExpenseId() !== expenseId) {
           this.props.history.push(getExpenseFormLink(expenseId))
@@ -197,7 +193,7 @@ class ExpenseForm extends Component {
 function mapStateToProps({ CurrentExpense, Computations }) {
   return {
     CurrentExpense,
-    Computations
+    Computations: _.assign(new Computation(), Computations)
   };
 }
 

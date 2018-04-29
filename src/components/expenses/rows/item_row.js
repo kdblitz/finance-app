@@ -51,7 +51,7 @@ class ItemRow extends BaseRow {
                             disabled={!this.props.hasWriteAccess}/>
                     </label>
                 </div>
-                {(shared) ? <small className="text-muted">({ this.computeShare(item).toFixed(2) })</small> : ''}
+                { shared && <small className="text-muted">({ this.computeShare(item).toFixed(2) })</small> }
             </td>
         );
     }
