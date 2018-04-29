@@ -1413,7 +1413,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 var _prodInvariant = __webpack_require__(5);
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var ReactDOMComponentFlags = __webpack_require__(123);
 
 var invariant = __webpack_require__(1);
@@ -12709,7 +12709,7 @@ else if(freeModule){// Export for Node.js.
 (freeModule.exports=_)._=_;// Export for CommonJS support.
 freeExports._=_;}else{// Export to the global object.
 root._=_;}}).call(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(74)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29), __webpack_require__(74)(module)))
 
 /***/ }),
 /* 23 */
@@ -13329,453 +13329,6 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var g;
-
-// This works in non-strict mode
-g = function () {
-	return this;
-}();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
-} catch (e) {
-	// This works if the window reference is available
-	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-
-
-var _prodInvariant = __webpack_require__(5);
-
-var invariant = __webpack_require__(1);
-
-function checkMask(value, bitmask) {
-  return (value & bitmask) === bitmask;
-}
-
-var DOMPropertyInjection = {
-  /**
-   * Mapping from normalized, camelcased property names to a configuration that
-   * specifies how the associated DOM property should be accessed or rendered.
-   */
-  MUST_USE_PROPERTY: 0x1,
-  HAS_BOOLEAN_VALUE: 0x4,
-  HAS_NUMERIC_VALUE: 0x8,
-  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
-  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
-
-  /**
-   * Inject some specialized knowledge about the DOM. This takes a config object
-   * with the following properties:
-   *
-   * isCustomAttribute: function that given an attribute name will return true
-   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
-   * attributes where it's impossible to enumerate all of the possible
-   * attribute names,
-   *
-   * Properties: object mapping DOM property name to one of the
-   * DOMPropertyInjection constants or null. If your attribute isn't in here,
-   * it won't get written to the DOM.
-   *
-   * DOMAttributeNames: object mapping React attribute name to the DOM
-   * attribute name. Attribute names not specified use the **lowercase**
-   * normalized name.
-   *
-   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
-   * attribute namespace URL. (Attribute names not specified use no namespace.)
-   *
-   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
-   * Property names not specified use the normalized name.
-   *
-   * DOMMutationMethods: Properties that require special mutation methods. If
-   * `value` is undefined, the mutation method should unset the property.
-   *
-   * @param {object} domPropertyConfig the config as described above.
-   */
-  injectDOMPropertyConfig: function injectDOMPropertyConfig(domPropertyConfig) {
-    var Injection = DOMPropertyInjection;
-    var Properties = domPropertyConfig.Properties || {};
-    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
-    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
-    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
-    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
-
-    if (domPropertyConfig.isCustomAttribute) {
-      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
-    }
-
-    for (var propName in Properties) {
-      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
-
-      var lowerCased = propName.toLowerCase();
-      var propConfig = Properties[propName];
-
-      var propertyInfo = {
-        attributeName: lowerCased,
-        attributeNamespace: null,
-        propertyName: propName,
-        mutationMethod: null,
-
-        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
-        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
-        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
-      };
-      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
-
-      if (process.env.NODE_ENV !== 'production') {
-        DOMProperty.getPossibleStandardName[lowerCased] = propName;
-      }
-
-      if (DOMAttributeNames.hasOwnProperty(propName)) {
-        var attributeName = DOMAttributeNames[propName];
-        propertyInfo.attributeName = attributeName;
-        if (process.env.NODE_ENV !== 'production') {
-          DOMProperty.getPossibleStandardName[attributeName] = propName;
-        }
-      }
-
-      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
-        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
-      }
-
-      if (DOMPropertyNames.hasOwnProperty(propName)) {
-        propertyInfo.propertyName = DOMPropertyNames[propName];
-      }
-
-      if (DOMMutationMethods.hasOwnProperty(propName)) {
-        propertyInfo.mutationMethod = DOMMutationMethods[propName];
-      }
-
-      DOMProperty.properties[propName] = propertyInfo;
-    }
-  }
-};
-
-/* eslint-disable max-len */
-var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
-/* eslint-enable max-len */
-
-/**
- * DOMProperty exports lookup objects that can be used like functions:
- *
- *   > DOMProperty.isValid['id']
- *   true
- *   > DOMProperty.isValid['foobar']
- *   undefined
- *
- * Although this may be confusing, it performs better in general.
- *
- * @see http://jsperf.com/key-exists
- * @see http://jsperf.com/key-missing
- */
-var DOMProperty = {
-  ID_ATTRIBUTE_NAME: 'data-reactid',
-  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
-
-  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
-  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
-
-  /**
-   * Map from property "standard name" to an object with info about how to set
-   * the property in the DOM. Each object contains:
-   *
-   * attributeName:
-   *   Used when rendering markup or with `*Attribute()`.
-   * attributeNamespace
-   * propertyName:
-   *   Used on DOM node instances. (This includes properties that mutate due to
-   *   external factors.)
-   * mutationMethod:
-   *   If non-null, used instead of the property or `setAttribute()` after
-   *   initial render.
-   * mustUseProperty:
-   *   Whether the property must be accessed and mutated as an object property.
-   * hasBooleanValue:
-   *   Whether the property should be removed when set to a falsey value.
-   * hasNumericValue:
-   *   Whether the property must be numeric or parse as a numeric and should be
-   *   removed when set to a falsey value.
-   * hasPositiveNumericValue:
-   *   Whether the property must be positive numeric or parse as a positive
-   *   numeric and should be removed when set to a falsey value.
-   * hasOverloadedBooleanValue:
-   *   Whether the property can be used as a flag as well as with a value.
-   *   Removed when strictly equal to false; present without a value when
-   *   strictly equal to true; present with a value otherwise.
-   */
-  properties: {},
-
-  /**
-   * Mapping from lowercase property names to the properly cased version, used
-   * to warn in the case of missing properties. Available only in __DEV__.
-   *
-   * autofocus is predefined, because adding it to the property whitelist
-   * causes unintended side effects.
-   *
-   * @type {Object}
-   */
-  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
-
-  /**
-   * All of the isCustomAttribute() functions that have been injected.
-   */
-  _isCustomAttributeFunctions: [],
-
-  /**
-   * Checks whether a property name is a custom attribute.
-   * @method
-   */
-  isCustomAttribute: function isCustomAttribute(attributeName) {
-    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
-      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
-      if (isCustomAttributeFn(attributeName)) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  injection: DOMPropertyInjection
-};
-
-module.exports = DOMProperty;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.UPDATE_PAYMENT = exports.UPDATE_ROW_CONFIG = exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.UPDATE_TITLE = exports.DELETE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
-exports.fetchExpenseData = fetchExpenseData;
-exports.saveExpenseData = saveExpenseData;
-exports.deleteExpenseData = deleteExpenseData;
-exports.updateTitle = updateTitle;
-exports.addUser = addUser;
-exports.removeUser = removeUser;
-exports.addItem = addItem;
-exports.removeItem = removeItem;
-exports.updateClaim = updateClaim;
-exports.toggleSharing = toggleSharing;
-exports.addSpecialRow = addSpecialRow;
-exports.removeSpecialRow = removeSpecialRow;
-exports.updateRowConfig = updateRowConfig;
-exports.updatePayment = updatePayment;
-
-var _expense = __webpack_require__(413);
-
-var _expense2 = _interopRequireDefault(_expense);
-
-var _firebase = __webpack_require__(64);
-
-var _firebase2 = _interopRequireDefault(_firebase);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var database = _firebase2.default.database();
-var expenseRef = void 0;
-
-var FETCH_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = 'fetch_expense_data';
-
-function fetchExpenseData(expenseId) {
-  if (expenseId) {
-    expenseRef = database.ref('expense/' + expenseId);
-    return function (dispatch) {
-      expenseRef.on('value', function (snapshot) {
-        dispatch({
-          type: FETCH_EXPENSE_DATA,
-          payload: new _expense2.default(snapshot.val())
-        });
-      });
-    };
-  }
-  return {
-    type: FETCH_EXPENSE_DATA,
-    payload: new _expense2.default()
-  };
-}
-
-var SAVE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = 'save_expense_data';
-
-function saveExpenseData(expenseId, expenseData) {
-  if (!expenseId) {
-    expenseId = database.ref().child('expense').push().key;
-    expenseData.creator = (0, _firebase.getUid)();
-  }
-
-  return function (dispatch) {
-    var updates = {};
-    updates['expense/' + expenseId] = expenseData;
-    updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = { name: expenseData.name };
-    return database.ref().update(updates).then(function () {
-      return expenseId;
-    });
-  };
-}
-
-var DELETE_EXPENSE_DATA = exports.DELETE_EXPENSE_DATA = 'delete_expense_data';
-
-function deleteExpenseData(expenseId) {
-  var updates = {};
-  updates['expense/' + expenseId] = null;
-  updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = null;
-  return function (dispatch) {
-    return database.ref().update(updates);
-  };
-}
-
-var UPDATE_TITLE = exports.UPDATE_TITLE = 'update_title';
-
-function updateTitle(title) {
-  return {
-    type: UPDATE_TITLE,
-    payload: title
-  };
-}
-
-var ADD_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
-
-function addUser(user) {
-  return {
-    type: ADD_USER_TO_EXPENSE_FORM,
-    payload: user
-  };
-}
-
-var REMOVE_USER_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = 'remove_user_to_expense';
-
-function removeUser(user) {
-  return {
-    type: REMOVE_USER_TO_EXPENSE_FORM,
-    payload: user
-  };
-}
-
-var ADD_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = 'add_item_to_expense';
-
-function addItem(item) {
-  return {
-    type: ADD_ITEM_TO_EXPENSE_FORM,
-    payload: item
-  };
-}
-
-var REMOVE_ITEM_TO_EXPENSE_FORM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = 'remove_item_to_expense';
-
-function removeItem(item) {
-  return {
-    type: REMOVE_ITEM_TO_EXPENSE_FORM,
-    payload: item
-  };
-}
-
-var UPDATE_CLAIM = exports.UPDATE_CLAIM = 'update_claim';
-
-function updateClaim(user, itemName, claim) {
-  return {
-    type: UPDATE_CLAIM,
-    payload: {
-      user: user,
-      itemName: itemName,
-      claim: claim
-    }
-  };
-}
-
-var TOGGLE_SHARING = exports.TOGGLE_SHARING = 'toggle_sharing';
-
-function toggleSharing(itemName, flag) {
-  return {
-    type: TOGGLE_SHARING,
-    payload: {
-      itemName: itemName,
-      flag: flag
-    }
-  };
-}
-
-var ADD_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = 'add_special_row';
-
-function addSpecialRow(rowName) {
-  return {
-    type: ADD_SPECIAL_ROW,
-    payload: {
-      rowName: rowName
-    }
-  };
-}
-
-var REMOVE_SPECIAL_ROW = exports.REMOVE_SPECIAL_ROW = 'remove_special_row';
-
-function removeSpecialRow(rowName) {
-  return {
-    type: REMOVE_SPECIAL_ROW,
-    payload: {
-      rowName: rowName
-    }
-  };
-}
-
-var UPDATE_ROW_CONFIG = exports.UPDATE_ROW_CONFIG = 'update_row_config';
-
-function updateRowConfig(rowName, config) {
-  return {
-    type: UPDATE_ROW_CONFIG,
-    payload: {
-      rowName: rowName,
-      config: config
-    }
-  };
-}
-
-var UPDATE_PAYMENT = exports.UPDATE_PAYMENT = 'update_payment';
-
-function updatePayment(user, payment) {
-  return {
-    type: UPDATE_PAYMENT,
-    payload: {
-      user: user,
-      payment: payment
-    }
-  };
-}
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
@@ -13852,7 +13405,7 @@ function toComment(sourceMap) {
 }
 
 /***/ }),
-/* 31 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -14209,6 +13762,456 @@ function updateLink (link, options, obj) {
 	if(oldSrc) URL.revokeObjectURL(oldSrc);
 }
 
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var g;
+
+// This works in non-strict mode
+g = function () {
+	return this;
+}();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+
+
+var _prodInvariant = __webpack_require__(5);
+
+var invariant = __webpack_require__(1);
+
+function checkMask(value, bitmask) {
+  return (value & bitmask) === bitmask;
+}
+
+var DOMPropertyInjection = {
+  /**
+   * Mapping from normalized, camelcased property names to a configuration that
+   * specifies how the associated DOM property should be accessed or rendered.
+   */
+  MUST_USE_PROPERTY: 0x1,
+  HAS_BOOLEAN_VALUE: 0x4,
+  HAS_NUMERIC_VALUE: 0x8,
+  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
+  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
+
+  /**
+   * Inject some specialized knowledge about the DOM. This takes a config object
+   * with the following properties:
+   *
+   * isCustomAttribute: function that given an attribute name will return true
+   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
+   * attributes where it's impossible to enumerate all of the possible
+   * attribute names,
+   *
+   * Properties: object mapping DOM property name to one of the
+   * DOMPropertyInjection constants or null. If your attribute isn't in here,
+   * it won't get written to the DOM.
+   *
+   * DOMAttributeNames: object mapping React attribute name to the DOM
+   * attribute name. Attribute names not specified use the **lowercase**
+   * normalized name.
+   *
+   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
+   * attribute namespace URL. (Attribute names not specified use no namespace.)
+   *
+   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
+   * Property names not specified use the normalized name.
+   *
+   * DOMMutationMethods: Properties that require special mutation methods. If
+   * `value` is undefined, the mutation method should unset the property.
+   *
+   * @param {object} domPropertyConfig the config as described above.
+   */
+  injectDOMPropertyConfig: function injectDOMPropertyConfig(domPropertyConfig) {
+    var Injection = DOMPropertyInjection;
+    var Properties = domPropertyConfig.Properties || {};
+    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
+    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
+    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
+    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
+
+    if (domPropertyConfig.isCustomAttribute) {
+      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
+    }
+
+    for (var propName in Properties) {
+      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
+
+      var lowerCased = propName.toLowerCase();
+      var propConfig = Properties[propName];
+
+      var propertyInfo = {
+        attributeName: lowerCased,
+        attributeNamespace: null,
+        propertyName: propName,
+        mutationMethod: null,
+
+        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
+        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
+        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
+        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
+        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
+      };
+      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
+
+      if (process.env.NODE_ENV !== 'production') {
+        DOMProperty.getPossibleStandardName[lowerCased] = propName;
+      }
+
+      if (DOMAttributeNames.hasOwnProperty(propName)) {
+        var attributeName = DOMAttributeNames[propName];
+        propertyInfo.attributeName = attributeName;
+        if (process.env.NODE_ENV !== 'production') {
+          DOMProperty.getPossibleStandardName[attributeName] = propName;
+        }
+      }
+
+      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
+        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
+      }
+
+      if (DOMPropertyNames.hasOwnProperty(propName)) {
+        propertyInfo.propertyName = DOMPropertyNames[propName];
+      }
+
+      if (DOMMutationMethods.hasOwnProperty(propName)) {
+        propertyInfo.mutationMethod = DOMMutationMethods[propName];
+      }
+
+      DOMProperty.properties[propName] = propertyInfo;
+    }
+  }
+};
+
+/* eslint-disable max-len */
+var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
+/* eslint-enable max-len */
+
+/**
+ * DOMProperty exports lookup objects that can be used like functions:
+ *
+ *   > DOMProperty.isValid['id']
+ *   true
+ *   > DOMProperty.isValid['foobar']
+ *   undefined
+ *
+ * Although this may be confusing, it performs better in general.
+ *
+ * @see http://jsperf.com/key-exists
+ * @see http://jsperf.com/key-missing
+ */
+var DOMProperty = {
+  ID_ATTRIBUTE_NAME: 'data-reactid',
+  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
+
+  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
+  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
+
+  /**
+   * Map from property "standard name" to an object with info about how to set
+   * the property in the DOM. Each object contains:
+   *
+   * attributeName:
+   *   Used when rendering markup or with `*Attribute()`.
+   * attributeNamespace
+   * propertyName:
+   *   Used on DOM node instances. (This includes properties that mutate due to
+   *   external factors.)
+   * mutationMethod:
+   *   If non-null, used instead of the property or `setAttribute()` after
+   *   initial render.
+   * mustUseProperty:
+   *   Whether the property must be accessed and mutated as an object property.
+   * hasBooleanValue:
+   *   Whether the property should be removed when set to a falsey value.
+   * hasNumericValue:
+   *   Whether the property must be numeric or parse as a numeric and should be
+   *   removed when set to a falsey value.
+   * hasPositiveNumericValue:
+   *   Whether the property must be positive numeric or parse as a positive
+   *   numeric and should be removed when set to a falsey value.
+   * hasOverloadedBooleanValue:
+   *   Whether the property can be used as a flag as well as with a value.
+   *   Removed when strictly equal to false; present without a value when
+   *   strictly equal to true; present with a value otherwise.
+   */
+  properties: {},
+
+  /**
+   * Mapping from lowercase property names to the properly cased version, used
+   * to warn in the case of missing properties. Available only in __DEV__.
+   *
+   * autofocus is predefined, because adding it to the property whitelist
+   * causes unintended side effects.
+   *
+   * @type {Object}
+   */
+  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
+
+  /**
+   * All of the isCustomAttribute() functions that have been injected.
+   */
+  _isCustomAttributeFunctions: [],
+
+  /**
+   * Checks whether a property name is a custom attribute.
+   * @method
+   */
+  isCustomAttribute: function isCustomAttribute(attributeName) {
+    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
+      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
+      if (isCustomAttributeFn(attributeName)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  injection: DOMPropertyInjection
+};
+
+module.exports = DOMProperty;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.UPDATE_PAYMENT = exports.UPDATE_ROW_CONFIG = exports.REMOVE_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = exports.TOGGLE_SHARING = exports.UPDATE_CLAIM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = exports.UPDATE_TITLE = exports.DELETE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = undefined;
+exports.fetchExpenseData = fetchExpenseData;
+exports.saveExpenseData = saveExpenseData;
+exports.deleteExpenseData = deleteExpenseData;
+exports.updateTitle = updateTitle;
+exports.addUser = addUser;
+exports.removeUser = removeUser;
+exports.addItem = addItem;
+exports.removeItem = removeItem;
+exports.updateClaim = updateClaim;
+exports.toggleSharing = toggleSharing;
+exports.addSpecialRow = addSpecialRow;
+exports.removeSpecialRow = removeSpecialRow;
+exports.updateRowConfig = updateRowConfig;
+exports.updatePayment = updatePayment;
+
+var _expense = __webpack_require__(413);
+
+var _expense2 = _interopRequireDefault(_expense);
+
+var _firebase = __webpack_require__(64);
+
+var _firebase2 = _interopRequireDefault(_firebase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var database = _firebase2.default.database();
+var expenseRef = void 0;
+
+var FETCH_EXPENSE_DATA = exports.FETCH_EXPENSE_DATA = 'fetch_expense_data';
+
+function fetchExpenseData(expenseId) {
+  if (expenseId) {
+    expenseRef = database.ref('expense/' + expenseId);
+    return function (dispatch) {
+      expenseRef.on('value', function (snapshot) {
+        dispatch({
+          type: FETCH_EXPENSE_DATA,
+          payload: new _expense2.default(snapshot.val())
+        });
+      });
+    };
+  }
+  return {
+    type: FETCH_EXPENSE_DATA,
+    payload: new _expense2.default()
+  };
+}
+
+var SAVE_EXPENSE_DATA = exports.SAVE_EXPENSE_DATA = 'save_expense_data';
+
+function saveExpenseData(expenseId, expenseData, computations) {
+  if (!expenseId) {
+    expenseId = database.ref().child('expense').push().key;
+    expenseData.creator = (0, _firebase.getUid)();
+  }
+
+  return function (dispatch) {
+    var updates = {};
+    updates['expense/' + expenseId] = expenseData;
+    updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = {
+      name: expenseData.name,
+      unsettled: computations.getUnsettledCount()
+    };
+    return database.ref().update(updates).then(function () {
+      return expenseId;
+    });
+  };
+}
+
+var DELETE_EXPENSE_DATA = exports.DELETE_EXPENSE_DATA = 'delete_expense_data';
+
+function deleteExpenseData(expenseId) {
+  var updates = {};
+  updates['expense/' + expenseId] = null;
+  updates['expenseList/' + (0, _firebase.getUid)() + '/' + expenseId] = null;
+  return function (dispatch) {
+    return database.ref().update(updates);
+  };
+}
+
+var UPDATE_TITLE = exports.UPDATE_TITLE = 'update_title';
+
+function updateTitle(title) {
+  return {
+    type: UPDATE_TITLE,
+    payload: title
+  };
+}
+
+var ADD_USER_TO_EXPENSE_FORM = exports.ADD_USER_TO_EXPENSE_FORM = 'add_user_to_expense';
+
+function addUser(user) {
+  return {
+    type: ADD_USER_TO_EXPENSE_FORM,
+    payload: user
+  };
+}
+
+var REMOVE_USER_TO_EXPENSE_FORM = exports.REMOVE_USER_TO_EXPENSE_FORM = 'remove_user_to_expense';
+
+function removeUser(user) {
+  return {
+    type: REMOVE_USER_TO_EXPENSE_FORM,
+    payload: user
+  };
+}
+
+var ADD_ITEM_TO_EXPENSE_FORM = exports.ADD_ITEM_TO_EXPENSE_FORM = 'add_item_to_expense';
+
+function addItem(item) {
+  return {
+    type: ADD_ITEM_TO_EXPENSE_FORM,
+    payload: item
+  };
+}
+
+var REMOVE_ITEM_TO_EXPENSE_FORM = exports.REMOVE_ITEM_TO_EXPENSE_FORM = 'remove_item_to_expense';
+
+function removeItem(item) {
+  return {
+    type: REMOVE_ITEM_TO_EXPENSE_FORM,
+    payload: item
+  };
+}
+
+var UPDATE_CLAIM = exports.UPDATE_CLAIM = 'update_claim';
+
+function updateClaim(user, itemName, claim) {
+  return {
+    type: UPDATE_CLAIM,
+    payload: {
+      user: user,
+      itemName: itemName,
+      claim: claim
+    }
+  };
+}
+
+var TOGGLE_SHARING = exports.TOGGLE_SHARING = 'toggle_sharing';
+
+function toggleSharing(itemName, flag) {
+  return {
+    type: TOGGLE_SHARING,
+    payload: {
+      itemName: itemName,
+      flag: flag
+    }
+  };
+}
+
+var ADD_SPECIAL_ROW = exports.ADD_SPECIAL_ROW = 'add_special_row';
+
+function addSpecialRow(rowName) {
+  return {
+    type: ADD_SPECIAL_ROW,
+    payload: {
+      rowName: rowName
+    }
+  };
+}
+
+var REMOVE_SPECIAL_ROW = exports.REMOVE_SPECIAL_ROW = 'remove_special_row';
+
+function removeSpecialRow(rowName) {
+  return {
+    type: REMOVE_SPECIAL_ROW,
+    payload: {
+      rowName: rowName
+    }
+  };
+}
+
+var UPDATE_ROW_CONFIG = exports.UPDATE_ROW_CONFIG = 'update_row_config';
+
+function updateRowConfig(rowName, config) {
+  return {
+    type: UPDATE_ROW_CONFIG,
+    payload: {
+      rowName: rowName,
+      config: config
+    }
+  };
+}
+
+var UPDATE_PAYMENT = exports.UPDATE_PAYMENT = 'update_payment';
+
+function updatePayment(user, payment) {
+  return {
+    type: UPDATE_PAYMENT,
+    payload: {
+      user: user,
+      payment: payment
+    }
+  };
+}
 
 /***/ }),
 /* 32 */
@@ -19510,7 +19513,7 @@ var _base_row = __webpack_require__(111);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _computation_actions = __webpack_require__(54);
 
@@ -36722,7 +36725,7 @@ Popper.Defaults = Defaults;
 
 exports.default = Popper;
 //# sourceMappingURL=popper.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
 
 /***/ }),
 /* 116 */
@@ -38617,7 +38620,7 @@ module.exports = CSSProperty;
 
 
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var ReactDOMComponentTree = __webpack_require__(9);
 var ReactInstrumentation = __webpack_require__(18);
 
@@ -39799,7 +39802,7 @@ module.exports = getActiveElement;
 var _prodInvariant = __webpack_require__(5);
 
 var DOMLazyTree = __webpack_require__(40);
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var React = __webpack_require__(37);
 var ReactBrowserEventEmitter = __webpack_require__(62);
 var ReactCurrentOwner = __webpack_require__(23);
@@ -41950,7 +41953,7 @@ if (typeof global !== 'undefined') {
 }
 var globalScope = exports.globalScope = scope;
 //# sourceMappingURL=globalScope.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
 
 /***/ }),
 /* 165 */
@@ -47427,7 +47430,7 @@ var _base_row = __webpack_require__(111);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _computation_actions = __webpack_require__(54);
 
@@ -47542,19 +47545,23 @@ var PaymentRow = function (_BaseRow) {
                         return _this4.updatePayment(user, event.target.value);
                     } }),
                 _react2.default.createElement(
-                    'button',
-                    { type: 'button',
-                        onClick: function onClick() {
-                            return _this4.settleBalance(user);
-                        } },
-                    _react2.default.createElement('span', { className: 'oi oi-thumb-up' })
+                    'span',
+                    { className: 'input-group-btn' },
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'button',
+                            className: 'btn btn-success',
+                            onClick: function onClick() {
+                                return _this4.settleBalance(user);
+                            } },
+                        _react2.default.createElement('span', { className: 'oi oi-thumb-up' })
+                    )
                 )
             );
         }
     }, {
         key: 'updatePayment',
         value: function updatePayment(user, value) {
-            console.log(user, value);
             this.props.updatePayment(user, Number(value));
             return this.props.updateComputationForKey({
                 key: this.props.key,
@@ -47797,13 +47804,13 @@ var _App = __webpack_require__(334);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _reducers = __webpack_require__(430);
+var _reducers = __webpack_require__(433);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
 var _reactRouterDom = __webpack_require__(48);
 
-var _registerServiceWorker = __webpack_require__(435);
+var _registerServiceWorker = __webpack_require__(438);
 
 var _registerServiceWorker2 = _interopRequireDefault(_registerServiceWorker);
 
@@ -47837,7 +47844,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -47857,7 +47864,7 @@ if(false) {
 /* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -48001,7 +48008,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -48021,7 +48028,7 @@ if(false) {
 /* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -52861,7 +52868,7 @@ module.exports = EnterLeaveEventPlugin;
 
 
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -53549,7 +53556,7 @@ var AutoFocusUtils = __webpack_require__(248);
 var CSSPropertyOperations = __webpack_require__(249);
 var DOMLazyTree = __webpack_require__(40);
 var DOMNamespaces = __webpack_require__(83);
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var DOMPropertyOperations = __webpack_require__(135);
 var EventPluginHub = __webpack_require__(45);
 var EventPluginRegistry = __webpack_require__(57);
@@ -58509,7 +58516,7 @@ module.exports = getUnboundedScrollPosition;
 
 
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var EventPluginHub = __webpack_require__(45);
 var EventPluginUtils = __webpack_require__(77);
 var ReactComponentEnvironment = __webpack_require__(86);
@@ -60614,7 +60621,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var EventPluginRegistry = __webpack_require__(57);
 var ReactComponentTreeHook = __webpack_require__(15);
 
@@ -60777,7 +60784,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 
 
 
-var DOMProperty = __webpack_require__(28);
+var DOMProperty = __webpack_require__(30);
 var ReactComponentTreeHook = __webpack_require__(15);
 
 var warning = __webpack_require__(2);
@@ -60951,7 +60958,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var freeGlobal = (typeof global === 'undefined' ? 'undefined' : _typeof(global)) == 'object' && global && global.Object === Object && global;
 
 exports.default = freeGlobal;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
 
 /***/ }),
 /* 311 */
@@ -61173,7 +61180,7 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2.default)(root);
 exports.default = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(74)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29), __webpack_require__(74)(module)))
 
 /***/ }),
 /* 317 */
@@ -62306,7 +62313,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -62326,7 +62333,7 @@ if(false) {
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -62367,7 +62374,7 @@ var _expense_form = __webpack_require__(412);
 
 var _expense_form2 = _interopRequireDefault(_expense_form);
 
-var _expense_list = __webpack_require__(429);
+var _expense_list = __webpack_require__(430);
 
 var _expense_list2 = _interopRequireDefault(_expense_list);
 
@@ -66983,7 +66990,7 @@ __webpack_require__(366);
 // `setimmediate` library.
 exports.setImmediate = typeof self !== "undefined" && self.setImmediate || typeof global !== "undefined" && global.setImmediate || undefined && undefined.setImmediate;
 exports.clearImmediate = typeof self !== "undefined" && self.clearImmediate || typeof global !== "undefined" && global.clearImmediate || undefined && undefined.clearImmediate;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
 
 /***/ }),
 /* 366 */
@@ -67174,7 +67181,7 @@ exports.clearImmediate = typeof self !== "undefined" && self.clearImmediate || t
     attachTo.setImmediate = setImmediate;
     attachTo.clearImmediate = clearImmediate;
 })(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29), __webpack_require__(0)))
 
 /***/ }),
 /* 367 */
@@ -71233,7 +71240,7 @@ var firebase = __webpack_require__(51);
     })();
   }).call(this);
 }).call((typeof global === "undefined" ? "undefined" : _typeof(global)) !== undefined ? global : (typeof self === "undefined" ? "undefined" : _typeof(self)) !== undefined ? self : (typeof window === "undefined" ? "undefined" : _typeof(window)) !== undefined ? window : {});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
 
 /***/ }),
 /* 369 */
@@ -78927,7 +78934,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(19);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _computation_actions = __webpack_require__(54);
 
@@ -78969,7 +78976,11 @@ var _total_row = __webpack_require__(427);
 
 var _total_row2 = _interopRequireDefault(_total_row);
 
-var _auth = __webpack_require__(428);
+var _computation = __webpack_require__(428);
+
+var _computation2 = _interopRequireDefault(_computation);
+
+var _auth = __webpack_require__(429);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -79024,15 +79035,9 @@ var ExpenseForm = function (_Component) {
       return (0, _auth.hasWriteAccess)(this.props.CurrentExpense);
     }
   }, {
-    key: 'isPaymentSettled',
-    value: function isPaymentSettled(user) {
-      var unsettled = _lodash2.default.get(this.props.Computations, 'change.users[' + user + ']', 0);
-      return !Math.round(unsettled * 100);
-    }
-  }, {
     key: 'determineShownUser',
     value: function determineShownUser(user) {
-      return this.state.showPaid ? true : !this.isPaymentSettled(user);
+      return this.state.showPaid ? true : !this.props.Computations.isPaymentSettled(user);
     }
   }, {
     key: 'render',
@@ -79227,7 +79232,7 @@ var ExpenseForm = function (_Component) {
           items = _props$CurrentExpense.items,
           rows = _props$CurrentExpense.rows;
 
-      this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense).then(function (expenseId) {
+      this.props.saveExpenseData(this.getExpenseId(), this.props.CurrentExpense, this.props.Computations).then(function (expenseId) {
         if (_this7.getExpenseId() !== expenseId) {
           _this7.props.history.push((0, _paths.getExpenseFormLink)(expenseId));
         }
@@ -79244,7 +79249,7 @@ function mapStateToProps(_ref) {
 
   return {
     CurrentExpense: CurrentExpense,
-    Computations: Computations
+    Computations: _lodash2.default.assign(new _computation2.default(), Computations)
   };
 }
 
@@ -79306,7 +79311,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -79326,7 +79331,7 @@ if(false) {
 /* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -79355,7 +79360,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(19);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -79444,7 +79449,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(19);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _item = __webpack_require__(191);
 
@@ -79587,7 +79592,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -79607,7 +79612,7 @@ if(false) {
 /* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -79648,7 +79653,7 @@ var _base_row = __webpack_require__(111);
 
 var _base_row2 = _interopRequireDefault(_base_row);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 __webpack_require__(422);
 
@@ -79756,13 +79761,13 @@ var ItemRow = function (_BaseRow) {
                             disabled: !this.props.hasWriteAccess })
                     )
                 ),
-                shared ? _react2.default.createElement(
+                shared && _react2.default.createElement(
                     'small',
                     { className: 'text-muted' },
                     '(',
                     this.computeShare(item).toFixed(2),
                     ')'
-                ) : ''
+                )
             );
         }
     }, {
@@ -79884,7 +79889,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -79904,7 +79909,7 @@ if(false) {
 /* 423 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -79929,7 +79934,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(31)(content, options);
+var update = __webpack_require__(28)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -79949,7 +79954,7 @@ if(false) {
 /* 425 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -80149,6 +80154,46 @@ exports.default = (0, _computing_row.setupReduxBindings)(TotalRow);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Computation = function () {
+  function Computation() {
+    _classCallCheck(this, Computation);
+  }
+
+  _createClass(Computation, [{
+    key: "isPaymentSettled",
+    value: function isPaymentSettled(user) {
+      var unsettled = _.get(this, "change.users[" + user + "]", 0);
+      return !Math.round(unsettled * 100);
+    }
+  }, {
+    key: "getUnsettledCount",
+    value: function getUnsettledCount() {
+      return _(this.change.users).values().filter(function (val) {
+        return Math.round(val * 100);
+      }).value().length;
+    }
+  }]);
+
+  return Computation;
+}();
+
+exports.default = Computation;
+
+/***/ }),
+/* 429 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.hasWriteAccess = hasWriteAccess;
 
 var _firebase = __webpack_require__(64);
@@ -80159,7 +80204,7 @@ function hasWriteAccess(expenseForm) {
 }
 
 /***/ }),
-/* 429 */
+/* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80181,9 +80226,11 @@ var _reactRedux = __webpack_require__(19);
 
 var _expense_list_actions = __webpack_require__(195);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _paths = __webpack_require__(102);
+
+__webpack_require__(431);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80212,7 +80259,7 @@ var ExpenseList = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'col-md' },
+        { className: 'col-md expense-list' },
         _react2.default.createElement(
           'h2',
           null,
@@ -80236,11 +80283,16 @@ var ExpenseList = function (_Component) {
           { to: (0, _paths.getExpenseFormLink)(expenseFormId), exact: true, className: 'nav-link list-group-item', key: expenseFormId },
           _react2.default.createElement(
             'div',
-            { className: 'd-flex flex-row justify-content-between' },
+            { className: 'd-flex flex-row justify-content-between align-items-center' },
             _react2.default.createElement(
               'span',
-              { className: 'align-self-center' },
+              { className: 'align-self-center mr-auto' },
               expense.name
+            ),
+            expense.unsettled != 0 && _react2.default.createElement(
+              'span',
+              { className: 'badge badge-pill badge-warning unsettled' },
+              expense.unsettled
             ),
             _react2.default.createElement(
               'span',
@@ -80278,7 +80330,52 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(ExpenseList);
 
 /***/ }),
-/* 430 */
+/* 431 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(432);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(28)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js??ref--0-oneOf-2-1!../../../node_modules/postcss-loader/lib/index.js??ref--0-oneOf-2-2!./expense_list.css", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js??ref--0-oneOf-2-1!../../../node_modules/postcss-loader/lib/index.js??ref--0-oneOf-2-2!./expense_list.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 432 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(27)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".expense-list .badge.unsettled {\n  margin-right: 10px; \n}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 433 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80290,19 +80387,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(93);
 
-var _reducer_users = __webpack_require__(431);
+var _reducer_users = __webpack_require__(434);
 
 var _reducer_users2 = _interopRequireDefault(_reducer_users);
 
-var _reducer_current_expense = __webpack_require__(432);
+var _reducer_current_expense = __webpack_require__(435);
 
 var _reducer_current_expense2 = _interopRequireDefault(_reducer_current_expense);
 
-var _reducer_computations = __webpack_require__(433);
+var _reducer_computations = __webpack_require__(436);
 
 var _reducer_computations2 = _interopRequireDefault(_reducer_computations);
 
-var _reducer_expense_list = __webpack_require__(434);
+var _reducer_expense_list = __webpack_require__(437);
 
 var _reducer_expense_list2 = _interopRequireDefault(_reducer_expense_list);
 
@@ -80318,7 +80415,7 @@ var rootReducer = (0, _redux.combineReducers)({
 exports.default = rootReducer;
 
 /***/ }),
-/* 431 */
+/* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80365,7 +80462,7 @@ function fetchUser(state, user) {
 }
 
 /***/ }),
-/* 432 */
+/* 435 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80415,7 +80512,7 @@ var _lodash = __webpack_require__(22);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _expense_actions = __webpack_require__(29);
+var _expense_actions = __webpack_require__(31);
 
 var _item = __webpack_require__(191);
 
@@ -80554,7 +80651,7 @@ function updatePayment(state, _ref7) {
 }
 
 /***/ }),
-/* 433 */
+/* 436 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80622,7 +80719,7 @@ function clearComputation() {
 }
 
 /***/ }),
-/* 434 */
+/* 437 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80649,7 +80746,7 @@ exports.default = function () {
 var _expense_list_actions = __webpack_require__(195);
 
 /***/ }),
-/* 435 */
+/* 438 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
