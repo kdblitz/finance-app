@@ -29,16 +29,18 @@ const rows = {
 class ExpenseForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      showBreakdown: true,
       showPaid: true
     };
 
     this.determineShownUser = this.determineShownUser.bind(this);
   }
 
-  toggleShowPaid() {
+  toggleView(viewMode) {
     this.setState({
-      showPaid: !this.state.showPaid
+      [viewMode]: !this.state[viewMode]
     })
   }
 
@@ -65,12 +67,18 @@ class ExpenseForm extends Component {
     }
     return (
       <div className="Expense-form">
-        <div className="title d-flex flex-row mb-3">
-          {this.hasWriteAccess() ? (<input type="text" className="form-control col-2"
+        <div className="title d-flex flex-row align-items-center mb-3">
+          {this.hasWriteAccess() ? (<input type="text" className="form-control col-2 mr-4"
             value={this.props.CurrentExpense.name}
-            onChange={event => this.props.updateTitle(event.target.value)}/>) : <h2>{this.props.CurrentExpense.name}</h2>}
-          <button type="button" className={`btn btn-primary ${this.state.showPaid ? 'active': ''}`}
-            onClick={() => this.toggleShowPaid()}>Toggle Settled</button>
+            onChange={event => this.props.updateTitle(event.target.value)}/>) 
+            : <h2 className="mr-4">{this.props.CurrentExpense.name}</h2>}
+          <span className="oi oi-eye mr-2"></span>
+          <div className="btn-group mr-2" role="group">
+            <button type="button" className="btn btn-primary"
+              onClick={() => this.toggleView('showBreakdown')}>Breakdown</button>
+            <button type="button" className={`btn btn-primary ${this.state.showPaid ? 'active': ''}`}
+              onClick={() => this.toggleView('showPaid')}>Settled</button>
+          </div>
         </div>
         <table className="table">
           <thead>
@@ -129,6 +137,12 @@ class ExpenseForm extends Component {
   }
 
   renderBody() {
+    if (!this.state.showBreakdown)
+      return <th colSpan="3">
+        <span className="mr-2">Contents hidden</span> 
+        <span className="link" onClick={() => this.toggleView('showBreakdown')}>(Show Breakdown)</span>
+      </th>;
+
     return _.map(this.props.CurrentExpense.items, item =>
       <ItemRow key={item.name + this.state.showPaid}
         item={item} 
@@ -139,6 +153,9 @@ class ExpenseForm extends Component {
   }
 
   renderSpecialRows() {
+    if (!this.state.showBreakdown)
+      return;
+
     const currentRows = _.cloneDeep(this.props.CurrentExpense.rows) || [];
     if (currentRows.length) {
       currentRows.push({

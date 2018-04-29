@@ -34,3 +34,10 @@ body {
   flex: 1 auto;
   overflow: auto; 
 }
+
+.link {
+  cursor: pointer;  
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+}

@@ -67,7 +67,7 @@ class PaymentRow extends BaseRow {
     }
 
     renderPayment(user) {
-        return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user);
+        return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user).toFixed(2);
     }
 
     renderPaymentForm(user) {
