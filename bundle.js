@@ -47529,7 +47529,7 @@ var PaymentRow = function (_BaseRow) {
     }, {
         key: 'renderPayment',
         value: function renderPayment(user) {
-            return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user);
+            return this.props.hasWriteAccess ? this.renderPaymentForm(user) : this.getUserPayment(user).toFixed(2);
         }
     }, {
         key: 'renderPaymentForm',
@@ -62338,7 +62338,7 @@ exports = module.exports = __webpack_require__(27)(undefined);
 
 
 // module
-exports.push([module.i, "html, body {\n  height: 100%;\n}\n\nbody {\n  margin: 0;\n  padding: 0;\n  font-family: sans-serif;\n}\n\n#root {\n  width: 100%;\n  height: 100%;\n  min-height: 100%;\n}\n\n#root.bg-dark {\n  background: #333; \n  -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.7); \n          box-shadow: inset 0 0 5rem rgba(0,0,0,.7); \n  color: white;\n}\n\n#root.bg-dark .list-group-item {\n  color: black;\n}\n\n[data-reactroot] {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n      flex-direction: column;\n  height: 100%;\n}\n\n[data-reactroot] .container-fluid {\n  -ms-flex: 1 1 auto;\n      flex: 1 1 auto;\n  overflow: auto; \n}", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n}\n\nbody {\n  margin: 0;\n  padding: 0;\n  font-family: sans-serif;\n}\n\n#root {\n  width: 100%;\n  height: 100%;\n  min-height: 100%;\n}\n\n#root.bg-dark {\n  background: #333; \n  -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.7); \n          box-shadow: inset 0 0 5rem rgba(0,0,0,.7); \n  color: white;\n}\n\n#root.bg-dark .list-group-item {\n  color: black;\n}\n\n[data-reactroot] {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n      flex-direction: column;\n  height: 100%;\n}\n\n[data-reactroot] .container-fluid {\n  -ms-flex: 1 1 auto;\n      flex: 1 1 auto;\n  overflow: auto; \n}\n\n.link {\n  cursor: pointer;  \n  color: #007bff;\n  text-decoration: none;\n  background-color: transparent;\n}", ""]);
 
 // exports
 
@@ -78984,6 +78984,8 @@ var _auth = __webpack_require__(429);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -79004,6 +79006,7 @@ var ExpenseForm = function (_Component) {
     var _this = _possibleConstructorReturn(this, (ExpenseForm.__proto__ || Object.getPrototypeOf(ExpenseForm)).call(this, props));
 
     _this.state = {
+      showBreakdown: true,
       showPaid: true
     };
 
@@ -79012,11 +79015,9 @@ var ExpenseForm = function (_Component) {
   }
 
   _createClass(ExpenseForm, [{
-    key: 'toggleShowPaid',
-    value: function toggleShowPaid() {
-      this.setState({
-        showPaid: !this.state.showPaid
-      });
+    key: 'toggleView',
+    value: function toggleView(viewMode) {
+      this.setState(_defineProperty({}, viewMode, !this.state[viewMode]));
     }
   }, {
     key: 'getExpenseId',
@@ -79052,23 +79053,36 @@ var ExpenseForm = function (_Component) {
         { className: 'Expense-form' },
         _react2.default.createElement(
           'div',
-          { className: 'title d-flex flex-row mb-3' },
-          this.hasWriteAccess() ? _react2.default.createElement('input', { type: 'text', className: 'form-control col-2',
+          { className: 'title d-flex flex-row align-items-center mb-3' },
+          this.hasWriteAccess() ? _react2.default.createElement('input', { type: 'text', className: 'form-control col-2 mr-4',
             value: this.props.CurrentExpense.name,
             onChange: function onChange(event) {
               return _this2.props.updateTitle(event.target.value);
             } }) : _react2.default.createElement(
             'h2',
-            null,
+            { className: 'mr-4' },
             this.props.CurrentExpense.name
           ),
+          _react2.default.createElement('span', { className: 'oi oi-eye mr-2' }),
           _react2.default.createElement(
-            'button',
-            { type: 'button', className: 'btn btn-primary ' + (this.state.showPaid ? 'active' : ''),
-              onClick: function onClick() {
-                return _this2.toggleShowPaid();
-              } },
-            'Toggle Settled'
+            'div',
+            { className: 'btn-group mr-2', role: 'group' },
+            _react2.default.createElement(
+              'button',
+              { type: 'button', className: 'btn btn-primary',
+                onClick: function onClick() {
+                  return _this2.toggleView('showBreakdown');
+                } },
+              'Breakdown'
+            ),
+            _react2.default.createElement(
+              'button',
+              { type: 'button', className: 'btn btn-primary ' + (this.state.showPaid ? 'active' : ''),
+                onClick: function onClick() {
+                  return _this2.toggleView('showPaid');
+                } },
+              'Settled'
+            )
           )
         ),
         _react2.default.createElement(
@@ -79164,6 +79178,23 @@ var ExpenseForm = function (_Component) {
     value: function renderBody() {
       var _this4 = this;
 
+      if (!this.state.showBreakdown) return _react2.default.createElement(
+        'th',
+        { colSpan: '3' },
+        _react2.default.createElement(
+          'span',
+          { className: 'mr-2' },
+          'Contents hidden'
+        ),
+        _react2.default.createElement(
+          'span',
+          { className: 'link', onClick: function onClick() {
+              return _this4.toggleView('showBreakdown');
+            } },
+          '(Show Breakdown)'
+        )
+      );
+
       return _lodash2.default.map(this.props.CurrentExpense.items, function (item) {
         return _react2.default.createElement(_item_row2.default, { key: item.name + _this4.state.showPaid,
           item: item,
@@ -79176,6 +79207,8 @@ var ExpenseForm = function (_Component) {
     key: 'renderSpecialRows',
     value: function renderSpecialRows() {
       var _this5 = this;
+
+      if (!this.state.showBreakdown) return;
 
       var currentRows = _lodash2.default.cloneDeep(this.props.CurrentExpense.rows) || [];
       if (currentRows.length) {
@@ -79336,7 +79369,7 @@ exports = module.exports = __webpack_require__(27)(undefined);
 
 
 // module
-exports.push([module.i, "\n.Expense-form h2 {\n  display: inline-block;\n}\n\n.Expense-form .title span.oi {\n  margin-left: 5px;\n  display: none;\n}\n\n.Expense-form .title:hover span.oi {\n  display: inherit;\n}\n\n.Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 250px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 130px;\n}\n\n.Expense-form table th.users span.name {\n    padding-right: 10px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
+exports.push([module.i, ".Expense-form h2 {\n  display: inline-block;\n  margin-bottom: 0;\n}\n\n.Expense-form table {\n    table-layout: fixed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    max-width: none;\n}\n\n.Expense-form table thead th,\n.Expense-form table td.shared {\n    text-align: center;\n}\n\n.Expense-form table .price, \n.Expense-form table .quantity {\n    text-align: right;\n}\n\n.Expense-form table .name {\n    width: 250px;\n}\n\n.Expense-form table th.quantity,\n.Expense-form table th.price,\n.Expense-form table th.shared {\n    width: 100px;\n}\n\n.Expense-form table th.users {\n    width: 130px;\n}\n\n.Expense-form table th.users span.name {\n    padding-right: 10px;\n}\n\n\n.Expense-form th.addUser {\n    width: 200px;\n}", ""]);
 
 // exports
 
