@@ -74,7 +74,7 @@ class ExpenseForm extends Component {
             : <h2 className="mr-4">{this.props.CurrentExpense.name}</h2>}
           <span className="oi oi-eye mr-2"></span>
           <div className="btn-group mr-2" role="group">
-            <button type="button" className="btn btn-primary"
+            <button type="button" className={`btn btn-primary ${this.state.showBreakdown ? 'active': ''}`}
               onClick={() => this.toggleView('showBreakdown')}>Breakdown</button>
             <button type="button" className={`btn btn-primary ${this.state.showPaid ? 'active': ''}`}
               onClick={() => this.toggleView('showPaid')}>Settled</button>

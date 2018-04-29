@@ -50,7 +50,7 @@ class AddItemForm extends Component {
           {this.renderInput({ placeholder: 'Add new item', data: 'name', type: 'text' })}
           {this.renderInput({ placeholder: 'Qty', data: 'quantity', type: 'number' })}
           {this.renderInput({ placeholder: 'Price', data: 'price', type: 'number' })}
-          <span className="input-group-btn">
+          <span className="input-group-append">
             <button className="btn btn-secondary" type="submit"
               disabled={this.isFormComplete()}>Add</button>
             <button type="button"

@@ -44,12 +44,10 @@ class ItemRow extends BaseRow {
         return (
             <td className="shared">
                 <div className="form-check">
-                    <label className="form-check-label">
-                        <input className="form-check-input" type="checkbox"
-                            checked={shared}
-                            onChange={event => this.props.toggleSharing(name, event.target.checked)}
-                            disabled={!this.props.hasWriteAccess}/>
-                    </label>
+                    <input className="form-check-input position-static" type="checkbox"
+                        checked={shared}
+                        onChange={event => this.props.toggleSharing(name, event.target.checked)}
+                        disabled={!this.props.hasWriteAccess}/>
                 </div>
                 { shared && <small className="text-muted">({ this.computeShare(item).toFixed(2) })</small> }
             </td>
