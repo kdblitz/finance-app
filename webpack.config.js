@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const publicPath = '/' + (process.env.PUBLIC_PATH || '');
 const DEFINITIONS = {
@@ -16,6 +17,14 @@ const plugins = [
     'window.jQuery': 'jquery',
     Popper: ['popper.js', 'default'],
   }),
+  new CopyWebpackPlugin([{
+    from: path.resolve(__dirname, 'public', 'manifest.json'),
+    to: path.resolve(__dirname, 'build')
+  },{
+    from: path.resolve(__dirname, 'public', '*.png'),
+    to: path.resolve(__dirname, 'build'),
+    flatten: true
+  }]),
   new HtmlWebpackPlugin({
     inject: true,
     template: path.resolve(__dirname, 'public', 'index.html')
