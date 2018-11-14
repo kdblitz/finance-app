@@ -13,7 +13,7 @@ import App from './App';
 import reducers from './reducers';
 import { HashRouter } from 'react-router-dom';
 
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -24,4 +24,12 @@ ReactDOM.render(
     </HashRouter>
   </Provider>
   , document.getElementById('root'));
-registerServiceWorker();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('./sw.js')
+    .then(function() {
+      console.log('service worker registered!')
+    });
+}
+// registerServiceWorker();

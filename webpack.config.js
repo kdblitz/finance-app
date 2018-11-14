@@ -20,7 +20,10 @@ const plugins = [
   new CopyWebpackPlugin([{
     from: path.resolve(__dirname, 'public', 'manifest.json'),
     to: path.resolve(__dirname, 'build')
-  },{
+  }, {
+    from: path.resolve(__dirname, 'public', 'sw.js'),
+    to: path.resolve(__dirname, 'build')
+  }, {
     from: path.resolve(__dirname, 'public', '*.png'),
     to: path.resolve(__dirname, 'build'),
     flatten: true
